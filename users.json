@@ -1,5 +1,8 @@
 {
     "PaulEncrypt": "$2b$12$IpnR93uz4.obor0NKejS7u/yeh8q018RwDEtXfj9mu9hGAYs7DcWi",
     "GodScott": "$2b$12$t2F7Q5viJSPHM6vaCwbiW.t2rn8lD7r4KIjRNfg1pKOvpF.a4OEhm",
-    "HELLO": "$2b$12$GMa7VMWCL249uxsX9op7HuhCm5acqnzCuFmysgnkg8CVg1ph8Spa6"
+    "HELLO": "$2b$12$GMa7VMWCL249uxsX9op7HuhCm5acqnzCuFmysgnkg8CVg1ph8Spa6",
+    "WAGYU": "$2b$12$WdO8SWjg4t7gnwsbxg0OCePyRNeIBdMDCkjWsgxMsbJkFXchtLxbG",
+    "GodScott2": "$2b$12$rJhsuq5q5lHjcOrd.7AUQ.cEdM4zeVVYy6oIYlwMfW.dltr5CJ6xO",
+    "POP": "$2b$12$0F2t0LyUhlZ08I9mupBfNuBfaJyOi39E8xaijCSZsjwUMtzMsY43C"
 }

@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #d2691e;
+    padding: 1rem;
+}
+
+.header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.header .search-bar input {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+}
+
+.header .user-menu {
+    color: #fff;
+}
+
+.sidebar {
+    background-color: #d2691e;
+    color: #fff;
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar nav ul li {
+    padding: 1rem;
+    border-bottom: 1px solid #fff;
+}
+
+.sidebar nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 2rem;
+}
+
+.main-content h1 {
+    color: #d2691e;
+    font-size: 2rem;
+}

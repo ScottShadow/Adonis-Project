@@ -17,7 +17,7 @@ def hash_password(password: str) -> bytes:
         bytes: The hashed password as bytes.
 
     """
-    PEPPER = "Adonis" #Store as Master server system variable for security
+    PEPPER = "Adonis"  # Store as Master server system variable for security
     salt = bcrypt.gensalt(rounds=12)
     pepper_password = password + PEPPER
     return bcrypt.hashpw(pepper_password.encode("utf-8"), salt)
