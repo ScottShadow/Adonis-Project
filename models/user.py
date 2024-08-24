@@ -4,7 +4,7 @@ import hashlib
 from .base import Base as SQLAlchemyBase, BaseClass
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 
 # Many-to-Many relationship table for users and tags

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """ UserSession module"""
-from models.base import Base
+from models.base import BaseClass
 from datetime import datetime
 
 
-class UserSession(Base):
+class UserSession(BaseClass):
     """ UserSession model to store user sessions """
 
     def __init__(self, *args: list, **kwargs: dict):
