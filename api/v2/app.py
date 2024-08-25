@@ -2,16 +2,18 @@
 """
 Route module for the API
 """
-from api.v2.auth.session_db_auth import SessionDBAuth
 from os import getenv
-from api.v2.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
-import os
+from api.v2.views import app_views, auth_views
+from api.v2.auth.session_db_auth import SessionDBAuth
+# from api.v2.views.users import users_views
 
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
+app.register_blueprint(auth_views)
+# app.register_blueprint(users_views, url_prefix='/api/v2/users')
 CORS(app, resources={r"/api/v2/*": {"origins": "*"}})
 auth = None
 
@@ -26,21 +28,27 @@ def before_request() -> str:
 
         :return: None
     """
+    print(f"\n\nRequest Path: {request.path}")
+    print(f"\n\nRequest Endpoint: {request.endpoint}")
     if auth is None:
         return
-    forbidden_paths = [
-        '/api/v2/status/',
+    excluded_paths = [
+        '/api/v2/status/', '/api/v2/stats',
         '/api/v2/unauthorized/', '/api/v2/forbidden/',
-        "/api/v2/auth_session/login/"
+        "/api/v2/auth_session/login/", "/api/v2/auth_session/signup/"
     ]
 
-    if auth.require_auth(request.path, forbidden_paths) is False:
+    if auth.require_auth(request.path, excluded_paths) is False:
         return  # type: ignore
-    if auth.authorization_header(request) is None and \
-            auth.session_cookie(request) is None:
-        abort(401)
-    if auth.current_user(request) is None:
-        abort(403)
+    if request.endpoint not in ['auth_views.signup', 'auth_views.login', 'app_views.create_user']:
+        if auth.authorization_header(request) is None and \
+                auth.session_cookie(request) is None:
+            print("\n\nBefore Request abort 40 \n\n")
+            abort(401)
+    if request.endpoint not in ['app_views.create_user']:
+        if auth.current_user(request) is None:
+            print("BEFORE REQUEST FORBIDEN\n\n")
+            abort(403)
 
     if auth.authorization_header(request) and auth.session_cookie(request):
         return None, abort(401)

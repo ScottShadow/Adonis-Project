@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """ Module of Users views
 """
+# from flask import Blueprint
 from api.v2.views import app_views
 from flask import abort, jsonify, request
 from models.user import User
+
+
+# users_views = Blueprint("users_views", __name__)
 
 
 @app_views.route('/users', methods=['GET'], strict_slashes=False)
@@ -84,11 +88,13 @@ def create_user() -> str:
         error_msg = "password missing"
     if error_msg is None:
         try:
-            user = User()
-            user.email = rj.get("email")
-            user.password = rj.get("password")
-            user.first_name = rj.get("first_name")
-            user.last_name = rj.get("last_name")
+            user = User(
+                email=rj.get("email"),
+                password=rj.get("password"),
+                first_name=rj.get("first_name"),
+                last_name=rj.get("last_name"),
+                username=rj.get("username")
+            )
             user.save()
             return jsonify(user.to_json()), 201
         except Exception as e:

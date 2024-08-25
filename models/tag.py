@@ -1,23 +1,18 @@
 from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import Base as SQLAlchemyBase, BaseClass
+from models import user_tags
+
 
 # Association Table for the many-to-many relationship between Tags and Logs
-tag_logs = Table(
-    'tag_logs', SQLAlchemyBase.metadata,
+log_tags = Table(
+    'log_tags', SQLAlchemyBase.metadata,
     Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True),
     Column('log_id', Integer, ForeignKey('logs.id'), primary_key=True)
 )
 
-# Association Table for the many-to-many relationship between Tags and Users
-user_tags = Table(
-    'user_tags', SQLAlchemyBase.metadata,
-    Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True),
-    Column('user_id', Integer, ForeignKey('users.id'), primary_key=True)
-)
 
-
-class Tag(SQLAlchemyBase, BaseClass):
+class Tag(BaseClass, SQLAlchemyBase):
     """Tag model to represent tags/skills that can be assigned to users and 
     linked to logs."""
     __tablename__ = "tags"
@@ -32,7 +27,7 @@ class Tag(SQLAlchemyBase, BaseClass):
 
     # Relationships
     users = relationship('User', secondary=user_tags, back_populates='tags')
-    logs = relationship('Log', secondary=tag_logs, back_populates='tags')
+    logs = relationship('Log', secondary=log_tags, back_populates='tags')
 
     def __repr__(self):
         return f"<Tag(id={self.id}, name='{self.name}')>"

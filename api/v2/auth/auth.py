@@ -86,7 +86,7 @@ class Auth:
         This function retrieves the session cookie value from the given
         request object.
         """
-        _my_session_id = os.getenv('SESSION_NAME', 'session_id')
+        _my_session_id = os.getenv('SESSION_NAME', '_my_session_id')
         cookie_value = None
         if request:
             cookie_value = request.cookies.get(_my_session_id)

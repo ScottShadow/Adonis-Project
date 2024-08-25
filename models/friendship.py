@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from .base import Base as SQLAlchemyBase, BaseClass
 
 
-class Friendship(SQLAlchemyBase, BaseClass):
+class Friendship(BaseClass, SQLAlchemyBase):
     """ Friendship model to handle user relationships """
     __tablename__ = 'friendships'
 
@@ -16,12 +16,14 @@ class Friendship(SQLAlchemyBase, BaseClass):
     # Friends can view each other's logs by default
     can_view_logs = Column(Boolean, default=True)
     # Timestamp for when the friendship was initiated
-    created_at = Column(DateTime, default=func.now)
+    created_at = Column(DateTime, default=func.now())
     # Timestamp for the last status update
-    updated_at = Column(DateTime, onupdate=func.now)
+    updated_at = Column(DateTime, onupdate=func.now())
 
-    user_1 = relationship("User", foreign_keys=[user_id_1])
-    user_2 = relationship("User", foreign_keys=[user_id_2])
+    user_1 = relationship('User', foreign_keys=user_id_1,
+                          back_populates='friendships_1')
+    user_2 = relationship('User', foreign_keys=user_id_2,
+                          back_populates='friendships_2')
 
     def __repr__(self):
         return f"<Friendship(id={self.id}, user_id_1={self.user_id_1}, user_id_2={self.user_id_2}, status='{self.status}')>"

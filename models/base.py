@@ -10,7 +10,6 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
 DATA = {}
 
@@ -54,6 +53,8 @@ class BaseClass():
         for key, value in self.__dict__.items():
             if not for_serialization and key[0] == '_':
                 continue
+            if type(value).__name__ == 'InstanceState':  # Filter out InstanceState
+                continue
             if type(value) is datetime:
                 result[key] = value.strftime(TIMESTAMP_FORMAT)
             else:
@@ -62,18 +63,39 @@ class BaseClass():
 
     @classmethod
     def load_from_file(cls):
-        """ Load all objects from file
-        """
+        """ Load all objects from file """
         s_class = cls.__name__
         file_path = ".db_{}.json".format(s_class)
+
+        # Debugging: print class name and file path
+        print(f"[DEBUG] Class Name: {s_class}")
+        print(f"[DEBUG] File Path: {file_path}")
+
         DATA[s_class] = {}
+
         if not path.exists(file_path):
+            # Debugging: print if the file does not exist
+            print(f"[DEBUG] File does not exist: {file_path}")
             return
+
+        # Debugging: print if the file exists and is being opened
+        print(f"[DEBUG] File exists, opening: {file_path}")
 
         with open(file_path, 'r') as f:
             objs_json = json.load(f)
+
+            # Debugging: print the loaded JSON data
+            print(f"[DEBUG] Loaded JSON data: {objs_json}")
+
             for obj_id, obj_json in objs_json.items():
+                # Debugging: print each object ID and corresponding JSON data
+                print(f"[DEBUG] Object ID: {obj_id}, Object Data: {obj_json}")
+                print(f"[DEBUG] Creating instance of {s_class}")
                 DATA[s_class][obj_id] = cls(**obj_json)
+
+                # Debugging: print confirmation of object creation
+                print(
+                    f"[DEBUG] Created instance of {s_class} with ID: {obj_id}")
 
     @classmethod
     def save_to_file(cls):
