@@ -8,7 +8,6 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, fun
 from sqlalchemy.orm import relationship, backref
 from typing import TYPE_CHECKING
 from models import user_tags
-from authentication import hash_password, is_valid
 
 # Many-to-Many relationship table for users and tags
 
@@ -27,7 +26,7 @@ class User(BaseClass, SQLAlchemyBase):
     email = Column(String(250), nullable=False, unique=True)
     username = Column(String(250), nullable=False,
                       unique=True)  # User's chosen name
-    _hashed_password = Column("hashed_password", String(250), nullable=False)
+    _hashed_password = Column("hashed_password", String(60), nullable=False)
     session_id = Column(String(250), nullable=True)
     reset_token = Column(String(250), nullable=True)
     first_name = Column(String(250), nullable=True)
@@ -105,7 +104,8 @@ class User(BaseClass, SQLAlchemyBase):
         if pwd is None or not isinstance(pwd, str):
             self._hashed_password = None
         else:
-            self._hashed_password = pwd
+            self._hashed_password = hashlib.sha256(
+                pwd.encode()).hexdigest().lower()
 
     def is_valid_password(self, pwd: str) -> bool:
         """Check if the given password matches the stored hashed password"""
@@ -113,7 +113,7 @@ class User(BaseClass, SQLAlchemyBase):
             return False
         if self.password is None:
             return False
-        return is_valid(self.password, pwd)
+        return hashlib.sha256(pwd.encode()).hexdigest().lower() == self.password
 
     def display_name(self) -> str:
         """Return the display name based on email, first_name, and last_name"""

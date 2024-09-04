@@ -8,7 +8,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, fun
 from sqlalchemy.orm import relationship, backref
 from typing import TYPE_CHECKING
 from models import user_tags
-from authentication import hash_password, is_valid
+from authentication import hash_password
 
 # Many-to-Many relationship table for users and tags
 
@@ -101,11 +101,12 @@ class User(BaseClass, SQLAlchemyBase):
 
     @ password.setter
     def password(self, pwd: str):
+        
         """Setter for a new password: encrypt using SHA256"""
         if pwd is None or not isinstance(pwd, str):
             self._hashed_password = None
         else:
-            self._hashed_password = pwd
+            self._hashed_password = hash_password(pwd)
 
     def is_valid_password(self, pwd: str) -> bool:
         """Check if the given password matches the stored hashed password"""
@@ -113,7 +114,7 @@ class User(BaseClass, SQLAlchemyBase):
             return False
         if self.password is None:
             return False
-        return is_valid(self.password, pwd)
+        return hashlib.sha256(pwd.encode()).hexdigest().lower() == self.password
 
     def display_name(self) -> str:
         """Return the display name based on email, first_name, and last_name"""

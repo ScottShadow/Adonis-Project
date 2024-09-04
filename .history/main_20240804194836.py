@@ -1,7 +1,7 @@
 from authentication import login_required
 import bcrypt
 from backend_fn1 import check_user_exists
-from authentication import hash_password
+from encrypt_password import hash_password
 import json
 from flask import Flask, session, render_template, request, redirect, url_for, flash
 app = Flask(__name__)

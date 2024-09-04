@@ -30,9 +30,13 @@ def login() -> str:
     if password is None or len(password) == 0:
         return jsonify({'error': 'password missing'}), 400
 
+    print(f"\n\n\npass: {password} \n\n\n")
+
     user = User.search({'email': email})
+    print(f"\n\n\nuser: {user} \n\n\n")
     if user is None or len(user) == 0:
         return jsonify({'error': 'no user found for this email'}), 404
+    print(f"\n\n {user[0].password}, {password} \n\n")
     if not user[0].is_valid_password(password):
         return jsonify({'error': 'wrong password'}), 401
 
@@ -113,7 +117,7 @@ def signup() -> str:
         user = User(
             email=email,
             username=username,
-            password=hash_password(password),
+            password=password,
             first_name=first_name,
             last_name=last_name
         )

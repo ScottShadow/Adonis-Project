@@ -30,10 +30,14 @@ def login() -> str:
     if password is None or len(password) == 0:
         return jsonify({'error': 'password missing'}), 400
 
+    print(f"\n\n\npass: {password} \n\n\n")
+
     user = User.search({'email': email})
+    print(f"\n\n\nuser: {user} \n\n\n")
     if user is None or len(user) == 0:
         return jsonify({'error': 'no user found for this email'}), 404
-    if not user[0].is_valid_password(password):
+    print(f"\n\n {user[0].password}, {password} \n\n")
+    if not is_valid(user[0].password, password):
         return jsonify({'error': 'wrong password'}), 401
 
     try:
@@ -48,11 +52,7 @@ def login() -> str:
 
             response.set_cookie(session_name, session_id,
                                 max_age=auth.session_duration)
-            if request.is_json:
-                return response, 201
-        else:
-            # Redirect to dashboard.html and return HTML for a browser
-            return render_template('dashboard.html', user=user)
+            return response
     except Exception as e:
         return jsonify({'error': f'Cannot Login: {str(e)}'}), 500
 
@@ -118,6 +118,7 @@ def signup() -> str:
             last_name=last_name
         )
         user.save()
+
         # Create a session for the new user
         session_id = auth.create_session(user.id)
         session_name = os.environ.get("SESSION_NAME", "_my_session_id")

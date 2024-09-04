@@ -4,7 +4,7 @@ Session_auth View Module
 """
 from api.v2.views import app_views, auth_views
 from flask import Blueprint
-from authentication import hash_password, is_valid
+from authentication import hash_password
 
 
 @auth_views.route('/login', methods=['GET', 'POST'], strict_slashes=False)
@@ -30,6 +30,7 @@ def login() -> str:
     if password is None or len(password) == 0:
         return jsonify({'error': 'password missing'}), 400
 
+    print(f"\n\n\npass: {password} \n\n\n")
     user = User.search({'email': email})
     if user is None or len(user) == 0:
         return jsonify({'error': 'no user found for this email'}), 404
@@ -48,11 +49,7 @@ def login() -> str:
 
             response.set_cookie(session_name, session_id,
                                 max_age=auth.session_duration)
-            if request.is_json:
-                return response, 201
-        else:
-            # Redirect to dashboard.html and return HTML for a browser
-            return render_template('dashboard.html', user=user)
+            return response
     except Exception as e:
         return jsonify({'error': f'Cannot Login: {str(e)}'}), 500
 
@@ -113,11 +110,12 @@ def signup() -> str:
         user = User(
             email=email,
             username=username,
-            password=hash_password(password),
+            password=password,
             first_name=first_name,
             last_name=last_name
         )
         user.save()
+
         # Create a session for the new user
         session_id = auth.create_session(user.id)
         session_name = os.environ.get("SESSION_NAME", "_my_session_id")

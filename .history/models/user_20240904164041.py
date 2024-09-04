@@ -105,7 +105,7 @@ class User(BaseClass, SQLAlchemyBase):
         if pwd is None or not isinstance(pwd, str):
             self._hashed_password = None
         else:
-            self._hashed_password = pwd
+            self._hashed_password = hash_password(pwd)
 
     def is_valid_password(self, pwd: str) -> bool:
         """Check if the given password matches the stored hashed password"""

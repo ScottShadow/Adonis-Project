@@ -50,6 +50,6 @@ def index() -> str:
     Return:
       - 200
     """
-    from flask import request, render_template
+    from flask import request, jsonify, render_template
     if request.method == 'GET':
         return render_template('login.html')

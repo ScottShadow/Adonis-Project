@@ -42,14 +42,3 @@ def forbidden() -> str:
       - 403
     """
     abort(403)
-
-
-@app_views.route('/', strict_slashes=False)
-def index() -> str:
-    """ GET /
-    Return:
-      - 200
-    """
-    from flask import request, render_template
-    if request.method == 'GET':
-        return render_template('login.html')

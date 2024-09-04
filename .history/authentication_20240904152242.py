@@ -45,35 +45,6 @@ def is_valid(stored_hashed_password: str, password: str) -> bool:
     """
     PEPPER = "Adonis"
     peppered_password = password + PEPPER
-    # Decode the base64 string back to bytes
-    try:
-        hashed_password_bytes = base64.b64decode(
-            stored_hashed_password.encode('utf-8'))
-    except Exception as e:
-        print(f"Decoding error: {e}")
-        return False
+    # Decode the base64 encoded hashed password back to bytes
+    hashed_password_bytes = base64.b64decode(stored_hashed_password)
     return bcrypt.checkpw(peppered_password.encode("utf-8"), hashed_password_bytes)
-
-# Test cases
-
-
-def test_password_hashing_and_validation():
-    password = "mysecretpassword"
-
-    # Hash the password
-    hashed_password = hash_password(password)
-    print(f"Hashed Password: {hashed_password}")
-
-    # Test validation
-    is_valid_password = is_valid(hashed_password, password)
-    print(f"Is the password valid? {is_valid_password}")
-
-    # Test invalid password
-    invalid_password = "wrongpassword"
-    is_invalid_password = is_valid(hashed_password, invalid_password)
-    print(f"Is the invalid password valid? {is_invalid_password}")
-
-
-# Run the test
-if __name__ == "__main__":
-    test_password_hashing_and_validation()
