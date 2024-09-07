@@ -23,7 +23,6 @@ class User(BaseClass, SQLAlchemyBase):
     """Combined User class using SQLAlchemy and custom methods"""
     __tablename__ = "users"
 
-    id = Column(String, primary_key=True, nullable=False)
     email = Column(String(250), nullable=False, unique=True)
     username = Column(String(250), nullable=False,
                       unique=True)  # User's chosen name
@@ -33,7 +32,7 @@ class User(BaseClass, SQLAlchemyBase):
     first_name = Column(String(250), nullable=True)
     last_name = Column(String(250), nullable=True)
     # Assumes skills are stored as a comma-separated string
-    skills = Column(String, nullable=True)
+    skills = Column(String(250), nullable=True)
 
     # Additional profile details like bio, profile picture URL
     profile_info = Column(String(500), nullable=True)

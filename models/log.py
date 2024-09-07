@@ -8,8 +8,7 @@ from .base import Base as SQLAlchemyBase, BaseClass
 class Log(BaseClass, SQLAlchemyBase):
     __tablename__ = 'logs'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    user_id = Column(String(36), ForeignKey('users.id'), nullable=False)
     # e.g., 'Exercise', 'Reading'
     habit_type = Column(String(50), nullable=False)
     habit_name = Column(String(100), nullable=False)  # e.g., 'Morning Run'

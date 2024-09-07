@@ -19,22 +19,41 @@ class SessionDBAuth(SessionExpAuth):
 
     def create_session(self, user_id: str = None) -> str:
         """ Create a new session ID and store it in UserSession """
+
+        # Check for valid user_id
         if not user_id or not isinstance(user_id, str):
+            print(f"[DEBUG] Invalid user_id provided: {user_id}")
             return None
 
         # Create session ID using the parent method
+        print(f"[DEBUG] Creating session for user_id: {user_id}")
         session_id = super().create_session(user_id)
+
         if session_id is None:
+            print(f"[DEBUG] Failed to create session for user_id: {user_id}")
             return None
+
+        print(f"[DEBUG] Session ID created: {session_id}")
+
         session_data = {
             'user_id': user_id,
             'session_id': session_id,
             'created_at': datetime.now().strftime(TIMESTAMP_FORMAT),
             'max_age': self.session_duration
         }
+
+        print(f"[DEBUG] Session data to be saved: {session_data}")
+
         # Create a new UserSession and save it
-        user_session = UserSession(**session_data)
-        user_session.save()
+        try:
+            user_session = UserSession(**session_data)
+            print(
+                f"[DEBUG] UserSession object created: {user_session.to_json()}")
+            user_session.save()
+            print(f"[DEBUG] UserSession saved successfully")
+        except Exception as e:
+            print(f"[DEBUG] Error saving UserSession: {str(e)}")
+            return None
 
         return session_id
 

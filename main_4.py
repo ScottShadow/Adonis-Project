@@ -2,7 +2,7 @@
 """ Main 4
 """
 from flask import Flask, request
-from api.v1.auth.session_auth import SessionAuth
+from api.v2.auth.session_auth import SessionAuth
 from models.user import User
 
 """ Create a user test """

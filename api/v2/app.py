@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Route module for the API
+Route module for the API app.py
 """
 from os import getenv
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 from api.v2.views import app_views, auth_views
 from api.v2.auth.session_db_auth import SessionDBAuth
+from db_setup import init_db
 # from api.v2.views.users import users_views
 
 
@@ -18,6 +19,7 @@ CORS(app, resources={r"/api/v2/*": {"origins": "*"}})
 auth = None
 
 auth = SessionDBAuth()
+init_db()
 
 
 @app.before_request

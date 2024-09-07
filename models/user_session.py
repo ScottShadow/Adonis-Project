@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """ UserSession module"""
-from models.base import BaseClass
+from models.base import Base as SQLAlchemyBase, BaseClass
+from sqlalchemy import Column, String
 from datetime import datetime
 
 
-class UserSession(BaseClass):
+class UserSession(BaseClass, SQLAlchemyBase):
     """ UserSession model to store user sessions """
+    __tablename__ = 'user_sessions'  # Define the table name in the database
+
+    user_id = Column(String(36), nullable=False)
+    session_id = Column(String(36), nullable=False)
 
     def __init__(self, *args: list, **kwargs: dict):
         """ Initialize UserSession instance with user_id and session_id """

@@ -7,8 +7,8 @@ from models import user_tags
 # Association Table for the many-to-many relationship between Tags and Logs
 log_tags = Table(
     'log_tags', SQLAlchemyBase.metadata,
-    Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True),
-    Column('log_id', Integer, ForeignKey('logs.id'), primary_key=True)
+    Column('tag_id', String(36), ForeignKey('tags.id'), primary_key=True),
+    Column('log_id', String(36), ForeignKey('logs.id'), primary_key=True)
 )
 
 
@@ -17,7 +17,6 @@ class Tag(BaseClass, SQLAlchemyBase):
     linked to logs."""
     __tablename__ = "tags"
 
-    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String(250), nullable=False,
                   unique=True)  # Name of the tag/skill
     # Optional description of the tag/skill

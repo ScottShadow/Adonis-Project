@@ -8,17 +8,12 @@ class Friendship(BaseClass, SQLAlchemyBase):
     """ Friendship model to handle user relationships """
     __tablename__ = 'friendships'
 
-    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     user_id_1 = Column(Integer, ForeignKey('users.id'), nullable=False)
     user_id_2 = Column(Integer, ForeignKey('users.id'), nullable=False)
     # e.g., pending, accepted, blocked
     status = Column(String(50), nullable=False)
     # Friends can view each other's logs by default
     can_view_logs = Column(Boolean, default=True)
-    # Timestamp for when the friendship was initiated
-    created_at = Column(DateTime, default=func.now())
-    # Timestamp for the last status update
-    updated_at = Column(DateTime, onupdate=func.now())
 
     user_1 = relationship('User', foreign_keys=user_id_1,
                           back_populates='friendships_1')

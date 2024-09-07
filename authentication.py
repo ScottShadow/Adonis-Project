@@ -25,9 +25,9 @@ def hash_password(password: str) -> str:
         str: The hashed password as a base64 encoded string.
     """
     PEPPER = "Adonis"
-    salt = bcrypt.gensalt(rounds=12)
-    pepper_password = password + PEPPER
-    hashed_bytes = bcrypt.hashpw(pepper_password.encode("utf-8"), salt)
+    salt = bcrypt.gensalt()
+    pepper_password = (password + PEPPER).encode("utf-8")
+    hashed_bytes = bcrypt.hashpw(pepper_password, salt)
     # Encode the hashed bytes to a base64 string
     return base64.b64encode(hashed_bytes).decode('utf-8')
 

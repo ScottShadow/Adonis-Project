@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Base module
+""" Base module with mysql database
 """
 from datetime import datetime
 from typing import TypeVar, List, Iterable
@@ -7,16 +7,63 @@ from os import path
 import json
 import uuid
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
+from sqlalchemy.exc import ProgrammingError
+
+# Database configuration (without specifying the database name)
+DATABASE_URL = "mysql://root:56213@localhost/"
+
+# Database name
+my_db_name = "adonis_db"
+
+# Create an engine for MySQL without specifying a database
+engine = create_engine(DATABASE_URL)
+
+# Function to create the database if it doesn't exist
+
+
+def create_database(current_engine, db_name):
+    conn = current_engine.connect()
+    try:
+        # Use `text()` to wrap the raw SQL query
+        conn.execute(text(f"CREATE DATABASE {db_name}"))
+        print(f"Database '{db_name}' created successfully.")
+    except ProgrammingError as e:
+        if f"Can't create database '{db_name}'" in str(e):
+            print(f"Database '{db_name}' already exists.")
+        else:
+            print(f"Error: {e}")
+    finally:
+        conn.close()
+
+
+# Call the function to create the database if needed
+create_database(engine, my_db_name)
+
+# Once the database exists, you can create an engine bound to that database
+DATABASE_URL_WITH_DB = f"mysql://root:56213@localhost/{my_db_name}"
+engine_with_db = create_engine(DATABASE_URL_WITH_DB, echo=True)
+SessionLocal = sessionmaker(
+    autocommit=False, autoflush=False, bind=engine_with_db)
 
 Base = declarative_base()
+
 
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
 DATA = {}
 
 
 class BaseClass():
-    """ Base class
-    """
+    """Base class that other models will inherit from"""
+    __abstract__ = True  # This tells SQLAlchemy not to create a table for this class
+
+    id = Column(String(36), primary_key=True,
+                default=lambda: str(uuid.uuid4()))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow,
+                        onupdate=datetime.utcnow)
 
     def __init__(self, *args: list, **kwargs: dict):
         """ Initialize a Base instance
@@ -110,6 +157,25 @@ class BaseClass():
         with open(file_path, 'w') as f:
             json.dump(objs_json, f)
 
+    def save_to_db(self):
+        print("[DEBUG] Saving to DB")
+        session = SessionLocal()
+        try:
+            print("[DEBUG] Adding to session")
+            session.add(self)
+            print("[DEBUG] Commiting session")
+            session.commit()
+            user_id = self.id
+            print(f"User ID: {user_id}")
+        except Exception as e:
+            print("[DEBUG] Error occurred while saving to DB:", e)
+            print("[DEBUG] Rolling back session")
+            session.rollback()
+            raise
+        finally:
+            print("[DEBUG] Closing session")
+            session.close()
+
     def save(self):
         """ Save current object
         """
@@ -117,6 +183,19 @@ class BaseClass():
         self.updated_at = datetime.utcnow()
         DATA[s_class][self.id] = self
         self.__class__.save_to_file()
+        self.save_to_db()
+
+    def remove_from_db(self):
+        """Remove the object from the database"""
+        session = SessionLocal()
+        try:
+            session.delete(self)
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
     def remove(self):
         """ Remove object
@@ -125,6 +204,7 @@ class BaseClass():
         if DATA[s_class].get(self.id) is not None:
             del DATA[s_class][self.id]
             self.__class__.save_to_file()
+            self.remove_from_db()
 
     @classmethod
     def count(cls) -> int:
@@ -134,10 +214,28 @@ class BaseClass():
         return len(DATA[s_class].keys())
 
     @classmethod
+    def all_from_db(cls):
+        """Retrieve all objects"""
+        session = SessionLocal()
+        try:
+            return session.query(cls).all()
+        finally:
+            session.close()
+
+    @classmethod
     def all(cls) -> Iterable[TypeVar('Base')]:
         """ Return all objects
         """
         return cls.search()
+
+    @classmethod
+    def get_from_db(cls, object_id: str):
+        """Retrieve an object by its ID from the database"""
+        session = SessionLocal()
+        try:
+            return session.query(cls).filter_by(id=object_id).first()
+        finally:
+            session.close()
 
     @classmethod
     def get(cls, id: str) -> TypeVar('Base'):

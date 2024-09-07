@@ -90,6 +90,7 @@ def signup() -> str:
     import os
 
     if request.method == 'GET':
+        print("[DEBUG] GET request for signup")
         return render_template('signup.html')
 
     email = request.form.get('email')
@@ -100,15 +101,20 @@ def signup() -> str:
 
     # Validate input
     if not email:
+        print("[DEBUG] Email is missing")
         return jsonify({'error': 'email missing'}), 400
     if not password:
+        print("[DEBUG] Password is missing")
         return jsonify({'error': 'password missing'}), 400
 
     # Check if the email is already registered
-    if User.search({'email': email}):
+    existing_users = User.search({'email': email})
+    if existing_users:
+        print(f"[DEBUG] Email already registered: {email}")
         return jsonify({'error': 'email already registered'}), 400
 
     try:
+        print(f"[DEBUG] Creating new user with email: {email}")
         # Create new user
         user = User(
             email=email,
@@ -117,22 +123,31 @@ def signup() -> str:
             first_name=first_name,
             last_name=last_name
         )
+        print(f"[DEBUG] Saving user to database: {user.to_json()}")
         user.save()
+
         # Create a session for the new user
+        print(f"[DEBUG] Session ID Loading")
         session_id = auth.create_session(user.id)
+
+        print(f"[DEBUG] Created session ID: {session_id}")
         session_name = os.environ.get("SESSION_NAME", "_my_session_id")
 
         # Prepare the response with the session cookie
         response = jsonify(user.to_json())
         response.set_cookie(session_name, session_id,
                             max_age=auth.session_duration)
+
         if request.is_json:
+            print("[DEBUG] Returning JSON response")
             return response, 201
         else:
+            print("[DEBUG] Redirecting to dashboard")
             # Redirect to dashboard.html and return HTML for a browser
             return render_template('dashboard.html', user=user)
 
     except Exception as e:
+        print(f"[DEBUG] Exception occurred: {str(e)}")
         return jsonify({'error': f'cannot create user: {str(e)}'}), 500
 
     return jsonify({})
