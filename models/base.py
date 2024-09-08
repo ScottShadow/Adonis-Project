@@ -7,7 +7,7 @@ from os import path
 import json
 import uuid
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, and_, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
 from sqlalchemy.exc import ProgrammingError
@@ -185,19 +185,19 @@ class BaseClass():
         self.__class__.save_to_file()
         self.save_to_db()
 
-    def remove_from_db(self):
+    def remove(self):
         """Remove the object from the database"""
         session = SessionLocal()
         try:
             session.delete(self)
             session.commit()
-        except:
+        except Exception as e:
             session.rollback()
-            raise
+            raise e
         finally:
             session.close()
 
-    def remove(self):
+    def remove_from_file(self):
         """ Remove object
         """
         s_class = self.__class__.__name__
@@ -207,11 +207,24 @@ class BaseClass():
             self.remove_from_db()
 
     @classmethod
-    def count(cls) -> int:
+    def count_file(cls) -> int:
         """ Count all objects
         """
         s_class = cls.__name__
         return len(DATA[s_class].keys())
+
+    @classmethod
+    def count(cls) -> int:
+        """Count all objects in the corresponding table."""
+        session = SessionLocal()
+        try:
+            # Perform a COUNT(*) query on the class's table
+            count_result = session.query(
+                func.count()).select_from(cls).scalar()
+        finally:
+            session.close()
+
+        return count_result
 
     @classmethod
     def all_from_db(cls):
@@ -280,3 +293,29 @@ class BaseClass():
 
         # Filter the objects based on the search function and return the results
         return list(filter(_search, DATA[s_class].values()))
+
+    @classmethod
+    def search_db(cls, attributes: dict = {}):
+        """Search for objects in the MySQL database based on provided attributes."""
+        session = SessionLocal()
+        try:
+            # Start building the query from the class
+            query = session.query(cls)
+
+            # If attributes are provided, dynamically build the WHERE clause
+            if attributes:
+                # Dynamically create filters based on attributes
+                filters = [getattr(cls, k) == v for k, v in attributes.items()]
+                query = query.filter(and_(*filters))
+
+            # Execute the query and return the results as class instances
+            results = query.all()
+
+        except Exception as e:
+            session.rollback()  # Rollback in case of an error
+            raise e  # Re-raise the exception for further handling/logging
+
+        finally:
+            session.close()  # Ensure the session is closed no matter what
+
+        return results

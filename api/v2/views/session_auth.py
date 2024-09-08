@@ -22,15 +22,21 @@ def login() -> str:
     if request.method == 'GET':
         return render_template('login.html')
 
-    email = request.form.get('email')
-    password = request.form.get('password')
+    if request.is_json:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+    else:
+        # Handle form data for non-JSON requests (like from browsers)
+        email = request.form.get('email')
+        password = request.form.get('password')
 
     if email is None or len(email) == 0:
         return jsonify({'error': 'email missing'}), 400
     if password is None or len(password) == 0:
         return jsonify({'error': 'password missing'}), 400
 
-    user = User.search({'email': email})
+    user = User.search_db({'email': email})
     if user is None or len(user) == 0:
         return jsonify({'error': 'no user found for this email'}), 404
     if not user[0].is_valid_password(password):
@@ -50,9 +56,9 @@ def login() -> str:
                                 max_age=auth.session_duration)
             if request.is_json:
                 return response, 201
-        else:
-            # Redirect to dashboard.html and return HTML for a browser
-            return render_template('dashboard.html', user=user)
+            else:
+                # Redirect to dashboard.html and return HTML for a browser
+                return render_template('dashboard.html', user=user)
     except Exception as e:
         return jsonify({'error': f'Cannot Login: {str(e)}'}), 500
 
@@ -92,12 +98,20 @@ def signup() -> str:
     if request.method == 'GET':
         print("[DEBUG] GET request for signup")
         return render_template('signup.html')
-
-    email = request.form.get('email')
-    password = request.form.get('password')
-    username = request.form.get('username')
-    first_name = request.form.get('first_name')
-    last_name = request.form.get('last_name')
+    if request.is_json:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+        username = data.get('username')
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+    else:
+        # Handle form data for non-JSON requests (like from browsers)
+        email = request.form.get('email')
+        password = request.form.get('password')
+        username = request.form.get('username')
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
 
     # Validate input
     if not email:
@@ -108,7 +122,8 @@ def signup() -> str:
         return jsonify({'error': 'password missing'}), 400
 
     # Check if the email is already registered
-    existing_users = User.search({'email': email})
+    # existing_users = User.search({'email': email})
+    existing_users = User.search_db({'email': email})
     if existing_users:
         print(f"[DEBUG] Email already registered: {email}")
         return jsonify({'error': 'email already registered'}), 400

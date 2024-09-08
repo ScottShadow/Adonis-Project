@@ -63,7 +63,7 @@ class SessionDBAuth(SessionExpAuth):
             return None
         try:
             # Search for the UserSession based on session_id
-            user_session = UserSession.search({"session_id": session_id})
+            user_session = UserSession.search_db({"session_id": session_id})
         except Exception:
             return None
         if not user_session:
@@ -81,17 +81,35 @@ class SessionDBAuth(SessionExpAuth):
 
     def destroy_session(self, request=None) -> bool:
         """ Destroy session by removing UserSession entry """
+
+        print(
+            f"\n\n[DEBUG DESTROY SESSION] destroy_session called with request: {request}")
+
         if not request:
+            print("[DEBUG DESTROY SESSION] Request is None, cannot proceed")
             return False
 
         session_id = self.session_cookie(request)
+        print(f"[DEBUG DESTROY SESSION] Retrieved session_id: {session_id}")
+
         if not session_id:
+            print("[DEBUG DESTROY SESSION] Session ID is None, cannot proceed")
             return False
 
-        # Find and remove the UserSession
-        user_session = UserSession.search({"session_id": session_id})
+        # Find the UserSession by session_id
+        user_session = UserSession.search_db({"session_id": session_id})
+        print(
+            f"[DEBUG DESTROY SESSION] UserSession search result for session_id {session_id}: {user_session}")
+
         if user_session:
+            print(
+                f"[DEBUG DESTROY SESSION] UserSession found: {user_session[0]}")
             user_session[0].remove()
+            print(
+                f"[DEBUG DESTROY SESSION] UserSession with session_id {session_id} has been removed")
+
             return True
 
+        print(
+            f"[DEBUG DESTROY SESSION] No UserSession found with session_id {session_id}, cannot destroy session")
         return False

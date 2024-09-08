@@ -21,8 +21,15 @@ def stats() -> str:
       - the number of each objects
     """
     from models.user import User
+    from models.user_session import UserSession
+    from models.log import Log
+    from models.tag import Tag
     stats = {}
     stats['users'] = User.count()
+    stats['user_sessions'] = UserSession.count()
+    stats['logs'] = Log.count()
+    stats['tags'] = Tag.count()
+
     return jsonify(stats)
 
 

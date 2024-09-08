@@ -25,37 +25,57 @@ init_db()
 @app.before_request
 def before_request() -> str:
     """
-        This function is a before request hook that is executed before each
-        request to the Flask application.
+    This function is a before request hook that is executed before each
+    request to the Flask application.
 
-        :return: None
+    :return: None
     """
-    print(f"\n\nRequest Path: {request.path}")
-    print(f"\n\nRequest Endpoint: {request.endpoint}")
+    print(f"\n\n[DEBUG BEFORE REQUEST] Request Path: {request.path}")
+    print(f"[DEBUG BEFORE REQUEST] Request Endpoint: {request.endpoint}")
+
+    # Check if the auth instance is set
     if auth is None:
+        print("[DEBUG BEFORE REQUEST] Auth is None, skipping authentication")
         return
+
+    # Define paths that don't require authentication
     excluded_paths = [
         '/api/v2/status/', '/api/v2/stats',
         '/api/v2/unauthorized/', '/api/v2/forbidden/',
         "/api/v2/auth_session/login/", "/api/v2/auth_session/signup/"
     ]
 
-    if auth.require_auth(request.path, excluded_paths) is False:
-        return  # type: ignore
+    # Check if the current request path requires authentication
+    if not auth.require_auth(request.path, excluded_paths):
+        print(
+            f"[DEBUG BEFORE REQUEST] Path '{request.path}' does not require authentication")
+        return  # No need for authentication, so continue the request
+
+    # Check if the request endpoint is login or signup
     if request.endpoint not in ['auth_views.signup', 'auth_views.login', 'app_views.create_user']:
-        if auth.authorization_header(request) is None and \
-                auth.session_cookie(request) is None:
-            print("\n\nBefore Request abort 40 \n\n")
+        # Check if there's no authorization header or session cookie
+        if auth.authorization_header(request) is None and auth.session_cookie(request) is None:
+            print(
+                f"[DEBUG BEFORE REQUEST] No authorization header or session cookie for '{request.endpoint}', aborting with 401")
             abort(401)
+
+    # Check if the current user is authenticated
     if request.endpoint not in ['app_views.create_user']:
         if auth.current_user(request) is None:
-            print("BEFORE REQUEST FORBIDEN\n\n")
+            print(
+                f"[DEBUG BEFORE REQUEST] No current user for '{request.endpoint}', aborting with 403")
             abort(403)
 
+    # Check for both authorization header and session cookie (which is unexpected)
     if auth.authorization_header(request) and auth.session_cookie(request):
+        print(
+            f"[DEBUG BEFORE REQUEST] Both authorization header and session cookie found for '{request.endpoint}', aborting with 401")
         return None, abort(401)
 
+    # Set the current user for the request context
     request.current_user = auth.current_user(request)
+    print(
+        f"[DEBUG BEFORE REQUEST] Current user set to: {request.current_user}")
 
 
 @app.errorhandler(404)
@@ -82,4 +102,4 @@ def forbidden(error) -> str:
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port, debug=True)
+    app.run(host=host, port=port, debug=False)

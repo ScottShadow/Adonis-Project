@@ -13,4 +13,5 @@ from models.user import User
 from models.log import Log
 #from models.friendship import Friendship
 from models.tag import Tag
+from models.user_session import UserSession
 

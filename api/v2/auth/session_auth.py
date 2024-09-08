@@ -72,7 +72,7 @@ class SessionAuth(Auth):
         session_id = request.cookies.get("_my_session_id")
         current_user_id = self.user_id_for_session_id(session_id)
         if current_user_id:
-            current_user = User.search({"id": current_user_id})[0]
+            current_user = User.search_db({"id": current_user_id})[0]
         return current_user
 
     def destroy_session(self, request=None):
