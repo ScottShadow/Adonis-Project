@@ -3,7 +3,7 @@
 Session_auth View Module
 """
 from api.v2.views import app_views, auth_views
-from flask import Blueprint
+from flask import Blueprint, url_for, redirect
 from authentication import hash_password, is_valid
 
 
@@ -50,15 +50,18 @@ def login() -> str:
             session_id = auth.create_session(u.id)
             session_name = os.environ.get("SESSION_NAME", "_my_session_id")
 
-            response = jsonify(u.to_json())
-
-            response.set_cookie(session_name, session_id,
-                                max_age=auth.session_duration)
             if request.is_json:
+                response = jsonify(u.to_json())
+
+                response.set_cookie(session_name, session_id,
+                                    max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
                 return response, 201
             else:
                 # Redirect to dashboard.html and return HTML for a browser
-                return render_template('dashboard.html', user=user)
+                response = redirect(url_for('app_views.dashboard_route'))
+                response.set_cookie(session_name, session_id,
+                                    max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+                return response
     except Exception as e:
         return jsonify({'error': f'Cannot Login: {str(e)}'}), 500
 
@@ -151,7 +154,7 @@ def signup() -> str:
         # Prepare the response with the session cookie
         response = jsonify(user.to_json())
         response.set_cookie(session_name, session_id,
-                            max_age=auth.session_duration)
+                            max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
 
         if request.is_json:
             print("[DEBUG] Returning JSON response")

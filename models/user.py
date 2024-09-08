@@ -149,3 +149,14 @@ class User(BaseClass, SQLAlchemyBase):
         result = {k: v for k, v in result.items()}
 
         return result
+
+    def calculate_level(self):
+        """Calculate user level based on total XP."""
+        xp = self.total_xp
+        level = xp // 100  # Example: 100 XP per level
+        return level
+
+    @property
+    def level(self):
+        """Get the user's level based on XP."""
+        return self.calculate_level()

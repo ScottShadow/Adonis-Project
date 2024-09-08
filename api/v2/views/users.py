@@ -3,7 +3,7 @@
 """
 # from flask import Blueprint
 from api.v2.views import app_views
-from flask import abort, jsonify, request
+from flask import abort, jsonify, request, redirect, url_for, render_template
 from models.user import User
 
 
@@ -133,3 +133,22 @@ def update_user(user_id: str = None) -> str:
         user.last_name = rj.get('last_name')
     user.save()
     return jsonify(user.to_json()), 200
+
+
+@app_views.route('/dashboard', methods=['GET'], strict_slashes=False)
+def dashboard_route():
+    """ GET /api/v2/dashboard 
+    Renders the dashboard page for the logged-in user.
+    """
+    try:
+        # Ensure user is authenticated by checking session
+        from api.v2.app import auth
+        user = auth.current_user(request)
+        if not user:
+            return redirect(url_for('auth_views.login'))
+
+        # Render the dashboard template and pass user data
+        return render_template('dashboard.html', user=user)
+
+    except Exception as e:
+        return jsonify({'error': f'Error loading dashboard: {str(e)}'}), 500

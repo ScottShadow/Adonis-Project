@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Log</title>
+</head>
+
+<body>
+    <h1>Create a New Log</h1>
+    <form action="/api/v2/logs/create" method="POST" onsubmit="return handleSubmit(event)">
+        <label for="habit_type">Habit Type:</label><br>
+        <input type="text" id="habit_type" name="habit_type" required><br><br>
+
+        <label for="habit_name">Habit Name:</label><br>
+        <input type="text" id="habit_name" name="habit_name" required><br><br>
+
+        <label for="log_details">Log Details:</label><br>
+        <textarea id="log_details" name="log_details" required></textarea><br><br>
+
+        <label for="source">Source:</label><br>
+        <input type="text" id="source" name="source" value="Manual"><br><br>
+
+        <label for="status">Status:</label><br>
+        <select id="status" name="status">
+            <option value="Completed">Completed</option>
+            <option value="Pending">Pending</option>
+        </select><br><br>
+
+        <label for="visibility">Visibility:</label><br>
+        <select id="visibility" name="visibility">
+            <option value="Private">Private</option>
+            <option value="Public">Public</option>
+        </select><br><br>
+
+        <button type="submit">Create Log</button>
+        <div id="response-message"></div>
+    </form>
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const messageDiv = document.getElementById('response-message');
+                    if (data.error) {
+                        messageDiv.innerHTML = `<p style="color:red;">${data.error}</p>`;
+                    } else {
+                        messageDiv.innerHTML = `<p style="color:green;">${data.message}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>
