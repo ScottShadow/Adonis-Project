@@ -3,15 +3,12 @@
 from datetime import datetime
 
 import hashlib
-from models.base import Base as SQLAlchemyBase, BaseClass
+from models.base import Base as SQLAlchemyBase, BaseClass, SessionLocal
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
 from sqlalchemy.orm import relationship, backref
-from typing import TYPE_CHECKING
-from models import Tag
+from models.tag import Tag
+from models.log import Log
 from authentication import hash_password, is_valid
-
-#  for tag functionality
-from models import Tag
 
 # Many-to-Many relationship table for users and tags
 user_tags = Table(
@@ -22,10 +19,6 @@ user_tags = Table(
 
 
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
-if TYPE_CHECKING:
-    from models.log import Log
-
-# from models.friendship import Friendship
 
 
 class User(BaseClass, SQLAlchemyBase):
@@ -175,12 +168,27 @@ class User(BaseClass, SQLAlchemyBase):
 
     def add_tag(self, session, tag_name: str):
         """Add a tag to the user profile."""
-        tag = session.query(Tag).filter_by(name=tag_name).first()
-        if tag and tag not in self.tags:
-            self.tags.append(tag)
+        session = SessionLocal()  # Get a new session
+        try:
+            tag = session.query(Tag).filter_by(name=tag_name).first()
+            if tag and tag not in self.tags:
+                self.tags.append(tag)
+        except Exception as e:
+            session.rollback()  # Rollback if an error occurs
+            raise e
+        finally:
+            session.close()  # Close the session
+
 
     def remove_tag(self, session, tag_name: str):
         """Remove a tag from the user profile."""
-        tag = session.query(Tag).filter_by(name=tag_name).first()
-        if tag and tag in self.tags:
-            self.tags.remove(tag)
+        session = SessionLocal()  # Get a new session
+        try:
+            tag = session.query(Tag).filter_by(name=tag_name).first()
+            if tag and tag in self.tags:
+                self.tags.remove(tag)
+        except Exception as e:
+            session.rollback()  # Rollback if an error occurs
+            raise e
+        finally:
+            session.close()  # Close the session
