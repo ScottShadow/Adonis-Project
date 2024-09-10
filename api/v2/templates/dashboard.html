@@ -66,15 +66,21 @@
             box-shadow: 0 0 20px #8F00FF;
         }
 
-        .sidebar a {
-            text-decoration: none;
+        .sidebar form {
+            margin-bottom: 15px;
+        }
+
+        .sidebar button {
+            width: 100%;
+            background: none;
+            border: none;
             color: #00FF9C;
             font-size: 18px;
-            margin-bottom: 15px;
+            cursor: pointer;
             transition: color 0.3s, box-shadow 0.3s;
         }
 
-        .sidebar a:hover {
+        .sidebar button:hover {
             color: #BF00FF;
             box-shadow: 0 0 10px #BF00FF;
         }
@@ -170,9 +176,23 @@
     <div class="dashboard">
         <!-- Sidebar -->
         <div class="sidebar">
-            <a href="#">Profile</a>
-            <a href="#">Quests</a>
-            <a href="#">Leaderboard</a>
+            <!-- Profile Button Form -->
+            <form method="POST" action="/profile">
+                <input type="hidden" name="action" value="profile">
+                <button type="submit">Profile</button>
+            </form>
+
+            <!-- Quests Button Form -->
+            <form method="POST" action="/quests">
+                <input type="hidden" name="action" value="quests">
+                <button type="submit">Quests</button>
+            </form>
+
+            <!-- Leaderboard Button Form -->
+            <form method="POST" action="/leaderboard">
+                <input type="hidden" name="action" value="leaderboard">
+                <button type="submit">Leaderboard</button>
+            </form>
         </div>
 
         <!-- Header -->
@@ -189,14 +209,27 @@
                 <div class="points">XP: 1500</div>
             </div>
 
+            <!-- Quest Section with Form Submission -->
             <div class="quests">
+                <!-- First Quest Form -->
                 <div class="quest-item">
                     <h3>Complete 30 minutes of coding challenges</h3>
-                    <button>Start Quest</button>
+                    <form method="POST" action="/start-quest">
+                        <input type="hidden" name="quest" value="coding-challenge">
+                        <button type="submit">Start Quest</button>
+                    </form>
                 </div>
+
+                <!-- Second Quest Form -->
+                  <div class="progress-bar">
+                <div class="progress" style="width: {{ user.total_xp / 100 }}%;"></div>
+            </div>
                 <div class="quest-item">
                     <h3>Read for 1 hour</h3>
-                    <button>Start Quest</button>
+                    <form method="POST" action="/start-quest">
+                        <input type="hidden" name="quest" value="reading">
+                        <button type="submit">Start Quest</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -204,6 +237,7 @@
 
     <!-- Chatbot -->
     <div class="chatbot"></div>
+
 </body>
 
 </html>
