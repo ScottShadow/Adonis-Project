@@ -94,7 +94,8 @@
             color: #FFFFFF;
         }
 
-        th, td {
+        th,
+        td {
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid #8F00FF;
@@ -123,7 +124,8 @@
         .xp-bar-fill {
             height: 20px;
             background-color: #00FF9C;
-            width: 70%; /* Example progress, dynamic in practice */
+            width: 70%;
+            /* Example progress, dynamic in practice */
             border-radius: 5px;
         }
 
@@ -233,7 +235,7 @@
                     {% for log in recent_logs %}
                     <tr>
                         <td>{{ log.habit_type }}</td>
-                        <td>{{ log.description }}</td>
+                        <td>{{ log.log_details }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -243,8 +245,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th colspan
-                        ="2">Activity Summary</th>
+                        <th colspan="2">Activity Summary</th>
                     </tr>
                 </thead>
                 <tbody>
