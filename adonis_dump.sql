@@ -86,6 +86,7 @@ DROP TABLE IF EXISTS `tags`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tags` (
   `name` varchar(250) NOT NULL,
+  `category`  varchar(250) NOT NULL,
   `description` varchar(500) DEFAULT NULL,
   `level` int DEFAULT NULL,
   `id` varchar(36) NOT NULL,

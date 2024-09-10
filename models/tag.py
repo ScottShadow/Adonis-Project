@@ -19,6 +19,8 @@ class Tag(BaseClass, SQLAlchemyBase):
 
     name = Column(String(250), nullable=False,
                   unique=True)  # Name of the tag/skill
+    #category tag belongs to
+    category = Column(String(250), nullable=False)
     # Optional description of the tag/skill
     description = Column(String(500), nullable=True)
     # Assumes level is stored as an integer
