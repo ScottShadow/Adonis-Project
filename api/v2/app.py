@@ -8,6 +8,7 @@ from flask_cors import (CORS, cross_origin)
 from api.v2.views import app_views, auth_views, log_views, tag_views
 from api.v2.auth.session_db_auth import SessionDBAuth
 from db_setup import init_db
+from populate_tags import seed_tags
 # from api.v2.views.users import users_views
 
 
@@ -23,7 +24,7 @@ auth = None
 
 auth = SessionDBAuth()
 init_db()
-
+seed_tags()
 @app.before_request
 def before_request() -> str:
     """
