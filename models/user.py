@@ -3,20 +3,22 @@
 from datetime import datetime
 
 import hashlib
-from models.base import Base as SQLAlchemyBase, BaseClass
+from models.base import Base as SQLAlchemyBase, BaseClass, SessionLocal
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
 from sqlalchemy.orm import relationship, backref
-from typing import TYPE_CHECKING
-from models import user_tags
+from models.tag import Tag
+from models.log import Log
 from authentication import hash_password, is_valid
 
 # Many-to-Many relationship table for users and tags
+user_tags = Table(
+    'user_tags', SQLAlchemyBase.metadata,
+    Column('user_id', String(36), ForeignKey('users.id'), primary_key=True),
+    Column('tag_id', String(36), ForeignKey('tags.id'), primary_key=True)
+)
+
 
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
-if TYPE_CHECKING:
-    from models.log import Log
-
-# from models.friendship import Friendship
 
 
 class User(BaseClass, SQLAlchemyBase):
@@ -160,3 +162,33 @@ class User(BaseClass, SQLAlchemyBase):
     def level(self):
         """Get the user's level based on XP."""
         return self.calculate_level()
+    
+    
+    ### tag functionality 
+
+    def add_tag(self, session, tag_name: str):
+        """Add a tag to the user profile."""
+        session = SessionLocal()  # Get a new session
+        try:
+            tag = session.query(Tag).filter_by(name=tag_name).first()
+            if tag and tag not in self.tags:
+                self.tags.append(tag)
+        except Exception as e:
+            session.rollback()  # Rollback if an error occurs
+            raise e
+        finally:
+            session.close()  # Close the session
+
+
+    def remove_tag(self, session, tag_name: str):
+        """Remove a tag from the user profile."""
+        session = SessionLocal()  # Get a new session
+        try:
+            tag = session.query(Tag).filter_by(name=tag_name).first()
+            if tag and tag in self.tags:
+                self.tags.remove(tag)
+        except Exception as e:
+            session.rollback()  # Rollback if an error occurs
+            raise e
+        finally:
+            session.close()  # Close the session
