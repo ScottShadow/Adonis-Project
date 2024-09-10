@@ -52,6 +52,38 @@
             margin-bottom: 20px;
         }
 
+        /* XP Progress */
+        .xp-progress {
+            margin-top: 2rem;
+        }
+
+        .xp-progress h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 20px;
+        }
+
+        .progress-bar .progress {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+        }
+
+        .xp-progress p {
+            margin-top: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: right;
+            color: #333;
+        }
+
         .log-item,
         .summary-item {
             background-color: #1F1F2E;
@@ -82,18 +114,16 @@
         <!-- XP and Progress Section -->
         <div class="xp-progress">
             <h2 class="section-title">XP Progress</h2>
-            <p>Current XP: {{ user.xp }} / {{ user.next_level_xp }}</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ user.total_xp / 100 }}%;"></div>
+            </div>
+            <p>Current XP: {{ user.total_xp }}</p>
         </div>
 
         <!-- Recent Logs Section -->
         <div class="recent-logs">
             <h2 class="section-title">Recent Logs</h2>
-            {% for log in user.logs | slice(0, 5) %}
-            <div class="log-item">
-                <p><strong>{{ log.habit_type }}</strong>: {{ log.details }}</p>
-                <p>Date: {{ log.created_at }}</p>
-            </div>
-            {% endfor %}
+
         </div>
 
         <!-- Log Summary Section -->

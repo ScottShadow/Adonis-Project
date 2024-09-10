@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
             margin: 0;
             padding: 0;
             color: #FFFFFF;
-            background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(20,20,20,1) 35%, rgba(30,30,30,1) 100%);
+            background: radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgba(20, 20, 20, 1) 35%, rgba(30, 30, 30, 1) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -39,7 +40,8 @@
             text-shadow: 0 0 8px #00FF9C, 0 0 15px #00FF9C;
         }
 
-        .login-container input[type="text"], .login-container input[type="password"] {
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
             width: calc(100% - 20px);
             padding: 10px;
             margin: 10px 0;
@@ -78,15 +80,17 @@
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <h1>Login</h1>
         <form method="POST" action="{{ url_for('auth_views.login') }}">
-            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="text" id="email" name="email" placeholder="email" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
         </form>
         <a href="{{ url_for('auth_views.signup') }}" class="signup-link">Don't have an account? Sign up</a>
     </div>
 </body>
+
 </html>
