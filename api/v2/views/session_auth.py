@@ -151,18 +151,20 @@ def signup() -> str:
         print(f"[DEBUG] Created session ID: {session_id}")
         session_name = os.environ.get("SESSION_NAME", "_my_session_id")
 
-        # Prepare the response with the session cookie
-        response = jsonify(user.to_json())
-        response.set_cookie(session_name, session_id,
-                            max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
-
         if request.is_json:
+            # Prepare the response with the session cookie
+            response = jsonify(user.to_json())
+            response.set_cookie(session_name, session_id,
+                                max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
             print("[DEBUG] Returning JSON response")
             return response, 201
         else:
             print("[DEBUG] Redirecting to dashboard")
+            request = redirect(url_for('app_views.dashboard_route'))
+            response.set_cookie(session_name, session_id,
+                                max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+            return response
             # Redirect to dashboard.html and return HTML for a browser
-            return render_template('dashboard.html', user=user)
 
     except Exception as e:
         print(f"[DEBUG] Exception occurred: {str(e)}")
