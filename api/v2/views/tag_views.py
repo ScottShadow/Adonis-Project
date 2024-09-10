@@ -13,7 +13,7 @@ def get_user_tags(user_id):
         if not user:
             return jsonify({"error": "User not found"}), 404
         # Retrieve tags for the user
-        tags = user.tags  # This assumes the relationship is set up correctly
+        tags = user.tags
         # Convert tags to a serializable format
         tags_data = [
             {
