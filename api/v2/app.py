@@ -4,6 +4,7 @@ Route module for the API app.py
 """
 from os import getenv
 from flask import Flask, jsonify, abort, request
+from flask_sqlalchemy import SQLAlchemy
 from flask_cors import (CORS, cross_origin)
 from api.v2.views import app_views, auth_views, log_views
 from api.v2.auth.session_db_auth import SessionDBAuth
@@ -22,7 +23,7 @@ auth = None
 
 auth = SessionDBAuth()
 init_db()
-
+db = SQLAlchemy(app)
 
 @app.before_request
 def before_request() -> str:
