@@ -130,6 +130,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+adonisenv
+.adonisenv
 
 # Spyder project settings
 .spyderproject
