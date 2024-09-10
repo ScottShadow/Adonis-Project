@@ -2,10 +2,10 @@ from models.tag import Tag
 from models.user import User
 from flask import jsonify, Blueprint
 
-log_views = Blueprint('log_views', __name__, url_prefix="/api/v2")
+tag_views = Blueprint('tag_views', __name__, url_prefix="/api/v2")
 
 
-@log_views.route('/user/<user_id>/tags', methods=['GET'])
+@tag_views.route('/user/<user_id>/tags', methods=['GET'])
 def get_user_tags(user_id):
     """Retrieves tags for a given user"""
     try:
@@ -30,7 +30,7 @@ def get_user_tags(user_id):
         return jsonify({"error": str(e)}), 500
 
 
-@log_views.route('/tags', methods=['GET'])
+@tag_views.route('/tags', methods=['GET'])
 def get_tags():
     """Retrieve all tags."""
     tags = Tag.query.all()
@@ -38,7 +38,7 @@ def get_tags():
     return jsonify(tags_list)
 
 
-@log_views.route('/tags/category/<category>', methods=['GET'])
+@tag_views.route('/tags/category/<category>', methods=['GET'])
 def get_tags_by_category(category):
     """Retrieve tags by category."""
     tags = Tag.query.filter_by(category=category).all()
@@ -46,4 +46,4 @@ def get_tags_by_category(category):
     return jsonify(tags_list)
 
 if __name__ == '__main__':
-    log_views.run(debug=True)
+    tag_views.run(debug=True)
