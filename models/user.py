@@ -7,15 +7,7 @@ from models.base import Base as SQLAlchemyBase, BaseClass, SessionLocal
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
 from sqlalchemy.orm import relationship, backref
 from models.tag import Tag
-from models.log import Log
 from authentication import hash_password, is_valid
-
-# Many-to-Many relationship table for users and tags
-user_tags = Table(
-    'user_tags', SQLAlchemyBase.metadata,
-    Column('user_id', String(36), ForeignKey('users.id'), primary_key=True),
-    Column('tag_id', String(36), ForeignKey('tags.id'), primary_key=True)
-)
 
 
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
@@ -33,6 +25,7 @@ class User(BaseClass, SQLAlchemyBase):
     reset_token = Column(String(250), nullable=True)
     first_name = Column(String(250), nullable=True)
     last_name = Column(String(250), nullable=True)
+    age = Column(Integer, nullable=True)
     # Assumes skills are stored as a comma-separated string
     skills = Column(String(250), nullable=True)
 
@@ -84,6 +77,7 @@ class User(BaseClass, SQLAlchemyBase):
         self.first_name = kwargs.get('first_name', "")
         # Optional, default to empty string
         self.last_name = kwargs.get('last_name', "")
+        self.age = kwargs.get('age', 0)  # Optional, default to 0
         self.session_id = kwargs.get(
             'session_id', None)  # Optional, can be None
         self.reset_token = kwargs.get(
@@ -162,9 +156,8 @@ class User(BaseClass, SQLAlchemyBase):
     def level(self):
         """Get the user's level based on XP."""
         return self.calculate_level()
-    
-    
-    ### tag functionality 
+
+    # tag functionality
 
     def add_tag(self, session, tag_name: str):
         """Add a tag to the user profile."""
@@ -178,7 +171,6 @@ class User(BaseClass, SQLAlchemyBase):
             raise e
         finally:
             session.close()  # Close the session
-
 
     def remove_tag(self, session, tag_name: str):
         """Remove a tag from the user profile."""
