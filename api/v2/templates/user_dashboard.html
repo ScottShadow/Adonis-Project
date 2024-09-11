@@ -244,6 +244,19 @@
                     <tr>
                         <td>{{ log.habit_type }}</td>
                         <td>{{ log.log_details }}</td>
+                        <td>
+                            <!-- Button that routes to the log's update page -->
+                            <form method="GET" action="{{ url_for('log_views.update_log_form', log_id=log.id) }}"
+                                style="display: inline;">
+                                <button type="submit">Edit</button>
+                            </form>
+                            <!-- Button to delete the log -->
+                            <form method="POST" action="{{ url_for('log_views.delete_log', log_id=log.id) }}"
+                                style="display: inline;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

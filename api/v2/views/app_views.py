@@ -152,10 +152,12 @@ def dashboard_route():
         user_level = user.level
         xp_needed = xp_for_next_level(user_level)
         xp_percentage = (current_xp / xp_needed) * 100 if xp_needed > 0 else 0
+        print(f"user.total_xp: {user.total_xp} (type: {type(user.total_xp)})")
+        print(f"user.level: {user.level} (type: {type(user.level)})")
 
         # Fetch recent logs
         recent_logs = user.logs  # Assuming logs is ordered by date
-
+        print(f"recent_logs: {recent_logs} (type: {type(recent_logs)})")
         return render_template('user_dashboard.html',
                                user_name=user_name,
                                user_level=user_level,
