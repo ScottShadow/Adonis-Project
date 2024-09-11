@@ -2,9 +2,9 @@
 """
 Session_auth View Module
 """
-from api.v2.views import app_views, auth_views
-from flask import Blueprint, url_for, redirect
-from authentication import hash_password, is_valid
+from flask import url_for, redirect
+from api.v2.views import auth_views
+from authentication import hash_password
 
 
 @auth_views.route('/login', methods=['GET', 'POST'], strict_slashes=False)
@@ -68,7 +68,7 @@ def login() -> str:
     return jsonify({})
 
 
-@auth_views.route('/logout', methods=['DELETE'],
+@auth_views.route('/logout', methods=['DELETE', 'POST'],
                   strict_slashes=False)
 def logout() -> str:
     """ DELETE /api/v2/logout
@@ -82,7 +82,11 @@ def logout() -> str:
 
     if request:
         auth.destroy_session(request)
-    return jsonify({})
+    if request.is_json:
+        return jsonify({})
+    else:
+        response = redirect(url_for('auth_views.login'))
+        return response
 
 
 @auth_views.route('/signup', methods=['GET', 'POST'], strict_slashes=False)
@@ -160,7 +164,7 @@ def signup() -> str:
             return response, 201
         else:
             print("[DEBUG] Redirecting to dashboard")
-            request = redirect(url_for('app_views.dashboard_route'))
+            response = redirect(url_for('app_views.dashboard_route'))
             response.set_cookie(session_name, session_id,
                                 max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
             return response

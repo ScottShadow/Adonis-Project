@@ -162,20 +162,28 @@
     <div class="dashboard">
         <!-- Sidebar -->
         <div class="sidebar">
-            <form method="POST" action="/profile">
+            <form method="GET" action="{{ url_for('user_views.view_profile') }}">
                 <input type="hidden" name="action" value="profile">
                 <button type="submit">Profile</button>
             </form>
-            <form method="POST" action="/logs">
+            <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
                 <input type="hidden" name="action" value="logs">
                 <button type="submit">Logs</button>
             </form>
-            <form method="POST" action="/dashboard">
-                <input type="hidden" name="action" value="dashboard">
-                <button type="submit">Dashboard</button>
+            <form method="GET" action="{{ url_for('event_views.home') }}">
+                <input type="hidden" name="action" value="Events">
+                <button type="submit">Events</button>
             </form>
-        </div>
+            <form method="GET" action="{{ url_for('user_views.easter_egg') }}">
+                <input type="hidden" name="action" value="Events">
+                <button type="submit">DONT CLICK Here</button>
+            </form>
 
+        </div>
+        <form action="{{ url_for('auth_views.logout') }}" method="POST">
+            <input type="hidden" name="action" value="Logout">
+            <button type="submit">Logout</button>
+        </form>
         <!-- Main Content -->
         <div class="main-content">
             <table>

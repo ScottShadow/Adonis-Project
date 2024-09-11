@@ -5,7 +5,7 @@ Route module for the API app.py
 from os import getenv
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
-from api.v2.views import app_views, auth_views, log_views, tag_views
+from api.v2.views import app_views, auth_views, log_views, tag_views, user_views, event_views
 from api.v2.auth.session_db_auth import SessionDBAuth
 from db_setup import init_db
 from populate_tags import seed_tags
@@ -17,14 +17,17 @@ app.register_blueprint(app_views)
 app.register_blueprint(auth_views)
 app.register_blueprint(log_views)
 app.register_blueprint(tag_views)
-# app.register_blueprint(users_views, url_prefix='/api/v2/users')
+app.register_blueprint(user_views)
+app.register_blueprint(event_views)
 CORS(app, resources={r"/api/v2/*": {"origins": "*"}},
      supports_credentials=True)
 auth = None
 
 auth = SessionDBAuth()
 init_db()
-seed_tags()
+# seed_tags()
+
+
 @app.before_request
 def before_request() -> str:
     """
@@ -45,7 +48,7 @@ def before_request() -> str:
     excluded_paths = [
         '/api/v2/status/', '/api/v2/stats',
         '/api/v2/unauthorized/', '/api/v2/forbidden/',
-        "/api/v2/auth_session/login/", "/api/v2/auth_session/signup/"
+        "/api/v2/login/", "/api/v2/signup/"
     ]
 
     # Check if the current request path requires authentication
