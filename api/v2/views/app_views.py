@@ -158,13 +158,17 @@ def dashboard_route():
         # Fetch recent logs
         recent_logs = user.logs  # Assuming logs is ordered by date
         print(f"recent_logs: {recent_logs} (type: {type(recent_logs)})")
-        return render_template('user_dashboard.html',
-                               user_name=user_name,
-                               user_level=user_level,
-                               current_xp=current_xp,
-                               xp_needed=xp_needed,
-                               xp_percentage=xp_percentage,
-                               recent_logs=recent_logs)
+        if request.is_json:
+            return jsonify({})
+        else:
+            print("Rendering user_dashboard.html")
+            return render_template('user_dashboard.html',
+                                   user_name=user_name,
+                                   user_level=user_level,
+                                   current_xp=current_xp,
+                                   xp_needed=xp_needed,
+                                   xp_percentage=xp_percentage,
+                                   recent_logs=recent_logs)
 
     except Exception as e:
         return jsonify({'error': f'Error loading dashboard: {str(e)}'}), 500

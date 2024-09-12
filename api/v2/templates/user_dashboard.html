@@ -235,6 +235,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Habit Name</th>
                         <th>Habit Type</th>
                         <th>Description</th>
                     </tr>
@@ -242,11 +243,12 @@
                 <tbody>
                     {% for log in recent_logs %}
                     <tr>
+                        <td>{{ log.habit_name }}</td>
                         <td>{{ log.habit_type }}</td>
                         <td>{{ log.log_details }}</td>
                         <td>
                             <!-- Button that routes to the log's update page -->
-                            <form method="GET" action="{{ url_for('log_views.update_log_form', log_id=log.id) }}"
+                            <form method="GET" action="{{ url_for('log_views.update_log', log_id=log.id) }}"
                                 style="display: inline;">
                                 <button type="submit">Edit</button>
                             </form>

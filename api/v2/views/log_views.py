@@ -10,6 +10,7 @@ from models.user import User
 from api.v2.app import auth
 from models.base import SessionLocal
 from sqlalchemy import func
+from api.v2.app import logging
 
 log_views = Blueprint('log_views', __name__, url_prefix="/api/v2")
 
@@ -39,7 +40,9 @@ def get_logs():
         if request.is_json:
             data = request.get_json()
         else:
-            data = request.form()
+            data = request.form
+        if data is None:
+            return jsonify({'error': 'Invalid request data'}), 400
         habit_type = data.get('habit_type')
         if habit_type:
             filters['habit_type'] = habit_type
@@ -96,7 +99,7 @@ def get_logs():
             session.close()
 
 
-@log_views.route('/logs/<string:log_id>', methods=['GET'], strict_slashes=False)
+@log_views.route('/logs/id/<string:log_id>', methods=['GET'], strict_slashes=False)
 def get_log_with_id(log_id: str):
     """ GET /api/v2/logs/<log_id>
     Retrieves a single log by its str.
@@ -163,8 +166,12 @@ def create_log():
 
         print(
             f"[DEBUG CREATE LOG] Log saved successfully with id: {new_log.id}")
-
-        return jsonify(new_log.to_json()), 201
+        if request.is_json:
+            return jsonify(new_log.to_json()), 201
+        else:
+            response = redirect(
+                url_for('app_views.dashboard_route'))
+            return response
 
     except Exception as e:
         print(f"[DEBUG CREATE LOG] Error occurred: {str(e)}")
@@ -177,7 +184,7 @@ def new_log_form():
     return render_template('create_log.html')
 
 
-@log_views.route('/logs/<string:log_id>', methods=['PUT', 'PATCH'], strict_slashes=False)
+@log_views.route('/logs/<string:log_id>', methods=['GET', 'POST'], strict_slashes=False)
 def update_log(log_id: str):
     """PUT or PATCH /api/v2/logs/<log_id>
     Update a specific log for the logged-in user.
@@ -187,34 +194,58 @@ def update_log(log_id: str):
     try:
         user = request.current_user
         if not user:
+            logging.warning(
+                "Unauthorized access attempt for log_id: %s", log_id)
             return jsonify({'error': 'Unauthorized access'}), 401
 
         # Get the log to update
         session = SessionLocal()
-        print(f"[DEBUG UPDATE LOG] Received log_id: {log_id}")
+        logging.debug("Received log_id: %s", log_id)
         log = session.query(Log).filter_by(id=log_id, user_id=user.id).first()
 
         if not log:
-            return jsonify({'error': 'Log not found or unauthorized'}), 404
+            logging.error(
+                "Log not found for user_id: %s and log_id: %s", user.id, log_id)
+            return jsonify({'error': 'Log not found'}), 404
+
+        if request.method == 'GET':
+            logging.info("Rendering update form for log_id: %s", log_id)
+            return render_template('update_log.html', log=log)
 
         # Get the data to update
         if request.is_json:
             data = request.get_json()
+            logging.debug("Received JSON data: %s", data)
         else:
             data = request.form
+            logging.debug("Received form data: %s", data)
+
+        if data is None:
+            logging.error("Wrong format in request for log_id: %s", log_id)
+            return jsonify({'error': 'Wrong format'}), 400
 
         # Update the fields if provided
         habit_type = data.get('habit_type')
         if habit_type:
             log.habit_type = habit_type
+            logging.info("Updated habit_type for log_id: %s to %s",
+                         log_id, habit_type)
+        else:
+            logging.warning("No habit_type provided for log_id: %s", log_id)
+            return jsonify({'error': 'No habit_type provided'}), 400
 
         habit_name = data.get('habit_name')
         if habit_name:
             log.habit_name = habit_name
+            logging.info("Updated habit_name for log_id: %s to %s",
+                         log_id, habit_name)
+        else:
+            logging.warning("No habit_name provided for log_id: %s", log_id)
+            return jsonify({'error': 'No habit_name provided'}), 400
 
         log_details = data.get('log_details')
-        if log_details:
-            log.log_details = log_details
+        log.log_details = log_details
+        logging.info("Updated log_details for log_id: %s", log_id)
 
         # Update the `date_updated` field
         log.updated_at = datetime.utcnow()
@@ -223,19 +254,22 @@ def update_log(log_id: str):
         session.add(log)
         session.commit()
 
+        logging.info("Log successfully updated for log_id: %s", log_id)
+
         if request.is_json:
             return jsonify(log.to_json()), 200
         else:
-            return redirect(url_for('app_views.dashboard_route', log_id=log_id))
+            return redirect(url_for('app_views.dashboard_route'))
 
     except Exception as e:
+        logging.error("Error updating log_id: %s - %s", log_id, str(e))
         return jsonify({'error': f'Error updating log: {str(e)}'}), 500
     finally:
         if session:
             session.close()
 
 
-@log_views.route('/logs/delete/<string:log_id>', methods=['DELETE'], strict_slashes=False)
+@log_views.route('/logs/delete/<string:log_id>', methods=['POST'], strict_slashes=False)
 def delete_log(log_id):
     """DELETE /api/v2/logs/delete/<log_id>
     Deletes a specific log entry.
@@ -253,7 +287,10 @@ def delete_log(log_id):
 
         session.delete(log)
         session.commit()
-        return jsonify({'message': 'Log deleted successfully'}), 200
+        if request.is_json:
+            return jsonify({'message': 'Log deleted successfully'}), 200
+        else:
+            return redirect(url_for('app_views.dashboard_route'))
 
     except Exception as e:
         return jsonify({'error': f'Error deleting log: {str(e)}'}), 500
@@ -262,7 +299,7 @@ def delete_log(log_id):
             session.close()
 
 
-@log_views.route('/logs/<string:log_id>', methods=['GET', 'POST'], strict_slashes=False)
+@log_views.route('/logs/update/<string:log_id>', methods=['GET', 'POST'], strict_slashes=False)
 def update_log_form(log_id: str):
     """GET /api/v2/logs/<log_id>
     Renders the update form for a specific log and handles form submission for updates.
