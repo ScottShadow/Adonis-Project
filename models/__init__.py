@@ -14,4 +14,5 @@ from models.log import Log
 #from models.friendship import Friendship
 from models.tag import Tag
 from models.user_session import UserSession
+from models.user_tag import UserTag, add_tag_to_user, remove_tag_from_user
 
