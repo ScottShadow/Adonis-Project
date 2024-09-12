@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import Base as SQLAlchemyBase, BaseClass
@@ -17,6 +18,9 @@ class Tag(BaseClass, SQLAlchemyBase):
     linked to logs."""
     __tablename__ = "tags"
 
+    id = Column(String(36), primary_key=True)
+    created_at = Column(datetime, default=datetime.now.utc)
+    updated_at = Column(datetime, default=datetime.now.utc)
     name = Column(String(250), nullable=False,
                   unique=True)  # Name of the tag/skill
     #category tag belongs to
