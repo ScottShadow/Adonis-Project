@@ -8,7 +8,7 @@ import json
 import uuid
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, text, and_, func
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, joinedload
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
 from sqlalchemy.exc import ProgrammingError
 
@@ -301,6 +301,10 @@ class BaseClass():
         try:
             # Start building the query from the class
             query = session.query(cls)
+
+            # Check if we're querying the User class, then use eager loading for logs
+            if cls.__name__ == 'User':
+                query = query.options(joinedload(cls.logs))
 
             # If attributes are provided, dynamically build the WHERE clause
             if attributes:

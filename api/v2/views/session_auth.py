@@ -2,9 +2,9 @@
 """
 Session_auth View Module
 """
-from api.v2.views import app_views, auth_views
-from flask import Blueprint, url_for, redirect
-from authentication import hash_password, is_valid
+from flask import url_for, redirect
+from api.v2.views import auth_views
+from authentication import hash_password
 
 
 @auth_views.route('/login', methods=['GET', 'POST'], strict_slashes=False)
@@ -68,7 +68,7 @@ def login() -> str:
     return jsonify({})
 
 
-@auth_views.route('/logout', methods=['DELETE'],
+@auth_views.route('/logout', methods=['DELETE', 'POST'],
                   strict_slashes=False)
 def logout() -> str:
     """ DELETE /api/v2/logout
@@ -82,7 +82,11 @@ def logout() -> str:
 
     if request:
         auth.destroy_session(request)
-    return jsonify({})
+    if request.is_json:
+        return jsonify({})
+    else:
+        response = redirect(url_for('auth_views.login'))
+        return response
 
 
 @auth_views.route('/signup', methods=['GET', 'POST'], strict_slashes=False)
@@ -151,18 +155,20 @@ def signup() -> str:
         print(f"[DEBUG] Created session ID: {session_id}")
         session_name = os.environ.get("SESSION_NAME", "_my_session_id")
 
-        # Prepare the response with the session cookie
-        response = jsonify(user.to_json())
-        response.set_cookie(session_name, session_id,
-                            max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
-
         if request.is_json:
+            # Prepare the response with the session cookie
+            response = jsonify(user.to_json())
+            response.set_cookie(session_name, session_id,
+                                max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
             print("[DEBUG] Returning JSON response")
             return response, 201
         else:
             print("[DEBUG] Redirecting to dashboard")
+            response = redirect(url_for('app_views.dashboard_route'))
+            response.set_cookie(session_name, session_id,
+                                max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+            return response
             # Redirect to dashboard.html and return HTML for a browser
-            return render_template('dashboard.html', user=user)
 
     except Exception as e:
         print(f"[DEBUG] Exception occurred: {str(e)}")

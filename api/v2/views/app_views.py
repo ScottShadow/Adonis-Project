@@ -147,8 +147,29 @@ def dashboard_route():
         if not user:
             return redirect(url_for('auth_views.login'))
 
-        # Render the dashboard template and pass user data
-        return render_template('dashboard.html', user=user)
+        user_name = user.username
+        current_xp = user.total_xp
+        user_level = user.level
+        xp_needed = xp_for_next_level(user_level)
+        xp_percentage = (current_xp / xp_needed) * 100 if xp_needed > 0 else 0
+        print(f"user.total_xp: {user.total_xp} (type: {type(user.total_xp)})")
+        print(f"user.level: {user.level} (type: {type(user.level)})")
+
+        # Fetch recent logs
+        recent_logs = user.logs  # Assuming logs is ordered by date
+        print(f"recent_logs: {recent_logs} (type: {type(recent_logs)})")
+        return render_template('user_dashboard.html',
+                               user_name=user_name,
+                               user_level=user_level,
+                               current_xp=current_xp,
+                               xp_needed=xp_needed,
+                               xp_percentage=xp_percentage,
+                               recent_logs=recent_logs)
 
     except Exception as e:
         return jsonify({'error': f'Error loading dashboard: {str(e)}'}), 500
+
+
+def xp_for_next_level(user_level):
+    """ Calculates how much XP is needed for the next level """
+    return (user_level + 1) * 100

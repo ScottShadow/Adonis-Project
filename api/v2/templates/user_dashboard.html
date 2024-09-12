@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamified Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0D0D0D;
+            color: #FFFFFF;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: auto 1fr;
+            grid-template-areas:
+                "header header"
+                "sidebar main-content";
+            height: 100vh;
+        }
+
+        .header {
+            grid-area: header;
+            background-color: #1F1F2E;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 20px #8F00FF;
+        }
+
+        .header .app-name {
+            font-size: 32px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            color: #00FF9C;
+            text-shadow: 0 0 8px #00FF9C, 0 0 15px #00FF9C;
+        }
+
+        .header .xp-points {
+            font-size: 20px;
+            color: #00FF9C;
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+            background-color: #2B2B4D;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px #8F00FF;
+        }
+
+        .sidebar form {
+            margin-bottom: 15px;
+        }
+
+        .sidebar button {
+            width: 100%;
+            background: none;
+            border: none;
+            color: #00FF9C;
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.3s, box-shadow 0.3s;
+        }
+
+        .sidebar button:hover {
+            color: #BF00FF;
+            box-shadow: 0 0 10px #BF00FF;
+        }
+
+        .main-content {
+            grid-area: main-content;
+            padding: 20px;
+            background: radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgba(20, 20, 20, 1) 35%, rgba(30, 30, 30, 1) 100%);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #8F00FF;
+        }
+
+        th {
+            font-size: 18px;
+            color: #00FF9C;
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 16px;
+            color: #FFFFFF;
+        }
+
+        /* XP Progress Bar */
+        .xp-bar {
+            width: 100%;
+            background-color: #333;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .xp-bar-fill {
+            height: 20px;
+            background-color: #00FF9C;
+            width: 70%;
+            /* Example progress, dynamic in practice */
+            border-radius: 5px;
+        }
+
+        /* Submit Button */
+        button {
+            background-color: #8F00FF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            background-color: #BF00FF;
+            box-shadow: 0 0 20px #BF00FF;
+        }
+
+        /* Summary Chart */
+        .summary-chart {
+            height: 200px;
+            background-color: #2B2B4D;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #8F00FF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <form method="GET" action="{{ url_for('user_views.view_profile') }}">
+                <input type="hidden" name="action" value="profile">
+                <button type="submit">Profile</button>
+            </form>
+            <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
+                <input type="hidden" name="action" value="logs">
+                <button type="submit">Logs</button>
+            </form>
+            <form method="GET" action="{{ url_for('event_views.home') }}">
+                <input type="hidden" name="action" value="Events">
+                <button type="submit">Events</button>
+            </form>
+            <form method="GET" action="{{ url_for('user_views.easter_egg') }}">
+                <input type="hidden" name="action" value="Events">
+                <button type="submit">DONT CLICK Here</button>
+            </form>
+
+        </div>
+        <form action="{{ url_for('auth_views.logout') }}" method="POST">
+            <input type="hidden" name="action" value="Logout">
+            <button type="submit">Logout</button>
+        </form>
+        <!-- Main Content -->
+        <div class="main-content">
+            <table>
+                <!-- User Info -->
+                <thead>
+                    <tr>
+                        <th colspan="2">User Information</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>User Name</td>
+                        <td>{{ user_name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Level</td>
+                        <td>{{ user_level }}</td>
+                    </tr>
+                    <tr>
+                        <td>Current XP</td>
+                        <td>{{ current_xp }}</td>
+                    </tr>
+                    <tr>
+                        <td>XP Needed for Next Level</td>
+                        <td>{{ xp_needed }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- XP Progress Bar -->
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">XP Progress</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2">
+                            <div class="xp-bar">
+                                <div class="xp-bar-fill" style="width: {{ xp_percentage }}%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Recent Logs -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Habit Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in recent_logs %}
+                    <tr>
+                        <td>{{ log.habit_type }}</td>
+                        <td>{{ log.log_details }}</td>
+                        <td>
+                            <!-- Button that routes to the log's update page -->
+                            <form method="GET" action="{{ url_for('log_views.update_log_form', log_id=log.id) }}"
+                                style="display: inline;">
+                                <button type="submit">Edit</button>
+                            </form>
+                            <!-- Button to delete the log -->
+                            <form method="POST" action="{{ url_for('log_views.delete_log', log_id=log.id) }}"
+                                style="display: inline;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Activity Summary -->
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">Activity Summary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2">
+                            <div class="summary-chart">
+                                <!-- Placeholder for activity chart -->
+                                Activity Chart Goes Here
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

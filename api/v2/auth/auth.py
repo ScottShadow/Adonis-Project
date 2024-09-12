@@ -86,17 +86,10 @@ class Auth:
         This function retrieves the session cookie value from the given
         request object.
         """
-        print(
-            f"\n\n[DEBUG SESSION COOKIE] Retrieving session cookie for request: {request}")
         _my_session_id = os.getenv('SESSION_NAME', '_my_session_id')
         cookie_value = None
         if request:
-            print(
-                f"[DEBUG SESSION COOKIE] Request is not None, trying to get cookie with name {_my_session_id}")
             cookie_value = request.cookies.get(_my_session_id)
-            print(
-                f"[DEBUG SESSION COOKIE] Retrieved cookie value: {cookie_value}")
             return cookie_value
 
-        print("[DEBUG SESSION COOKIE] Request is None, cannot retrieve session cookie")
         return None
