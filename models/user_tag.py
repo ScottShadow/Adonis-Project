@@ -1,8 +1,11 @@
-from sqlalchemy import Column, String, ForeignKey
-from sqlalchemy.orm import relationship, Session
-from .base import Base as SQLAlchemyBase, BaseClass
-from user import User
-from tag import Tag
+from sqlalchemy import Column, String, ForeignKey, Table, DateTime, func
+from sqlalchemy.orm import relationship, Session, SessionLocal
+from models.base import Base as SQLAlchemyBase, BaseClass
+from models.tag import User
+from models.tag import Tag
+from models.log import Log
+
+TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 class UserTag(BaseClass, SQLAlchemyBase):
     __tablename__ = 'user_tags'
@@ -12,6 +15,15 @@ class UserTag(BaseClass, SQLAlchemyBase):
 
     user = relationship('User', back_populates='user_tags')
     tag = relationship('Tag', back_populates='user_tags')
+    
+    def __init__(self, user_id: str, tag_id: str):
+        """Initialize a UserTag instance."""
+        self.user_id = user_id
+        self.tag_id = tag_id
+
+    def __repr__(self):
+        """Return a string representation of the UserTag instance."""
+        return f"<UserTag(user_id='{self.user_id}', tag_id='{self.tag_id}')>"
 
     def add_tag_to_user(session: Session, user_id: str, tag_name: str):
         """Add a tag to the user profile."""
@@ -52,6 +64,28 @@ class UserTag(BaseClass, SQLAlchemyBase):
         if not user_tag:
             print(f"User does not have the tag '{tag_name}'.")
             return
+
+    def to_json(self, for_serialization: bool = False) -> dict:
+        """Return a JSON-serializable representation of the UserTag object"""
+        # Start with the base class's to_json result
+        result = super().to_json(for_serialization=for_serialization)
+
+        # Customize the result
+        if 'user' in result:
+            del result['user']  # Remove the user relationship
+        if 'tag' in result:
+            del result['tag']  # Remove the tag relationship
+
+        # Example: Format datetime fields if present
+        if 'created_at' in result and isinstance(result['created_at'], datetime):
+            result['created_at'] = result['created_at'].strftime(TIMESTAMP_FORMAT)
+        if 'updated_at' in result and isinstance(result['updated_at'], datetime):
+            result['updated_at'] = result['updated_at'].strftime(TIMESTAMP_FORMAT)
+
+        # Ensure no SQLAlchemy internals are present
+        result = {k: v for k, v in result.items() if not isinstance(v, Session)}
+
+        return result
 
         session.delete(user_tag)
         session.commit()
