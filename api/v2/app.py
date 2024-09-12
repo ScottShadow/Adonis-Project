@@ -10,6 +10,17 @@ from api.v2.auth.session_db_auth import SessionDBAuth
 from db_setup import init_db
 from populate_tags import seed_tags
 # from api.v2.views.users import users_views
+import logging
+
+logging.basicConfig(
+    # Set the lowest level to capture (can adjust to INFO, WARNING, etc.)
+    level=logging.DEBUG,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),  # Logs to a file
+        logging.StreamHandler()  # Logs to the console
+    ]
+)
 
 
 app = Flask(__name__)
