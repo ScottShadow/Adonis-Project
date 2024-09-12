@@ -162,33 +162,3 @@ class User(BaseClass, SQLAlchemyBase):
     def level(self):
         """Get the user's level based on XP."""
         return self.calculate_level()
-    
-    
-    ### tag functionality 
-
-    def add_tag(self, session, tag_name: str):
-        """Add a tag to the user profile."""
-        session = SessionLocal()  # Get a new session
-        try:
-            tag = session.query(Tag).filter_by(name=tag_name).first()
-            if tag and tag not in self.tags:
-                self.tags.append(tag)
-        except Exception as e:
-            session.rollback()  # Rollback if an error occurs
-            raise e
-        finally:
-            session.close()  # Close the session
-
-
-    def remove_tag(self, session, tag_name: str):
-        """Remove a tag from the user profile."""
-        session = SessionLocal()  # Get a new session
-        try:
-            tag = session.query(Tag).filter_by(name=tag_name).first()
-            if tag and tag in self.tags:
-                self.tags.remove(tag)
-        except Exception as e:
-            session.rollback()  # Rollback if an error occurs
-            raise e
-        finally:
-            session.close()  # Close the session
