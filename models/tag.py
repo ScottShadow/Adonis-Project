@@ -16,7 +16,6 @@ class Tag(BaseClass, SQLAlchemyBase):
     """Tag model to represent tags/skills that can be assigned to users and 
     linked to logs."""
     __tablename__ = "tags"
-    
     name = Column(String(250), nullable=False,
                   unique=True)  # Name of the tag/skill
     #category tag belongs to
