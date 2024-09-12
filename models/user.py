@@ -10,13 +10,6 @@ from models.tag import Tag
 from models.log import Log
 from authentication import hash_password, is_valid
 
-# Many-to-Many relationship table for users and tags
-user_tags = Table(
-    'user_tags', SQLAlchemyBase.metadata,
-    Column('user_id', String(36), ForeignKey('users.id'), primary_key=True),
-    Column('tag_id', String(36), ForeignKey('tags.id'), primary_key=True)
-)
-
 
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
