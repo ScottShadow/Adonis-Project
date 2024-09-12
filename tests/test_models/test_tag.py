@@ -67,10 +67,7 @@ class TestTag(unittest.TestCase):
             "name": str,
             "category": str, 
             "description": str,
-            
-            description = Column(String(500), nullable=True)
-            level = Column(Integer, nullable=True)
-
+            "level" : int
         }
         for attr, typ in attrs_types.items():
             with self.subTest(attr=attr, typ=typ):
