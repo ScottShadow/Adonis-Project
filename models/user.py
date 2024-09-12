@@ -51,7 +51,7 @@ class User(BaseClass, SQLAlchemyBase):
         backref=backref('user_friends', lazy='dynamic'),
         overlaps='friendships_1,friendships_2',
     ) """
-    tags = relationship('Tag', secondary='user_tags', back_populates='users')
+    user_tags = relationship('UserTag', back_populates='user')
 
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}', username='{self.username}')>"
@@ -156,4 +156,3 @@ class User(BaseClass, SQLAlchemyBase):
     def level(self):
         """Get the user's level based on XP."""
         return self.calculate_level()
-

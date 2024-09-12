@@ -36,7 +36,7 @@ auth = None
 
 auth = SessionDBAuth()
 init_db()
-# seed_tags()
+seed_tags()
 
 
 @app.before_request

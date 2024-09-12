@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import Base as SQLAlchemyBase, BaseClass
-from models import user_tags
 
 
 # Association Table for the many-to-many relationship between Tags and Logs
@@ -26,7 +25,7 @@ class Tag(BaseClass, SQLAlchemyBase):
     level = Column(Integer, nullable=True)
 
     # Relationships
-    users = relationship('User', secondary=user_tags, back_populates='tags')
+    user_tags = relationship('UserTag', back_populates='tag')
     logs = relationship('Log', secondary=log_tags, back_populates='tags')
 
     def __repr__(self):

@@ -1,21 +1,20 @@
 from sqlalchemy import Column, String, ForeignKey, Table, DateTime, func
-from sqlalchemy.orm import relationship, Session, SessionLocal
-from models.base import Base as SQLAlchemyBase, BaseClass
-from models.tag import User
+from sqlalchemy.orm import relationship, Session
+from models.base import Base as SQLAlchemyBase, BaseClass, SessionLocal
+from models.user import User
 from models.tag import Tag
-from models.log import Log
 
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
+
 
 class UserTag(BaseClass, SQLAlchemyBase):
     __tablename__ = 'user_tags'
     user_id = Column(String(36), ForeignKey('users.id'), primary_key=True)
     tag_id = Column(String(36), ForeignKey('tags.id'), primary_key=True)
 
-
     user = relationship('User', back_populates='user_tags')
     tag = relationship('Tag', back_populates='user_tags')
-    
+
     def __init__(self, user_id: str, tag_id: str):
         """Initialize a UserTag instance."""
         self.user_id = user_id
@@ -37,7 +36,8 @@ class UserTag(BaseClass, SQLAlchemyBase):
             print(f"Tag with name '{tag_name}' not found.")
             return
 
-        existing_user_tag = session.query(UserTag).filter_by(user_id=user.id, tag_id=tag.id).one_or_none()
+        existing_user_tag = session.query(UserTag).filter_by(
+            user_id=user.id, tag_id=tag.id).one_or_none()
         if existing_user_tag:
             print(f"User already has the tag '{tag_name}'.")
             return
@@ -60,10 +60,15 @@ class UserTag(BaseClass, SQLAlchemyBase):
             print(f"Tag with name '{tag_name}' not found.")
             return
 
-        user_tag = session.query(UserTag).filter_by(user_id=user.id, tag_id=tag.id).one_or_none()
+        user_tag = session.query(UserTag).filter_by(
+            user_id=user.id, tag_id=tag.id).one_or_none()
         if not user_tag:
             print(f"User does not have the tag '{tag_name}'.")
             return
+        session.delete(user_tag)
+        session.commit()
+
+        print(f"Removed tag '{tag_name}' from user with id '{user_id}'.")
 
     def to_json(self, for_serialization: bool = False) -> dict:
         """Return a JSON-serializable representation of the UserTag object"""
@@ -78,16 +83,13 @@ class UserTag(BaseClass, SQLAlchemyBase):
 
         # Example: Format datetime fields if present
         if 'created_at' in result and isinstance(result['created_at'], datetime):
-            result['created_at'] = result['created_at'].strftime(TIMESTAMP_FORMAT)
+            result['created_at'] = result['created_at'].strftime(
+                TIMESTAMP_FORMAT)
         if 'updated_at' in result and isinstance(result['updated_at'], datetime):
-            result['updated_at'] = result['updated_at'].strftime(TIMESTAMP_FORMAT)
+            result['updated_at'] = result['updated_at'].strftime(
+                TIMESTAMP_FORMAT)
 
         # Ensure no SQLAlchemy internals are present
         result = {k: v for k, v in result.items() if not isinstance(v, Session)}
 
         return result
-
-        session.delete(user_tag)
-        session.commit()
-
-        print(f"Removed tag '{tag_name}' from user with id '{user_id}'.")
