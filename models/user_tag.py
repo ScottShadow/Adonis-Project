@@ -65,6 +65,11 @@ class UserTag(BaseClass, SQLAlchemyBase):
             print(f"User does not have the tag '{tag_name}'.")
             return
 
+        session.delete(user_tag)
+        session.commit()
+
+        print(f"Removed tag '{tag_name}' from user with id '{user_id}'.")
+
     def to_json(self, for_serialization: bool = False) -> dict:
         """Return a JSON-serializable representation of the UserTag object"""
         # Start with the base class's to_json result
@@ -86,8 +91,3 @@ class UserTag(BaseClass, SQLAlchemyBase):
         result = {k: v for k, v in result.items() if not isinstance(v, Session)}
 
         return result
-
-        session.delete(user_tag)
-        session.commit()
-
-        print(f"Removed tag '{tag_name}' from user with id '{user_id}'.")
