@@ -73,5 +73,5 @@ class TestTag(unittest.TestCase):
             with self.subTest(attr=attr, typ=typ):
                 self.assertIn(attr, inst.__dict__)
                 self.assertIs(type(inst.__dict__[attr]), typ)
-        self.assertEqual(inst.name, "Holberton")
-        self.assertEqual(inst.number, 89)
+        self.assertEqual(inst.name, "Adonis")
+        self.assertEqual(inst.number, 21)
