@@ -1,0 +1,20 @@
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=user.id) }}">
+                    <button type="submit">Start DM</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

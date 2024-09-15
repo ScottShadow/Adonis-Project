@@ -5,12 +5,13 @@ Route module for the API app.py
 from os import getenv
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
-from api.v2.views import app_views, auth_views, log_views, tag_views, user_views, event_views
+from api.v2.views import app_views, auth_views, log_views, tag_views, user_views, event_views, chat_views
 from api.v2.auth.session_db_auth import SessionDBAuth
 from db_setup import init_db
 from populate_tags import seed_tags
 # from api.v2.views.users import users_views
 import logging
+from api.v2.views.app_sockets import initialize_socketio, socketio
 
 logging.basicConfig(
     # Set the lowest level to capture (can adjust to INFO, WARNING, etc.)
@@ -24,14 +25,19 @@ logging.basicConfig(
 
 
 app = Flask(__name__)
+
 app.register_blueprint(app_views)
 app.register_blueprint(auth_views)
 app.register_blueprint(log_views)
 app.register_blueprint(tag_views)
 app.register_blueprint(user_views)
 app.register_blueprint(event_views)
+
+app.register_blueprint(chat_views)
+
 CORS(app, resources={r"/api/v2/*": {"origins": "*"}},
      supports_credentials=True)
+initialize_socketio(app)
 auth = None
 
 auth = SessionDBAuth()
@@ -119,4 +125,4 @@ def forbidden(error) -> str:
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port, debug=False)
+    socketio.run(app, debug=False, host=host, port=5000)

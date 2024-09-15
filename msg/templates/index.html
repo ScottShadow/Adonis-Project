@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask WebSocket Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #chat {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+        }
+
+        #messages {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #messages li {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        #message-form {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #send-button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Chat Room</h1>
+
+    <div id="chat">
+        <ul id="messages"></ul>
+    </div>
+
+    <form id="message-form">
+        <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off" />
+        <button type="submit" id="send-button">Send</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://127.0.0.1:5000/');
+
+        socket.on('connect', function () {
+            console.log('Connected to server');
+        });
+
+        // Listen for messages from the server
+        socket.on('message', function (data) {
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(data));
+            document.getElementById("messages").appendChild(li);
+        });
+
+        // Handle form submission
+        document.getElementById("message-form").onsubmit = function (e) {
+            e.preventDefault();  // Prevent page reload on form submission
+            var input = document.getElementById("message-input");
+            var message = input.value;
+
+            // Send message to the server
+            socket.send(message);
+
+            // Clear the input field
+            input.value = '';
+        };
+    </script>
+
+</body>
+
+</html>

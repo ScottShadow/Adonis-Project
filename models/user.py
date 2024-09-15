@@ -8,6 +8,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, fun
 from sqlalchemy.orm import relationship, backref
 from models.tag import Tag
 from authentication import hash_password, is_valid
+from models import room_members
 
 
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
@@ -52,6 +53,8 @@ class User(BaseClass, SQLAlchemyBase):
         overlaps='friendships_1,friendships_2',
     ) """
     user_tags = relationship('UserTag', back_populates='user')
+    rooms = relationship('Room', secondary=room_members,
+                         back_populates='users')
 
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}', username='{self.username}')>"
