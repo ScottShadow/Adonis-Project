@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from contextlib import contextmanager
+from models.base import SessionLocal
 """
 Model's Helper Module
 """
@@ -16,3 +18,14 @@ def calculate_xp(log):
     print(f"[DEBUG] XP for log : {xp_values.get(log.habit_type, 0)}")
 
     return xp_values.get(log.habit_type, 0)
+
+
+@contextmanager
+def get_db_session():
+    session = None
+    try:
+        session = SessionLocal()
+        yield session
+    finally:
+        if session:
+            session.close()
