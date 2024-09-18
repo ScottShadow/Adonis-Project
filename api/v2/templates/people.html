@@ -58,20 +58,8 @@
             background-color: #1b1b2f;
         }
 
-        input[type="text"] {
-            width: 80%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: none;
-            background-color: #0d0d2a;
-            color: #00ff9c;
-            font-size: 16px;
-        }
-
         button {
-            width: 100%;
-            padding: 12px;
+            padding: 12px 20px;
             background-color: #00ff9c;
             border: none;
             border-radius: 5px;
@@ -97,63 +85,73 @@
 <body>
     <div class="people-container">
         <h1>People</h1>
-        <!-- Table of users -->
+        <!-- Table of users without User ID -->
         <table>
             <thead>
                 <tr>
-                    <th>User ID</th>
                     <th>Username</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
                     <td>User1</td>
-                    <td><button onclick="startDM('User1')">Start DM</button></td>
+                    <td>
+                        <form action="/api/v2/dm/start" method="POST" onsubmit="return handleSubmit(event)">
+                            <input type="hidden" name="username" value="User1">
+                            <button type="submit">Start DM</button>
+                        </form>
+                    </td>
                 </tr>
                 <tr>
-                    <td>2</td>
                     <td>User2</td>
-                    <td><button onclick="startDM('User2')">Start DM</button></td>
+                    <td>
+                        <form action="/api/v2/dm/start" method="POST" onsubmit="return handleSubmit(event)">
+                            <input type="hidden" name="username" value="User2">
+                            <button type="submit">Start DM</button>
+                        </form>
+                    </td>
                 </tr>
                 <tr>
-                    <td>3</td>
                     <td>User3</td>
-                    <td><button onclick="startDM('User3')">Start DM</button></td>
+                    <td>
+                        <form action="/api/v2/dm/start" method="POST" onsubmit="return handleSubmit(event)">
+                            <input type="hidden" name="username" value="User3">
+                            <button type="submit">Start DM</button>
+                        </form>
+                    </td>
                 </tr>
                 <tr>
-                    <td>4</td>
                     <td>User4</td>
-                    <td><button onclick="startDM('User4')">Start DM</button></td>
+                    <td>
+                        <form action="/api/v2/dm/start" method="POST" onsubmit="return handleSubmit(event)">
+                            <input type="hidden" name="username" value="User4">
+                            <button type="submit">Start DM</button>
+                        </form>
+                    </td>
                 </tr>
                 <tr>
-                    <td>5</td>
                     <td>User5</td>
-                    <td><button onclick="startDM('User5')">Start DM</button></td>
+                    <td>
+                        <form action="/api/v2/dm/start" method="POST" onsubmit="return handleSubmit(event)">
+                            <input type="hidden" name="username" value="User5">
+                            <button type="submit">Start DM</button>
+                        </form>
+                    </td>
                 </tr>
             </tbody>
         </table>
 
-        <!-- Start DM form -->
-        <form action="/api/v2/dm/start" method="POST" id="dm-form">
-            <input type="text" id="username" name="username" placeholder="Enter Username to Start DM" required>
-            <button type="submit">Start DM</button>
-            <div class="response-message" id="response-message"></div>
-        </form>
+        <div class="response-message" id="response-message"></div>
     </div>
 
     <script>
-        function startDM(username) {
-            document.getElementById('username').value = username;
-        }
-
-        document.getElementById('dm-form').addEventListener('submit', function(event) {
+        function handleSubmit(event) {
             event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
 
-            const formData = new FormData(this);
-
-            fetch(this.action, {
+            fetch(form.action, {
                 method: 'POST',
                 body: formData
             })
@@ -169,7 +167,7 @@
             .catch(error => {
                 console.error('Error:', error);
             });
-        });
+        }
     </script>
 </body>
 
