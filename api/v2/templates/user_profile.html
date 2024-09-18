@@ -5,95 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0D0D0D;
-            color: #FFFFFF;
-        }
-
-        .profile-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            padding: 20px;
-        }
-
-        .profile-container h1 {
-            font-family: 'Orbitron', sans-serif;
-            color: #00FF9C;
-            text-shadow: 0 0 8px #00FF9C;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            max-width: 600px;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            color: #FFFFFF;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #8F00FF;
-        }
-
-        th {
-            font-size: 18px;
-            color: #00FF9C;
-            text-transform: uppercase;
-        }
-
-        td {
-            font-size: 16px;
-            color: #FFFFFF;
-        }
-
-        input[type="text"], input[type="email"] {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #8F00FF;
-            background-color: #2B2B4D;
-            color: white;
-            margin-bottom: 15px;
-        }
-
-        /* Submit Button */
-        button {
-            background-color: #8F00FF;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s, box-shadow 0.3s;
-        }
-
-        button:hover {
-            background-color: #BF00FF;
-            box-shadow: 0 0 20px #BF00FF;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_profile.css') }}">
 </head>
 
 <body>
     <div class="profile-container">
         <h1>User Profile</h1>
-        
-        <form method="POST" action="/profile/update">
+
+        <!-- Profile Update Form -->
+        <form action="/api/v2/profile" method="POST">
             <table>
                 <thead>
                     <tr>
@@ -102,30 +22,38 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Full Name:</td>
-                        <td><input type="text" name="full_name" placeholder="Enter your full name" value="{{ user.full_name }}" required></td>
+                        <td><label for="first_name">First Name:</label></td>
+                        <td><input type="text" id="first_name" name="first_name" value="{{ user.first_name }}"></td>
                     </tr>
                     <tr>
-                        <td>Email:</td>
-                        <td><input type="email" name="email" placeholder="Enter your email" value="{{ user.email }}" required></td>
+                        <td><label for="last_name">Last Name:</label></td>
+                        <td><input type="text" id="last_name" name="last_name" value="{{ user.last_name }}"></td>
                     </tr>
                     <tr>
-                        <td>Username:</td>
-                        <td><input type="text" name="username" placeholder="Enter your username" value="{{ user.username }}" required></td>
+                        <td><label for="username">Username:</label></td>
+                        <td><input type="text" id="username" name="username" value="{{ user.username }}"></td>
                     </tr>
                     <tr>
-                        <td>Level:</td>
-                        <td>{{ user.level }}</td>
+                        <td><label for="profile_info">Profile Info:</label></td>
+                        <td><textarea id="profile_info" name="profile_info">{{ user.profile_info }}</textarea></td>
                     </tr>
                     <tr>
-                        <td>XP:</td>
-                        <td>{{ user.xp }}</td>
+                        <td><label for="password">Current Password (required):</label></td>
+                        <td><input type="password" id="password" name="password" required></td>
+                    </tr>
+                    <tr>
+                        <td><label for="new_password">New Password:</label></td>
+                        <td><input type="password" id="new_password" name="new_password"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="confirm_new_password">Confirm New Password:</label></td>
+                        <td><input type="password" id="confirm_new_password" name="confirm_new_password"></td>
                     </tr>
                 </tbody>
             </table>
 
-            <!-- Submit Button -->
-            <button type="submit">Save Changes</button>
+            <button type="submit">Update Profile</button>
+            <a href="{{ url_for('app_views.dashboard_route') }}">Dashboard</a>
         </form>
     </div>
 </body>

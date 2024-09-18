@@ -123,14 +123,15 @@
             <!-- Submit Button -->
             <button type="submit">Create Log</button>
             <div class="response-message" id="response-message"></div>
+            <a href="{{ url_for('app_views.dashboard_route') }}" class="dashboard-link">Back to Dashboard</a>
         </form>
 
         <!-- Back to Dashboard Link -->
-        <a href="{{ url_for('app_views.dashboard_route') }}" class="dashboard-link">Back to Dashboard</a>
+
     </div>
 
     <script>
-        document.getElementById('create-log-form').addEventListener('submit', function(event) {
+        document.getElementById('create-log-form').addEventListener('submit', function (event) {
             event.preventDefault();
 
             const formData = new FormData(this);
@@ -139,18 +140,16 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                const messageDiv = document.getElementById('response-message');
-                if (data.error) {
-                    messageDiv.innerHTML = `<p style="color:red;">${data.error}</p>`;
-                } else {
-                    messageDiv.innerHTML = `<p style="color:green;">${data.message}</p>`;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;  // Follow the redirect manually
+                    } else {
+                        return response.json();  // Handle JSON if no redirect
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
     </script>
 </body>
