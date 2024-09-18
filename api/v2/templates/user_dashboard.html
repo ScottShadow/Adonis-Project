@@ -178,9 +178,13 @@
                 <input type="hidden" name="action" value="Events">
                 <button type="submit">DONT CLICK Here</button>
             </form>
-            <form method="get" action="{{ url_for('chat_views.global_chat') }}">
+            <form method="GET" action="{{ url_for('chat_views.global_chat') }}">
                 <input type="hidden" name="action" value="Global Chat">
                 <button type="submit">Global Chat</button>
+            </form>
+            <form method="GET" action="{{ url_for('chat_views.people') }}">
+                <input type="hidden" name="action" value="People">
+                <button type="submit">People</button>
             </form>
 
         </div>
