@@ -1,26 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Log</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0d0d0d;
+            color: #00ff9c;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .log-form-container {
+            background-color: #1b1b2f;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px #00ff9c;
+            width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #00ff9c;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #c4c4c4;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+            background-color: #0d0d2a;
+            color: #00ff9c;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #00ff9c;
+            border: none;
+            border-radius: 5px;
+            color: #0d0d0d;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            background-color: #00e68a;
+            box-shadow: 0px 0px 10px #00ff9c;
+        }
+
+        .response-message {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .dashboard-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #00ff9c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .dashboard-link:hover {
+            color: #00e68a;
+        }
+    </style>
 </head>
 
 <body>
-    <form id="update-log-form" method="POST" action="{{ url_for('log_views.update_log', log_id=log.id) }}">
-        <label for="habit_name">Habit Name:</label>
-        <input type="text" id="habit_name" name="habit_name" value="{{ log.habit_name }}" required><br>
+    <div class="log-form-container">
+        <h1>Update Log</h1>
+        <!-- Update Log Form with POST method -->
+        <form action="/api/v2/logs/update" method="POST" id="update-log-form">
+            <label for="log_id">Log ID</label>
+            <input type="text" id="log_id" name="log_id" placeholder="Enter Log ID" required>
 
-        <label for="habit_type">Habit Type:</label>
-        <input type="text" id="habit_type" name="habit_type" value="{{ log.habit_type }}" required><br>
+            <label for="habit_type">Habit Type</label>
+            <input type="text" id="habit_type" name="habit_type" placeholder="Enter Habit Type" required>
 
-        <label for="log_details">Log Details:</label>
-        <textarea id="log_details" name="log_details">{{ log.log_details }}</textarea><br>
+            <label for="habit_name">Habit Name</label>
+            <input type="text" id="habit_name" name="habit_name" placeholder="Enter Habit Name" required>
 
-        <button type="submit">Update Log</button>
-        <form id="delete-log-form" method="POST" action="{{ url_for('log_views.delete_log', log_id=log.id) }}">
-            <button type="submit">Delete Log</button>
-            <input type="hidden" name="log_id" value="{{ log.id }}">
+            <label for="log_details">Log Details</label>
+            <textarea id="log_details" name="log_details" placeholder="Describe your habit log" required></textarea>
+
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="Completed">Completed</option>
+                <option value="Pending">Pending</option>
+            </select>
+
+            <label for="visibility">Visibility</label>
+            <select id="visibility" name="visibility">
+                <option value="Private">Private</option>
+                <option value="Public">Public</option>
+            </select>
+
+            <!-- Submit Button -->
+            <button type="submit">Update Log</button>
+            <div class="response-message" id="response-message"></div>
         </form>
+
+        <!-- Back to Dashboard Link -->
+        <a href="{{ url_for('app_views.dashboard_route') }}" class="dashboard-link">Back to Dashboard</a>
+    </div>
+
+    <script>
+        document.getElementById('update-log-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('response-message');
+                if (data.error) {
+                    messageDiv.innerHTML = `<p style="color:red;">${data.error}</p>`;
+                } else {
+                    messageDiv.innerHTML = `<p style="color:green;">${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
 </body>
 
 </html>
