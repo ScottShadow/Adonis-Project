@@ -43,48 +43,66 @@ def global_chat():
 @chat_views.route('/people', methods=['GET'])
 def people():
     users = []
+    user = request.current_user
+    current_user_id = user.id
     with get_db_session() as session:
-        users = session.query(User).all()  # Fetch all users
+        users = session.query(User).filter(
+            User.id != current_user_id).all()
     return render_template('people.html', users=users)
 
 
-@chat_views.route('/start_dm/<user_id>', methods=['POST'])
+@chat_views.route('/start_dm/<user_id>', methods=['GET', 'POST'])
 def start_dm(user_id):
-    try:
-        logging.info(f"[Start DM] CHECKING")
-        # Assuming you have the current user ID
-        current_user = request.current_user
-        logging.info(f"[Start DM] Current user: {current_user.username}")
-        current_user_id = current_user.id
+    with get_db_session() as session:
+        user = request.current_user  # Fetch current user
+        if not user:
+            logging.warning("Unauthorized access attempt for user")
+            abort(404)
 
-        with get_db_session() as session:
-            # Check if a room already exists for this DM
-            room = (session.query(Room)
-                    .filter(Room.is_dm == True)
-                    .join(Room.users)
-                    .filter(User.id.in_([user_id, current_user_id]))
-                    .group_by(Room.id)
-                    .having(func.count(User.id) == 2)
-                    .first())
-            logging.info(f"[Start DM] Room: {room}")
-            user = session.query(User).filter_by(id=user_id).first()
-            logging.info(f"[Start DM] Other User: {user.username}")
-            if room is None:
-                # Create new DM room
-                room_name = f"DM between {current_user.username} and {user.username}"
-                room = Room(name=room_name, is_dm=True)
-                session.add(room)
-                session.commit()
+        current_user_id = user.id
 
-                # Add both users to the room
-                room.users.append(current_user)
-                room.users.append(user)
-                session.commit()
-    except Exception as e:
-        logging.error(f"Error in start_dm: {e}")
-        return jsonify({"error": "An error occurred while starting the DM"}), 500
-    # Redirect to the DM page for this room
-    return redirect(url_for('chat_views.dm_page', room_id=room.id))
+        # Check if a room already exists for this DM
+        room = (session.query(Room)
+                .filter(Room.is_dm == True)
+                .join(Room.users)
+                .filter(User.id.in_([user_id, current_user_id]))
+                .group_by(Room.id)
+                .having(func.count(User.id) == 2)
+                .first())
+
+        # Fetch the other user
+        other_user = session.query(User).filter_by(id=user_id).first()
+        if not other_user:
+            logging.warning(f"User with id {user_id} not found")
+            abort(404)
+
+        logging.info(
+            f"[Start DM] Current user: {user.username}, Other user: {other_user.username}")
+
+        if room is None:
+            # Create new DM room
+            room_name = f"DM between {user.username} and {other_user.username}"
+            room = Room(name=room_name, is_dm=True)
+            session.add(room)
+            session.flush()
+
+            # Add both users to the room
+            room.users.append(user)
+            room.users.append(other_user)
+            session.flush()
+            session.commit()
+
+            logging.debug(f"DM room created: {room}")
+
+        # Get all messages in the DM room
+        messages = session.query(Message).options(
+            joinedload(Message.user)).filter_by(room_id=room.id).all()
+
+        formatted_messages = [{"username": message.user.username,
+                               "content": message.content, "created_at": message.created_at}
+                              for message in messages]
+
+        return render_template('dm_page.html', room=room, messages=formatted_messages, user=user)
 
 
 @chat_views.route('/dm/<room_id>', methods=['GET'])

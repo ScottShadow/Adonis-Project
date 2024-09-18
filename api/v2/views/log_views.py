@@ -121,7 +121,7 @@ def get_log_with_id(log_id: str):
             session.close()
 
 
-@log_views.route('/logs/create', methods=['POST'], strict_slashes=False)
+@log_views.route('/logs/create', methods=['POST', 'GET'], strict_slashes=False)
 def create_log():
     """POST /api/v2/logs
     Creates a new log for the logged-in user.
@@ -169,8 +169,7 @@ def create_log():
         if request.is_json:
             return jsonify(new_log.to_json()), 201
         else:
-            response = redirect(
-                url_for('app_views.dashboard_route'))
+            response = redirect(url_for('app_views.dashboard_route'))
             return response
 
     except Exception as e:
@@ -276,7 +275,7 @@ def delete_log(log_id):
     """
     session = None
     try:
-        user = request.current_user
+        user: User = request.current_user
         if not user:
             return jsonify({'error': 'Unauthorized access'}), 401
 
@@ -284,15 +283,22 @@ def delete_log(log_id):
         log = session.query(Log).filter_by(id=log_id, user_id=user.id).first()
         if not log:
             return jsonify({'error': 'Log not found'}), 404
-
+        from models.models_helper import calculate_xp
+        xp_to_deduct = calculate_xp(log)
+        logging.info("XP deducted: %s", xp_to_deduct)
+        user.total_xp = user.total_xp - xp_to_deduct
+        if user.total_xp < 0:
+            user.total_xp = 0
+        user.save()
         session.delete(log)
         session.commit()
         if request.is_json:
-            return jsonify({'message': 'Log deleted successfully'}), 200
+            return jsonify({'message': 'Log deleted successfully', 'new_xp': user.total_xp}), 200
         else:
             return redirect(url_for('app_views.dashboard_route'))
 
     except Exception as e:
+        session.rollback()
         return jsonify({'error': f'Error deleting log: {str(e)}'}), 500
     finally:
         if session:
