@@ -179,11 +179,14 @@ class BaseClass():
     def save(self):
         """ Save current object
         """
-        s_class = self.__class__.__name__
-        self.updated_at = datetime.utcnow()
-        DATA[s_class][self.id] = self
-        self.__class__.save_to_file()
-        self.save_to_db()
+        try:
+            """s_class = self.__class__.__name__"""
+            self.updated_at = datetime.utcnow()
+            """DATA[s_class][self.id] = self
+            self.__class__.save_to_file()"""
+            self.save_to_db()
+        except Exception as e:
+            print("[DEBUG] Error occurred while saving:", e)
 
     def remove(self):
         """Remove the object from the database"""
