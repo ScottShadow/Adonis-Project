@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Global Chat</title>
+</head>
+
+<body>
+    <h1>Global Chat Room</h1>
+
+    <div id="chat-window">
+        {% for message in messages %}
+        <p><strong>{{ message.username }}</strong>: {{ message.content }}</p>
+        {% endfor %}
+    </div>
+
+    <form id="chat-form">
+        <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" />
+        <button type="submit">Send</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://localhost:5000');
+        var room_id = "{{ room.id }}";
+
+        // Join the global room
+        socket.emit('join', { room_id: room_id });
+
+        // Send message
+        document.getElementById('chat-form').onsubmit = function (e) {
+            e.preventDefault();
+            var message = document.getElementById('message-input').value;
+            socket.emit('message', { room_id: room_id, message: message });
+            document.getElementById('message-input').value = '';
+        };
+
+        // Receive message
+        socket.on('message', function (data) {
+            var chatWindow = document.getElementById('chat-window');
+            chatWindow.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
+        });
+    </script>
+</body>
+
+</html>

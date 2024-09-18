@@ -1,0 +1,38 @@
+<h2>DM with {{ room.name }}</h2>
+<div id="messages">
+    {% for message in messages %}
+    <div><strong>{{ message.user.username }}</strong>: {{ message.content }}</div>
+    {% endfor %}
+</div>
+
+<!-- Input to send messages -->
+<form id="message-form">
+    <input type="text" id="message" placeholder="Type your message" required>
+    <button type="submit">Send</button>
+</form>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script type="text/javascript">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    // Join the DM room
+    socket.emit('join_dm', { room: '{{ room.id }}' });
+
+    // Send message to server
+    document.getElementById('message-form').onsubmit = function (e) {
+        e.preventDefault();
+        var msg = document.getElementById('message').value;
+        socket.emit('send_message', {
+            room: '{{ room.id }}',
+            content: msg
+        });
+        document.getElementById('message').value = '';  // Clear input field
+    };
+
+    // Receive message from server
+    socket.on('receive_message', function (data) {
+        var messagesDiv = document.getElementById('messages');
+        var newMessage = '<div><strong>' + data.username + '</strong>: ' + data.content + '</div>';
+        messagesDiv.innerHTML += newMessage;  // Append new message
+    });
+</script>

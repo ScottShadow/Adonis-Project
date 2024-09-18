@@ -44,7 +44,7 @@ create_database(engine, my_db_name)
 
 # Once the database exists, you can create an engine bound to that database
 DATABASE_URL_WITH_DB = f"mysql://root:56213@localhost/{my_db_name}"
-engine_with_db = create_engine(DATABASE_URL_WITH_DB, echo=True)
+engine_with_db = create_engine(DATABASE_URL_WITH_DB, echo=False)
 SessionLocal = sessionmaker(
     autocommit=False, autoflush=False, bind=engine_with_db)
 
