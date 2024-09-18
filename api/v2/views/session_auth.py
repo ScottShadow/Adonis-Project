@@ -46,10 +46,11 @@ def login() -> str:
         from api.v2.app import auth
         from models.base import Base
         import os
+        from api.v2.views.chat_helper import assign_user_to_global_room
         for u in user:
             session_id = auth.create_session(u.id)
             session_name = os.environ.get("SESSION_NAME", "_my_session_id")
-
+            assign_user_to_global_room(u)
             if request.is_json:
                 response = jsonify(u.to_json())
 
@@ -61,6 +62,8 @@ def login() -> str:
                 response = redirect(url_for('app_views.dashboard_route'))
                 response.set_cookie(session_name, session_id,
                                     max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+                # adding user to global chats
+
                 return response
     except Exception as e:
         return jsonify({'error': f'Cannot Login: {str(e)}'}), 500
@@ -100,6 +103,7 @@ def signup() -> str:
     from flask import request, jsonify, render_template, redirect, url_for
     from flask_babel import _
     from api.v2.app import auth
+    from api.v2.views.chat_helper import assign_user_to_global_room
     import os
 
     if request.method == 'GET':
@@ -154,7 +158,7 @@ def signup() -> str:
 
         print(f"[DEBUG] Created session ID: {session_id}")
         session_name = os.environ.get("SESSION_NAME", "_my_session_id")
-
+        assign_user_to_global_room(user)
         if request.is_json:
             # Prepare the response with the session cookie
             response = jsonify(user.to_json())
@@ -167,6 +171,7 @@ def signup() -> str:
             response = redirect(url_for('app_views.dashboard_route'))
             response.set_cookie(session_name, session_id,
                                 max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+
             return response
             # Redirect to dashboard.html and return HTML for a browser
 
