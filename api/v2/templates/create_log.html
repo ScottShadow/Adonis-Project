@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Log</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_profile.css') }}">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/create_log.css') }}">
 </head>
 
 <body>
@@ -44,29 +43,9 @@
         <!-- Back to Dashboard Link -->
 
     </div>
+    <script src="{{ url_for('static', filename='scripts/create_log.js') }}"></script>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/create_log.css') }}"> -->
 
-    <script>
-        document.getElementById('create-log-form').addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const formData = new FormData(this);
-
-            fetch(this.action, {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => {
-                    if (response.redirected) {
-                        window.location.href = response.url;  // Follow the redirect manually
-                    } else {
-                        return response.json();  // Handle JSON if no redirect
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
-    </script>
 </body>
 
 </html>
