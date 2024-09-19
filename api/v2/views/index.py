@@ -59,4 +59,4 @@ def index() -> str:
     """
     from flask import request, render_template
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('adonisLanding.html')
