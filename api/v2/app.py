@@ -65,7 +65,7 @@ def before_request() -> str:
     excluded_paths = [
         '/api/v2/status/', '/api/v2/stats',
         '/api/v2/unauthorized/', '/api/v2/forbidden/',
-        "/api/v2/login/", "/api/v2/signup/"
+        "/api/v2/login/", "/api/v2/signup/", "/api/v2/landing"
     ]
 
     # Check if the current request path requires authentication

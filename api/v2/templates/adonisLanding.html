@@ -1,214 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Welcome to Adonis</title>
-        <link rel="icon" type="image/x-icon" href="../img/favicon.ico" />
-        <!-- Bootstrap icons-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-        <!-- Google fonts-->
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,600;1,600&amp;display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;0,500;0,600;0,700;1,300;1,500;1,600;1,700&amp;display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;1,400&amp;display=swap" rel="stylesheet" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="../static/styles/adonisLanding.css" rel="stylesheet" />
-        <!-- <link href="../static/styles/login.css" rel="stylesheet" />
-        <link href="../static/styles/signup.css" rel="stylesheet" /> -->
-    </head>
-    <body id="page-top">
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm" id="mainNav">
-            <div class="container px-5">
-                <a class="navbar-brand fw-bold" href="#page-top">Adonis Project</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    Menu
-                    <i class="bi-list"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ms-auto me-4 my-3 my-lg-0">
-                        <!-- <li class="nav-item"><a class="nav-link me-lg-3" href="#features">Features</a></li>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Welcome to Adonis</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
+    <!-- Bootstrap icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,600;1,600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;0,500;0,600;0,700;1,300;1,500;1,600;1,700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;1,400&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap) -->
+    <link href="{{ url_for('static', filename='styles/adonisLanding.css') }}" rel="stylesheet" />
+    <!-- <link href="{{ url_for('static', filename='styles/login.css') }}" rel="stylesheet" /> -->
+    <!-- <link href="{{ url_for('static', filename='styles/signup.css') }}" rel="stylesheet" /> -->
+</head>
+
+<body id="page-top">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm" id="mainNav">
+        <div class="container px-5">
+            <a class="navbar-brand fw-bold" href="#page-top">Adonis Tracker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="bi-list"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto me-4 my-3 my-lg-0">
+                    <!-- <li class="nav-item"><a class="nav-link me-lg-3" href="#features">Features</a></li>
                         <li class="nav-item"><a class="nav-link me-lg-3" href="#download">Download</a></li> -->
-                    </ul>
-                    <button id="openLoginModal" class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" data-bs-toggle="modal" data-bs-target="#authModal">
-                        <span class="d-flex align-items-center">
-                            <span class="small">Login</span>
-                        </span>
-                    </button>
-                </div>
+                </ul>
+                <a href="{{ url_for('auth_views.login') }}" id="openLoginModal" class="btn btn-primary">Login</a>
             </div>
-        </nav>
-        <!-- landing Header-->
-        <header class="landing-col">
-            <div class="container px-5">
-                <div class="row gx-5 align-items-center">
-                    <div class="col-lg-6">
-                        <!-- Landing Columns-->
-                        <div class="mb-5 mb-lg-0 text-center text-lg-start">
-                            <h1 class="display-1 lh-1 mb-3">Welcome to the Adonis Project!</h1>
-                            <p class="lead fw-normal text-muted mb-5">A Motivational, Collaborative and Interactive Experience!</p>
-                            <button class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" data-bs-toggle="modal" data-bs-target="#authModal">
-                                <span class="d-flex align-items-center">
-                                    <span class="large">Get Started</span>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <!-- landing page Image-->
-                        <div class="image-space">
-                            <img  src="../static/img/motivation.png" alt="..." />
-                        </div>
+        </div>
+    </nav>
+    <!-- landing Header -->
+    <header class="landing-col">
+        <div class="container px-5">
+            <div class="row gx-5 align-items-center">
+                <div class="col-lg-6">
+                    <!-- Landing Columns -->
+                    <div class="mb-5 mb-lg-0 text-center text-lg-start">
+                        <h1 class="display-1 lh-1 mb-3">Welcome to Adonis Tracker!</h1>
+                        <p class="lead fw-normal text-muted mb-5">Track Your Real Life Progress with Adonis Tracker.
+                            Find like minded individuals.
+                            Grow Fast.
+                            Grow Together.
+                            Stay Consistent.
+                        </p>
+                        <a href="{{ url_for('auth_views.signup') }}" class="btn btn-success">Get Started</a>
+
                     </div>
                 </div>
-            </div>
-        </header>
-        <!-- Statements aside-->
-        <aside class="text-center bg-gradient-primary-to-secondary">
-            <div class="container px-5">
-                <div class="row gx-5 justify-content-center">
-                    <div class="col-xl-8">
-                        <div class="h2 fs-1 text-white mb-4">Log. Gain XP. Chat. Have Fun!</div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-        <!-- App features section-->
-        <!-- 
-        <section id="features">
-            <div class="container px-5">
-                <div class="row gx-5 align-items-center">
-                    <div class="col-lg-8 order-lg-1 mb-5 mb-lg-0">
-                        <div class="container-fluid px-5">
-                            <div class="row gx-5">
-                                <div class="col-md-6 mb-5">
-                                    // Feature item //
-                                    <div class="text-center">
-                                        <i class="bi-phone icon-feature text-gradient d-block mb-3"></i>
-                                        <h3 class="font-alt">Device Mockups</h3>
-                                        <p class="text-muted mb-0">Ready to use HTML/CSS device mockups, no Photoshop required!</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-5">
-                                    //Feature item //
-                                    <div class="text-center">
-                                        <i class="bi-camera icon-feature text-gradient d-block mb-3"></i>
-                                        <h3 class="font-alt">Flexible Use</h3>
-                                        <p class="text-muted mb-0">Put an image, video, animation, or anything else in the screen!</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-5">
-                                    // Feature item //
-                                    <div class="text-center">
-                                        <i class="bi-gift icon-feature text-gradient d-block mb-3"></i>
-                                        <h3 class="font-alt">Free to Use</h3>
-                                        <p class="text-muted mb-0">As always, this theme is free to download and use for any purpose!</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-5">
-                                    // Feature item //
-                                    <div class="text-center">
-                                        <i class="bi-patch-check icon-feature text-gradient d-block mb-3"></i>
-                                        <h3 class="font-alt">Open Source</h3>
-                                        <p class="text-muted mb-0">Since this theme is MIT licensed, you can use it commercially!</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> -->
-        <!-- Experience Section-->
-        <section class="bg-light">
-            <div class="container px-5">
-                <div class="row gx-5 align-items-center justify-content-center justify-content-lg-between">
-                    <div class="col-12 col-lg-5">
-                        <h2 class="display-4 lh-1 mb-4">An Experience Like None Other!</h2>
-                        <p class="lead fw-normal text-muted mb-5 mb-lg-0">In today's fast-paced world, staying motivated and focused on self-improvement can be challenging. The Adonis Project is an innovative self-improvement web app designed to transform personal growth into a fun, engaging, and rewarding experience. By combining the best elements of gaming and community interaction, we help users achieve their goals, develop healthy habits, and unlock their full potential.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Call to action section-->
-        <!-- <section class="cta">
-            <div class="cta-content">
-                <div class="container px-5">
-                    <h2 class="text-white display-1 lh-1 mb-4">
-                        Stop waiting.
-                        <br />
-                        Start building.
-                    </h2>
-                    <a class="btn btn-outline-light py-3 px-4 rounded-pill" href="https://startbootstrap.com/theme/new-age" target="_blank">Download for free</a>
-                </div>
-            </div>
-        </section> -->
-        <!-- App badge section-->
-        <!-- <section class="bg-gradient-primary-to-secondary" id="download">
-            <div class="container px-5">
-                <h2 class="text-center text-white font-alt mb-4">Get the app now!</h2>
-                <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center">
-                    <a class="me-lg-3 mb-4 mb-lg-0" href="#!"><img class="app-badge" src="assets/img/google-play-badge.svg" alt="..." /></a>
-                    <a href="#!"><img class="app-badge" src="assets/img/app-store-badge.svg" alt="..." /></a>
-                </div>
-            </div>
-        </section> -->
-        <!-- Footer-->
-        <footer class="bg-black text-center py-5">
-            <div class="container px-5">
-                <div class="text-white-50 small">
-                    <div class="mb-2">&copy; The Adonis Project 2024. All Rights Reserved.</div>
-                    <a href="#!">Privacy</a>
-                    <span class="mx-1">&middot;</span>
-                    <a href="#!">Terms</a>
-                    <span class="mx-1">&middot;</span>
-                    <a href="#!">FAQ</a>
-                </div>
-            </div>
-        </footer>
-        <!-- Feedback Modal-->
-        <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div id="signup-container" class="auth-container active">
-                        <h1>Sign Up</h1>
-                        <form method="POST" action="{{ url_for('auth_views.signup') }}">
-                            <input type="text" id="first-name" name="first_name" placeholder="First Name" required>
-                            <input type="text" id="last-name" name="last_name" placeholder="Last Name" required>
-                            <input type="text" id="username" name="username" placeholder="Username" required>
-                            <input type="email" id="email" name="email" placeholder="Email" required>
-                            <input type="password" id="password" name="password" placeholder="Password" required>
-                            <button type="submit">Sign Up</button>
-                        </form>
-                        <a href="#" class="toggle-link" data-target="#login-container">Already have an account? Log in</a>
-                    </div>
-                    <div id="login-container" class="auth-container">
-                        <h1>Login</h1>
-                        <form method="POST" action="{{ url_for('auth_views.login') }}">
-                            <input type="text" id="email" name="email" placeholder="Email" required>
-                            <input type="password" id="password" name="password" placeholder="Password" required>
-                            <button type="submit">Login</button>
-                        </form>
-                        <a href="#" class="toggle-link" data-target="#signup-container">Don't have an account? Sign up</a>
+                <div class="col-lg-6">
+                    <!-- landing page Image -->
+                    <div class="image-space">
+                        <img src="{{ url_for('static', filename='img/motivation.png') }}" alt="Motivation" />
                     </div>
                 </div>
             </div>
         </div>
-    
-    
-        <!-- JQuery-->
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    </header>
+    <!-- Statements aside -->
+    <aside class="text-center bg-gradient-primary-to-secondary">
+        <div class="container px-5">
+            <div class="row gx-5 justify-content-center">
+                <div class="col-xl-8">
+                    <div class="h2 fs-1 text-white mb-4">Log. Gain XP. Chat. Have Fun!</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <!-- Experience Section -->
+    <section class="bg-light">
+        <div class="container px-5">
+            <div class="row gx-5 align-items-center justify-content-center justify-content-lg-between">
+                <div class="col-12 col-lg-5">
+                    <h2 class="display-4 lh-1 mb-4">An Experience Like None Other!</h2>
+                    <p class="lead fw-normal text-muted mb-5 mb-lg-0">In today's fast-paced world, staying motivated and
+                        focused on self-improvement can be challenging. The Adonis Tracker is an innovative
+                        self-improvement web app designed to transform personal growth into a fun, engaging, and
+                        rewarding experience. By combining the best elements of gaming and community interaction, we
+                        help users achieve their goals, develop healthy habits, and unlock their full potential.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="bg-black text-center py-5">
+        <div class="container px-5">
+            <div class="text-white-50 small">
+                <div class="mb-2">&copy; The Adonis Project 2024. All Rights Reserved.</div>
+                <a href="#!">Privacy</a>
+                <span class="mx-1">&middot;</span>
+                <a href="#!">Terms</a>
+                <span class="mx-1">&middot;</span>
+                <a href="#!">FAQ</a>
+            </div>
+        </div>
+    </footer>
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div id="signup-container" class="auth-container active">
+                    <h1>Sign Up</h1>
+                    <form method="POST" action="{{ url_for('auth_views.signup') }}">
+                        <input type="text" id="first-name" name="first_name" placeholder="First Name" required>
+                        <input type="text" id="last-name" name="last_name" placeholder="Last Name" required>
+                        <input type="text" id="username" name="username" placeholder="Username" required>
+                        <input type="email" id="email" name="email" placeholder="Email" required>
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                        <button type="submit">Sign Up</button>
+                    </form>
+                    <a href="{{ url_for('auth_views.login') }}" class="toggle-link"
+                        data-target="#login-container">Already have an account? Login</a>
+                </div>
+                <div id="login-container" class="auth-container">
+                    <h1>Login</h1>
+                    <form method="POST" action="{{ url_for('auth_views.login') }}">
+                        <input type="email" id="login-email" name="email" placeholder="Email" required>
+                        <input type="password" id="login-password" name="password" placeholder="Password" required>
+                        <button type="submit">Login</button>
+                    </form>
+                    <a href="{{ url_for('auth_views.signup') }}" class="toggle-link"
+                        data-target="#signup-container">Don't have an account? Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='scripts/adonisLanding.js') }}"></script>
+</body>
 
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script> -->
-        
-        <!-- Core theme JS-->
-        <script src="../static/scripts/adonisLanding.js"></script>
-        <!-- <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script> -->
-    </body>
 </html>
