@@ -150,10 +150,16 @@ class User(BaseClass, SQLAlchemyBase):
         return result
 
     def calculate_level(self):
-        """Calculate user level based on total XP."""
+        """Calculate user level based on total XP with quadratic scaling."""
         xp = self.total_xp
-        level = xp // 100  # Example: 100 XP per level
-        return level
+        level = 0
+        xp_threshold = 0
+
+        while xp >= xp_threshold:
+            level += 1
+            # Adjust the 100 to scale faster/slower
+            xp_threshold = (level ** 2) * 100
+        return level - 1
 
     @property
     def level(self):

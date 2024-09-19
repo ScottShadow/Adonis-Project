@@ -5,10 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Easter Egg</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/easter_egg.css') }}">
 </head>
 
 <body>
-    <h1>Easter Egg</h1>
+    <div class="quiz-container">
+        <h1>Easter Egg Quiz</h1>
+        <p>Answer the question to unlock the Easter Egg!</p>
+
+        <form id="quiz-form">
+            <label for="question">What’s the name of the famous egg hunt holiday?</label>
+            <input type="text" id="question" name="question" required>
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="response-message" class="response-message"></div>
+
+        <div id="easter-egg" class="easter-egg hidden">
+            <h2>Congratulations!</h2>
+            <p>You've unlocked the Easter Egg! 🎉</p>
+            <img src="{{ url_for('static', filename='img/easter_egg.jpeg') }}" alt="Easter Egg Image">
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts/easter_egg.js') }}"></script>
 </body>
 
 </html>

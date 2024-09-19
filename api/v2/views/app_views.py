@@ -6,7 +6,6 @@ from api.v2.views import app_views
 from flask import abort, jsonify, request, redirect, url_for, render_template
 from models.user import User
 
-
 # users_views = Blueprint("users_views", __name__)
 
 
@@ -137,7 +136,7 @@ def update_user(user_id: str = None) -> str:
 
 @app_views.route('/dashboard', methods=['GET'], strict_slashes=False)
 def dashboard_route():
-    """ GET /api/v2/dashboard 
+    """ GET /api/v2/dashboard
     Renders the dashboard page for the logged-in user.
     """
     try:
@@ -150,8 +149,13 @@ def dashboard_route():
         user_name = user.username
         current_xp = user.total_xp
         user_level = user.level
-        xp_needed = xp_for_next_level(user_level)
-        xp_percentage = (current_xp / xp_needed) * 100 if xp_needed > 0 else 0
+
+        xp_needed_current = xp_for_current_level(user_level)
+        xp_needed_next = xp_for_next_level(user_level)
+
+        xp_progress = current_xp - xp_needed_current
+        xp_percentage = (xp_progress / (xp_needed_next - xp_needed_current)
+                         ) * 100 if xp_needed_next > xp_needed_current else 0
         print(f"user.total_xp: {user.total_xp} (type: {type(user.total_xp)})")
         print(f"user.level: {user.level} (type: {type(user.level)})")
 
@@ -166,7 +170,7 @@ def dashboard_route():
                                    user_name=user_name,
                                    user_level=user_level,
                                    current_xp=current_xp,
-                                   xp_needed=xp_needed,
+                                   xp_needed=xp_needed_next,
                                    xp_percentage=xp_percentage,
                                    recent_logs=recent_logs)
 
@@ -176,4 +180,22 @@ def dashboard_route():
 
 def xp_for_next_level(user_level):
     """ Calculates how much XP is needed for the next level """
-    return (user_level + 1) * 100
+    from api.v2.app import logging
+
+    if user_level == 0:
+        return 100
+    res = ((user_level+1) ** 2) * 100
+    logging.debug("user_level == %s -- res-next == %s, ", user_level, res)
+
+    return res
+
+
+def xp_for_current_level(user_level):
+    """ Returns the XP required for the current level"""
+    from api.v2.app import logging
+    if user_level == 0:
+        return 0
+    res = ((user_level) ** 2) * 100
+    logging.debug("user_level == %s -- res-curent == %s, ", user_level, res)
+
+    return res

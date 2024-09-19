@@ -13,7 +13,8 @@ def calculate_xp(log):
         'exercise': 10,
         'meditation': 5,
         'reading': 7,
-        'coding': 15
+        'coding': 25,
+        'cheating': 100,
     }
     print(f"[DEBUG] XP for log : {xp_values.get(log.habit_type, 0)}")
 
