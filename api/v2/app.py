@@ -60,7 +60,8 @@ def before_request() -> str:
     if auth is None:
         print("[DEBUG BEFORE REQUEST] Auth is None, skipping authentication")
         return
-
+    if request.path.startswith('/static'):
+        return None
     # Define paths that don't require authentication
     excluded_paths = [
         '/api/v2/status/', '/api/v2/stats',
