@@ -5,13 +5,8 @@ Route module for the API app.py
 from os import getenv
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
-from api.v2.views import app_views, auth_views, log_views, tag_views, user_views, event_views, chat_views
-from api.v2.auth.session_db_auth import SessionDBAuth
-from db_setup import init_db
-from populate_tags import seed_tags
-# from api.v2.views.users import users_views
+auth = None
 import logging
-from api.v2.views.app_sockets import initialize_socketio, socketio
 
 logging.basicConfig(
     # Set the lowest level to capture (can adjust to INFO, WARNING, etc.)
@@ -22,6 +17,14 @@ logging.basicConfig(
         logging.StreamHandler()  # Logs to the console
     ]
 )
+from api.v2.views import app_views, auth_views, log_views, tag_views, user_views, event_views, chat_views
+from api.v2.auth.session_db_auth import SessionDBAuth
+from db_setup import init_db
+from populate_tags import seed_tags
+# from api.v2.views.users import users_views
+from api.v2.views.app_sockets import initialize_socketio, socketio
+
+
 
 
 app = Flask(__name__)
@@ -38,7 +41,7 @@ app.register_blueprint(chat_views)
 CORS(app, resources={r"/api/v2/*": {"origins": "*"}},
      supports_credentials=True)
 initialize_socketio(app)
-auth = None
+
 
 auth = SessionDBAuth()
 init_db()
