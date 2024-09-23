@@ -61,21 +61,34 @@ class Log(BaseClass, SQLAlchemyBase):
 
         self.update_user_xp()
 
-    def update_user_xp(self):
+    @property
+    def xp_value(self):
+        return self.xp
+
+    @xp_value.setter
+    def xp_value(self, value):
+        """Set XP and update user's total XP."""
+        if value != self.xp:
+            difference = value - self.xp
+            self.update_user_xp(difference)
+            self.xp = value
+
+    def update_user_xp(self, difference=0):
         """Update the associated user's XP."""
-        session = SessionLocal()  # Get a new session
+        session = SessionLocal()
         try:
-            user = session.query(User).get(self.user_id)
+            user: User = session.query(User).get(self.user_id)
             if user:
-                user.total_xp += self.xp  # Update the user's XP
+                user.total_xp += difference
                 print(
                     f"[DEBUG]Updated user {user.id} with {self.xp} XP now is {user.total_xp}")
-                session.commit()  # Save changes to the database
+
+                session.commit()
         except Exception as e:
-            session.rollback()  # Rollback if an error occurs
+            session.rollback()
             raise e
         finally:
-            session.close()  # Close the session
+            session.close()
 
     def __repr__(self):
         return f"<Log(habit_name='{self.habit_name}', user_id={self.user_id}, timestamp={self.timestamp})>"

@@ -153,14 +153,23 @@ def create_log():
         # Debug the user and log information before saving
         print(f"[DEBUG CREATE LOG] Creating new log for user_id: {user.id}")
 
+        habit_type = request.form.get('habit_type')
+        difficulty = request.form.get('difficulty')
+        custom_xp = data.get('custom_xp', None)
+
         new_log = Log(
             user_id=user.id,
             habit_type=habit_type,
             habit_name=habit_name,
             log_details=log_details,
         )
+        # Create log entry and calculate XP based on difficulty
+
+        from models.models_helper import calculate_xp
+        new_log.xp_value = calculate_xp(new_log, difficulty=difficulty, custom_xp=int(
+            custom_xp) if habit_type == 'custom' else None)
         print(
-            f"[DEBUG CREATE LOG] Log Initialized successfully with id: {new_log.id}")
+            f"[DEBUG CREATE LOG] Log Initialized successfully with id: {new_log.id} and XP {new_log.xp}")
 
         new_log.save()
 
@@ -284,7 +293,7 @@ def delete_log(log_id):
         if not log:
             return jsonify({'error': 'Log not found'}), 404
         from models.models_helper import calculate_xp
-        xp_to_deduct = calculate_xp(log)
+        xp_to_deduct = log.xp_value
         logging.info("XP deducted: %s", xp_to_deduct)
         user.total_xp = user.total_xp - xp_to_deduct
         if user.total_xp < 0:
