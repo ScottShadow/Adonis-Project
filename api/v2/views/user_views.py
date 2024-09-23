@@ -81,7 +81,7 @@ def view_profile() -> str:
                 # Prepare the response with the session cookie
                 response = jsonify(user.to_json())
                 response.set_cookie(session_name, session_id,
-                                    max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+                                    max_age=auth.session_duration, path='/', samesite='Lax')
                 print("[DEBUG] Returning JSON response")
                 return response, 201
             else:
@@ -89,7 +89,7 @@ def view_profile() -> str:
                 response = render_template('user_profile.html', user=user)
                 response = make_response(response)
                 response.set_cookie(session_name, session_id,
-                                    max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+                                    max_age=auth.session_duration, path='/', samesite='Lax')
                 return response
                 # Redirect to dashboard.html and return HTML for a browser
             # Return a JSON response for API clients

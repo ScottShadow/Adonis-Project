@@ -79,5 +79,3 @@ def get_tags_by_category(category):
         return jsonify({"error": str(e)}), 500
     finally:
         session.close()
-
-
