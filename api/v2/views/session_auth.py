@@ -55,13 +55,13 @@ def login() -> str:
                 response = jsonify(u.to_json())
 
                 response.set_cookie(session_name, session_id,
-                                    max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+                                    max_age=auth.session_duration, path='/', samesite='Lax')
                 return response, 201
             else:
                 # Redirect to dashboard.html and return HTML for a browser
                 response = redirect(url_for('app_views.dashboard_route'))
                 response.set_cookie(session_name, session_id,
-                                    max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+                                    max_age=auth.session_duration, path='/', samesite='Lax')
                 # adding user to global chats
 
                 return response
@@ -163,14 +163,14 @@ def signup() -> str:
             # Prepare the response with the session cookie
             response = jsonify(user.to_json())
             response.set_cookie(session_name, session_id,
-                                max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+                                max_age=auth.session_duration, path='/',   samesite='Lax')
             print("[DEBUG] Returning JSON response")
             return response, 201
         else:
             print("[DEBUG] Redirecting to dashboard")
             response = redirect(url_for('app_views.dashboard_route'))
             response.set_cookie(session_name, session_id,
-                                max_age=auth.session_duration, path='/', domain='127.0.0.1', samesite='Lax')
+                                max_age=auth.session_duration, path='/',   samesite='Lax')
 
             return response
             # Redirect to dashboard.html and return HTML for a browser
