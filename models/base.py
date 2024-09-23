@@ -4,6 +4,7 @@
 from datetime import datetime
 from typing import TypeVar, List, Iterable
 from os import path
+import os
 import json
 import uuid
 from sqlalchemy.ext.declarative import declarative_base
@@ -13,8 +14,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, fun
 from sqlalchemy.exc import ProgrammingError
 
 # Database configuration (without specifying the database name)
-DATABASE_URL = "mysql://root:56213@localhost/"
-
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql://root:56213@localhost/")
 # Database name
 my_db_name = "adonis_db"
 
@@ -28,7 +28,7 @@ def create_database(current_engine, db_name):
     conn = current_engine.connect()
     try:
         # Use `text()` to wrap the raw SQL query
-        conn.execute(text(f"CREATE DATABASE {db_name}"))
+        conn.execute(text(f"CREATE DATABASE IF NOT EXISTS {db_name}"))
         print(f"Database '{db_name}' created successfully.")
     except ProgrammingError as e:
         if f"Can't create database '{db_name}'" in str(e):
@@ -43,7 +43,7 @@ def create_database(current_engine, db_name):
 create_database(engine, my_db_name)
 
 # Once the database exists, you can create an engine bound to that database
-DATABASE_URL_WITH_DB = f"mysql://root:56213@localhost/{my_db_name}"
+DATABASE_URL_WITH_DB = f"{DATABASE_URL}{my_db_name}"
 engine_with_db = create_engine(DATABASE_URL_WITH_DB, echo=False)
 SessionLocal = sessionmaker(
     autocommit=False, autoflush=False, bind=engine_with_db)
