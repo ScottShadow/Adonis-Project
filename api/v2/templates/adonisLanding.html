@@ -40,7 +40,10 @@
                     <!-- <li class="nav-item"><a class="nav-link me-lg-3" href="#features">Features</a></li>
                         <li class="nav-item"><a class="nav-link me-lg-3" href="#download">Download</a></li> -->
                 </ul>
-                <a href="{{ url_for('auth_views.login') }}" id="openLoginModal" class="btn btn-primary">Login</a>
+                <!-- <a href="{{ url_for('auth_views.login') }}" id="openLoginModal" class="btn btn-primary">Login</a> -->
+                <button id="#openLoginModal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#authModal">
+                    Login
+                </button>
             </div>
         </div>
     </nav>
@@ -58,8 +61,10 @@
                             Grow Together.
                             Stay Consistent.
                         </p>
-                        <a href="{{ url_for('auth_views.signup') }}" class="btn btn-success">Get Started</a>
-
+                        <!-- <a id="openModalButton" class="btn btn-success">Get Started</a> -->
+                        <button id="openModalButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#authModal">
+                            Get Started
+                        </button>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -109,7 +114,7 @@
             </div>
         </div>
     </footer>
-    <!-- Feedback Modal -->
+    <!-- Signup/Login Modal -->
     <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -123,7 +128,7 @@
                         <input type="password" id="password" name="password" placeholder="Password" required>
                         <button type="submit">Sign Up</button>
                     </form>
-                    <a href="{{ url_for('auth_views.login') }}" class="toggle-link"
+                    <a href="#" class="toggle-link"
                         data-target="#login-container">Already have an account? Login</a>
                 </div>
                 <div id="login-container" class="auth-container">
@@ -133,12 +138,17 @@
                         <input type="password" id="login-password" name="password" placeholder="Password" required>
                         <button type="submit">Login</button>
                     </form>
-                    <a href="{{ url_for('auth_views.signup') }}" class="toggle-link"
+                    <a href="#" class="toggle-link"
                         data-target="#signup-container">Don't have an account? Sign Up</a>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <!-- Then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='scripts/adonisLanding.js') }}"></script>
 </body>
 
