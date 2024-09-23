@@ -13,14 +13,44 @@
         <h1>Create a New Log</h1>
         <!-- Form with POST method -->
         <form action="/api/v2/logs/create" method="POST" id="create-log-form">
-            <label for="habit_type">Habit Type</label>
-            <input type="text" id="habit_type" name="habit_type" required>
+            <label for="habit_type">Habit Type:</label>
+            <select id="habit_type" name="habit_type" onchange="toggleCustomHabit()">
+                <option value="strength_training">Strength Training</option>
+                <option value="stretching">Stretching</option>
+                <option value="yoga">Yoga</option>
+                <option value="meditation">Meditation</option>
+                <option value="reading">Reading</option>
+                <option value="writing">Writing</option>
+                <option value="coding">Coding</option>
+                <option value="painting">Painting</option>
+                <option value="music_practice">Music Practice</option>
+                <option value="journaling">Journaling</option>
+                <option value="house_cleaning">House Cleaning</option>
+                <option value="gardening">Gardening</option>
+                <option value="meal_prep">Meal Prep</option>
+                <option value="sleep">Sleep</option>
+                <option value="custom">Custom Habit</option>
+
+            </select>
+
+            <div id="custom-habit-fields" style="display: none;">
+                <label for="custom_xp">Custom XP:</label>
+                <input type="number" id="custom_xp" name="custom_xp">
+            </div>
+            <label for="difficulty">Difficulty:</label>
+            <select id="difficulty" name="difficulty">
+                <option value="trivial">Trivial</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+                <option value="insane">Insane</option>
+            </select>
 
             <label for="habit_name">Habit Name</label>
             <input type="text" id="habit_name" name="habit_name" required>
 
             <label for="log_details">Log Details</label>
-            <textarea id="log_details" name="log_details" required></textarea>
+            <textarea id="log_details" name="log_details" placeholder="Describe your habit log" required></textarea>
 
             <label for="status">Status</label>
             <select id="status" name="status">

@@ -18,3 +18,9 @@ document.getElementById('create-log-form').addEventListener('submit', function (
       console.error('Error:', error);
     });
 });
+
+function toggleCustomHabit() {
+  const habitType = document.getElementById('habit_type').value;
+  const customFields = document.getElementById('custom-habit-fields');
+  customFields.style.display = (habitType === 'custom') ? 'block' : 'none';
+}
