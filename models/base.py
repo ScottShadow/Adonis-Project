@@ -25,8 +25,9 @@ engine = create_engine(DATABASE_URL)
 
 
 def create_database(current_engine, db_name):
-    conn = current_engine.connect()
+
     try:
+        conn = current_engine.connect()
         # Use `text()` to wrap the raw SQL query
         conn.execute(text(f"CREATE DATABASE IF NOT EXISTS {db_name}"))
         print(f"Database '{db_name}' created successfully.")
