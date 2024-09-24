@@ -216,8 +216,6 @@ Ensure you have the following installed:
 
 2. **Run in Production:**
 
-   If deploying, use Gunicorn for better performance in production environments:
-
    ```bash
    gunicorn -w 4 api.v2.app:app
    or
@@ -225,8 +223,6 @@ Ensure you have the following installed:
    ```
 
 ## API Endpoints
-
-Here are some key API endpoints that the application supports:
 
 ### Authentication
 
@@ -245,8 +241,6 @@ Here are some key API endpoints that the application supports:
 
 - **GET** `/profile` - View user profile data
 - **PUT** `/profile` - Update profile information
-
-Feel free to expand this section as you add more functionality.
 
 ## License
 
