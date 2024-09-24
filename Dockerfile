@@ -22,4 +22,4 @@ COPY . /app
 WORKDIR /app
 
 # Command to run your app
-CMD ["python3", "-m","api.v2.app"]  # Replace with your app's entry point
+CMD python -m api.v2.app  # Replace with your app's entry point
