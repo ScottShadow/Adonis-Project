@@ -1,54 +1,137 @@
-# Adonis-Project
-Social Platform for Personal Growth
+# Adonis Project
 
+This is a Flask-based web application designed to track user habits and logs, providing an XP system based on activity frequency.
 
-### Join Us in Building Adonis: The Ultimate Social Platform for Personal Growth
+## Table of Contents
 
-**Project Overview:**
-We're creating **Adonis**, a web-based platform that combines gamification, social networking, and personal development. Think of it as a social media site for habits and goals, where you can log daily activities, compete on leaderboards, and connect with like-minded individuals.
+- [Project Overview](#project-overview)
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [Running the Application](#running-the-application)
+- [Database Setup](#database-setup)
+- [API Endpoints](#api-endpoints)
+- [License](#license)
 
-**Key Features:**
-1. **Daily Task Logging:** Users can log their daily activities, from gym workouts to reading sessions.
-2. **Leaderboards:** Compete in various categories like fitness, reading, and social skills. See where you stand and strive for the top spot.
-3. **Tutoring and Mentorship:** Connect with experts in different fields. Whether paid or free, get the guidance you need to excel.
-4. **Clans and Group Chats:** Join or create clans based on interests. Participate in group challenges and support each other’s growth.
+## Project Overview
 
-**What We're Looking For:**
-- **Developers:** Help us build a robust and scalable platform.
-- **Designers:** Create an engaging and user-friendly interface.
-- **Content Creators:** Generate valuable content and resources for our users.
-- **Community Managers:** Foster a supportive and active community.
+The **Adonis Project** is a habit-tracking app built with Flask and MySQL, featuring user authentication, habit logging, and an XP-based system to reward consistency. This project includes a dashboard where users can monitor their progress, view logs, and manage habits.
 
-**Why Join Us?**
-- **Innovative Concept:** Be part of a unique project that blends personal development with social interaction.
-- **Growth Opportunities:** Gain experience and grow with the project. Your contributions will directly impact our success.
-- **Collaborative Environment:** Work with a passionate and driven team. We value creativity, initiative, and teamwork.
+## Tech Stack
 
-**Get Involved:**
-Interested in joining us? Let’s connect and discuss how you can contribute to Adonis. Together, we can create a platform that helps people achieve their goals and build meaningful connections.
+- **Backend**: Flask (Python)
+- **Database**: MySQL
+- **Frontend**: HTML, CSS (with possible JS)
+- **Deployment**: Gunicorn (for production) and Flask's development server
 
----
+## Installation
 
-### Next Steps for Development
+### Prerequisites
 
-1. **Define the MVP:**
-   - Basic task logging
-   - Leaderboards
-   - User profiles
-   - Basic social interaction (messaging and clans)
+Ensure you have the following installed:
 
-2. **Gather Feedback:**
-   - Launch a beta version to gather user feedback and iterate on the design and features.
+- Python 3.x
+- MySQL
+- `pip` for installing Python packages
 
-3. **Plan for Scalability:**
-   - Ensure the platform can handle growth and add features based on user needs and feedback.
+### Steps
 
-**Brainstorming Additional Features:**
-1. **Customizable Dashboards:** Allow users to focus on their most important goals.
-2. **Habit Streaks:** Track and reward long streaks of positive habits.
-3. **Integration with Wearables:** Sync with fitness trackers and other apps for automatic activity logging.
-4. **Gamification Elements:** Implement badges, levels, and experience points.
-5. **Community Events:** Organize virtual or in-person meetups to foster community bonds.
+1. **Clone the repository:**
 
-**Ready to Join?**
-Reach out to us and let's build something amazing together!
+   ```bash
+   git clone https://github.com/ScottShadow/Adonis-Project.git
+   cd Adonis-Project
+   ```
+
+2. **Set up virtual environment** (optional, but recommended):
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install the dependencies** from `requirements.txt`:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure the environment variables:**
+
+   Create a `.env` file or update your environment with your Flask configuration and MySQL connection details:
+
+   ```bash
+   FLASK_APP=api.v2.app
+   FLASK_ENV=development
+   SQLALCHEMY_DATABASE_URI=mysql+pymysql://username:password@localhost/dbname
+   SECRET_KEY=your_secret_key
+   ```
+
+## Running the Application
+
+1. **Run the app:**
+
+   You can start the app using:
+
+   ```bash
+   python -m api.v2.app
+   ```
+
+   The application should now be running at `http://127.0.0.1:5000/`.
+
+2. **Run in Production:**
+
+   If deploying, use Gunicorn for better performance in production environments:
+
+   ```bash
+   gunicorn -w 4 api.v2.app:app
+   ```
+
+## Database Setup
+
+1. **Create a MySQL database:**
+
+   In your MySQL shell or using a GUI like phpMyAdmin:
+
+   ```sql
+   CREATE DATABASE adonis_project;
+   ```
+
+2. **Apply the database migrations** (if using Flask-Migrate or Alembic):
+
+   ```bash
+   flask db upgrade
+   ```
+
+3. **(Optional) Seed the database** with initial data if you have a seeder script:
+
+   ```bash
+   python -m api.v2.seeder_script  # Adjust to your seeder file path
+   ```
+
+## API Endpoints
+
+Here are some key API endpoints that the application supports:
+
+### Authentication
+
+- **POST** `/login` - Log in a user
+- **POST** `/signup` - Sign up a new user
+- **POST** `/logout` - Log out the current user
+
+### Logs & Habits
+
+- **GET** `/logs` - Retrieve all logs for the current user
+- **POST** `/logs` - Create a new log entry
+- **PUT** `/logs/<log_id>` - Update a log entry
+- **DELETE** `/logs/<log_id>` - Delete a log entry
+
+### User Profile
+
+- **GET** `/profile` - View user profile data
+- **PUT** `/profile` - Update profile information
+
+Feel free to expand this section as you add more functionality.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
