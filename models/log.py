@@ -53,13 +53,13 @@ class Log(BaseClass, SQLAlchemyBase):
 
         # Optional fields with default values
         self.log_details = kwargs.get('log_details', None)
-        self.xp = kwargs.get('xp', calculate_xp(self))
+        self.xp = kwargs.get('xp', 10)
         self.source = kwargs.get('source', 'Manual')
         self.status = kwargs.get('status', 'Completed')
         self.visibility = kwargs.get('visibility', 'Private')
         self.shared_with = kwargs.get('shared_with', None)
 
-        self.update_user_xp()
+        self.update_user_xp(self.xp)
 
     @property
     def xp_value(self):

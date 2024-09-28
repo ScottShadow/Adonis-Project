@@ -156,18 +156,21 @@ def create_log():
         habit_type = request.form.get('habit_type')
         difficulty = request.form.get('difficulty')
         custom_xp = data.get('custom_xp', None)
-
+        from models.models_helper import calculate_xp
+        xp_value = calculate_xp(habit_type=habit_type, difficulty=difficulty, custom_xp=int(
+            custom_xp) if habit_type == 'custom' else None)
+        logging.info(
+            f"[DEBUG CREATE LOG] Calculated XP value: {xp_value} for habit type: {habit_type} and difficulty: {difficulty} and custom XP: {custom_xp}"
+        )
         new_log = Log(
             user_id=user.id,
             habit_type=habit_type,
             habit_name=habit_name,
             log_details=log_details,
+            xp=xp_value,
         )
         # Create log entry and calculate XP based on difficulty
 
-        from models.models_helper import calculate_xp
-        new_log.xp_value = calculate_xp(new_log, difficulty=difficulty, custom_xp=int(
-            custom_xp) if habit_type == 'custom' else None)
         print(
             f"[DEBUG CREATE LOG] Log Initialized successfully with id: {new_log.id} and XP {new_log.xp}")
 

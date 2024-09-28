@@ -6,7 +6,7 @@ Model's Helper Module
 """
 
 
-def calculate_xp(log, difficulty="easy", custom_xp=None):
+def calculate_xp(habit_type, difficulty="easy", custom_xp=None):
     """Calculate XP based on log details."""
     # Example XP calculation logic based on habit type
     xp_values = {
@@ -34,10 +34,10 @@ def calculate_xp(log, difficulty="easy", custom_xp=None):
         'hard': 24,
         'insane': 40,
     }
-    if log.habit_type == 'custom':
+    if habit_type == 'custom':
         base_xp = custom_xp or 1  # Use user-specified XP for custom habits
     else:
-        base_xp = xp_values.get(log.habit_type, 1)
+        base_xp = xp_values.get(habit_type, 1)
 
     xp = base_xp * difficulty_multiplier.get(difficulty, 1)
     print(f"[DEBUG] XP for log : {xp}")
