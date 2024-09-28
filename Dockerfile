@@ -19,9 +19,11 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install waitress
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
 
 # Run app.py when the container launches
-CMD ["python3", "-m","api.v2.app"]
+#CMD ["python3", "-m","api.v2.app"]
+CMD ["waitress-serve", "--port=5000", "api.v2.app:app"]
