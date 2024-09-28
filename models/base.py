@@ -17,12 +17,17 @@ from sqlalchemy.exc import ProgrammingError
 DB_USER = os.getenv('DB_USER', 'root')
 print(f"DB_USER: {DB_USER}")
 DB_PASSWORD = os.getenv('DB_PASSWORD', '56213')
+DB_PASSWORD = "vLWABIdIsyImdWEqBhXOHefpSDfbudRy"
 DB_HOST = os.getenv('DB_HOST', 'localhost')
+DB_HOST = "mysql.railway.internal"
 print(f"DB_HOST: {DB_HOST}")
 DB_PORT = os.getenv('DB_PORT', '3306')
 DB_NAME = os.getenv('DB_NAME', 'adonis_db')
+DB_NAME = "railway"
 # Database configuration (without specifying the database name)
-DATABASE_URL = os.getenv("DATABASE_URL", "mysql://root:56213@localhost/")
+DATABASE_URL = os.getenv(
+    "DATABASE_URL", "mysql://root:56213@localhost/{DB_NAME}".format(DB_NAME=DB_NAME))
+DATABASE_URL = f"mysql://{DB_USER}:{DB_PASSWORD}@junction.proxy.rlwy.net:50075/{DB_NAME}"
 print(f"DATABASE_URL: {DATABASE_URL}")
 
 # Create an engine for MySQL without specifying a database
