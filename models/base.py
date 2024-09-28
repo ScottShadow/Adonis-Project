@@ -15,12 +15,15 @@ from sqlalchemy.exc import ProgrammingError
 
 # Environment variables from Docker compose
 DB_USER = os.getenv('DB_USER', 'root')
+print(f"DB_USER: {DB_USER}")
 DB_PASSWORD = os.getenv('DB_PASSWORD', '56213')
 DB_HOST = os.getenv('DB_HOST', 'localhost')
+print(f"DB_HOST: {DB_HOST}")
 DB_PORT = os.getenv('DB_PORT', '3306')
 DB_NAME = os.getenv('DB_NAME', 'adonis_db')
 # Database configuration (without specifying the database name)
 DATABASE_URL = os.getenv("DATABASE_URL", "mysql://root:56213@localhost/")
+print(f"DATABASE_URL: {DATABASE_URL}")
 
 # Create an engine for MySQL without specifying a database
 engine = create_engine(DATABASE_URL, echo=True)

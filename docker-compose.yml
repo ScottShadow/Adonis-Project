@@ -10,5 +10,5 @@ services:
       DB_HOST: mysql.railway.internal
       DB_PORT: 3306
       DB_NAME: railway
-      DB_URL: mysql://root:vLWABIdIsyImdWEqBhXOHefpSDfbudRy@junction.proxy.rlwy.net:50075/railway
+      DB_URL: mysql+mysqldb://root:vLWABIdIsyImdWEqBhXOHefpSDfbudRy@junction.proxy.rlwy.net:50075/railway
     command: ["./wait-for-it.sh", "meinsql", "3306", "--", "python3", "-m", "api.v2.app"]
