@@ -1,7 +1,7 @@
 # db_setup.py
 
 # Import Base and engine from the base model
-from models.base import Base, engine_with_db
+from models.base import Base, engine
 from models.user import User
 from models.user_session import UserSession
 # from models.friendship import Friendship
@@ -13,7 +13,7 @@ def init_db():
     """
     Initializes the database by creating all tables defined in the Base metadata.
     """
-    Base.metadata.create_all(bind=engine_with_db)
+    Base.metadata.create_all(bind=engine)
 
 
 if __name__ == "__main__":
