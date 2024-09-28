@@ -1,8 +1,8 @@
 var socket = io.connect('http://127.0.0.1:5000', { transports: ['websocket'] });
-var room_id = "{{ global_room.id }}";
+var room_id = "{{ room.id }}";
 
 // Join the global room
-socket.emit('join', { room_id: '{{ global_room.id }}' });
+socket.emit('join', { room_id: '{{ room.id }}' });
 
 // Send message
 document.getElementById('chat-form').onsubmit = function (e) {

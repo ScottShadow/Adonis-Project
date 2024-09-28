@@ -67,6 +67,7 @@ class Log(BaseClass, SQLAlchemyBase):
 
     @xp_value.setter
     def xp_value(self, value):
+        print(f"[DEBUG]Setting XP to {value}")
         """Set XP and update user's total XP."""
         if value != self.xp:
             difference = value - self.xp

@@ -27,7 +27,7 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
     <script>
-        var socket = io.connect('http://127.0.0.1:5000', { transports: ['websocket'] });
+        var socket = io.connect(['http://127.0.0.1:5000','http://192.168.1.77:5000'], { transports: ['websocket'] });
         var room_id = "{{ room.id }}";
 
         // Join the DM room

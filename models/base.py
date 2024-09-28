@@ -13,13 +13,17 @@ from sqlalchemy.orm import sessionmaker, joinedload
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
 from sqlalchemy.exc import ProgrammingError
 
+# Environment variables from Docker compose
+DB_USER = os.getenv('DB_USER', 'root')
+DB_PASSWORD = os.getenv('DB_PASSWORD', '56213')
+DB_HOST = os.getenv('DB_HOST', 'localhost')
+DB_PORT = os.getenv('DB_PORT', '3306')
+DB_NAME = os.getenv('DB_NAME', 'adonis_db')
 # Database configuration (without specifying the database name)
 DATABASE_URL = os.getenv("DATABASE_URL", "mysql://root:56213@localhost/")
-# Database name
-my_db_name = "adonis_db"
 
 # Create an engine for MySQL without specifying a database
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, echo=True)
 
 # Function to create the database if it doesn't exist
 
@@ -41,13 +45,13 @@ def create_database(current_engine, db_name):
 
 
 # Call the function to create the database if needed
-create_database(engine, my_db_name)
+# create_database(engine, DB_NAME)
 
 # Once the database exists, you can create an engine bound to that database
-DATABASE_URL_WITH_DB = f"{DATABASE_URL}{my_db_name}"
-engine_with_db = create_engine(DATABASE_URL_WITH_DB, echo=False)
+# DATABASE_URL_WITH_DB = f"{DATABASE_URL}{DB_NAME}"
+# engine_with_db = create_engine(DATABASE_URL_WITH_DB, echo=False)
 SessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine_with_db)
+    autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
