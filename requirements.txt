@@ -1,6 +1,5 @@
 alembic==1.13.2
-#Flask==3.0.3
-flask
+Flask==3.0.3
 flask_babel==4.0.0
 Flask_Cors==4.0.1
 #python_bcrypt==0.3.2
