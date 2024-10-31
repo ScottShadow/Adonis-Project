@@ -46,7 +46,7 @@ def people():
     user = request.current_user
     current_user_id = user.id
     with get_db_session() as session:
-        users = session.query(User).filter(
+        users = session.query(User.id, User.username).filter(
             User.id != current_user_id).all()
     return render_template('people.html', users=users)
 
