@@ -95,8 +95,9 @@ def start_dm(user_id):
             logging.debug(f"DM room created: {room}")
 
         # Get all messages in the DM room
-        messages = session.query(Message).options(
-            joinedload(Message.user)).filter_by(room_id=room.id).all()
+        messages = room.messages
+        """messages = session.query(Message).options(
+            joinedload(Message.user)).filter_by(room_id=room.id).all()"""
 
         formatted_messages = [{"username": message.user.username,
                                "content": message.content, "created_at": message.created_at}
