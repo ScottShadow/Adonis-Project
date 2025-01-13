@@ -21,7 +21,7 @@ def view_profile() -> str:
     """
     user: User = request.current_user
     if not user:
-        abort(404)
+        return redirect(url_for('auth_views.login'))
 
     if request.method == 'GET':
         # Render the profile page if it's a GET request
