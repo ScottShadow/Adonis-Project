@@ -8,6 +8,7 @@ from models.user import User
 from models.base import SessionLocal
 from models.models_helper import get_db_session
 from api.v2.app import logging
+from math import ceil
 
 # app = app_views
 
@@ -42,13 +43,32 @@ def global_chat():
 
 @chat_views.route('/people', methods=['GET'])
 def people():
-    users = []
     user = request.current_user
     current_user_id = user.id
+
+    # Pagination parameters
+    page = int(request.args.get('page', 1))
+    per_page = 8  # Number of users per page
+
     with get_db_session() as session:
-        users = session.query(User.id, User.username).filter(
-            User.id != current_user_id).all()
-    return render_template('people.html', users=users)
+        total_users = session.query(User).filter(
+            User.id != current_user_id).count()
+        total_pages = ceil(total_users / per_page)
+
+        users = (
+            session.query(User.id, User.username)
+            .filter(User.id != current_user_id)
+            .offset((page - 1) * per_page)
+            .limit(per_page)
+            .all()
+        )
+
+    return render_template(
+        'people.html',
+        users=users,
+        current_page=page,
+        total_pages=total_pages
+    )
 
 
 @chat_views.route('/start_dm/<user_id>', methods=['GET', 'POST'])

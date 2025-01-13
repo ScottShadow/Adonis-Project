@@ -33,7 +33,41 @@
             </tbody>
         </table>
 
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            {% if current_page > 1 %}
+            <a href="{{ url_for('chat_views.people') }}?page={{ current_page - 1 }}">&laquo; Previous</a>
+            {% endif %}
+
+            {% for page in range(1, total_pages + 1) %}
+            <a href="{{ url_for('chat_views.people') }}?page={{ page }}"
+                class="{{ 'active' if page == current_page else '' }}">
+                {{ page }}
+            </a>
+            {% endfor %}
+
+            {% if current_page < total_pages %} <a
+                href="{{ url_for('chat_views.people') }}?page={{ current_page + 1 }}">Next &raquo;</a>
+                {% endif %}
+        </div>
     </div>
+
+    <style>
+        .pagination a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: #8F00FF;
+        }
+
+        .pagination a.active {
+            font-weight: bold;
+            color: white;
+        }
+
+        .pagination a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </body>
 
 </html>

@@ -67,6 +67,31 @@ input[type="text"] {
 }
 
 button {
-    width: 100%;
-    padding: 12px;
-    background-color
+    background-color: #00FF9C;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+    background-color: rgb(10, 213, 33);
+    box-shadow: 0 0 20px #BF00FF;
+}
+
+.pagination a {
+    margin: 0 5px;
+    text-decoration: none;
+    color: #8F00FF;
+}
+
+.pagination a.active {
+    font-weight: bold;
+    color: white;
+}
+
+.pagination a:hover {
+    text-decoration: underline;
+}
