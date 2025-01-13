@@ -3,7 +3,7 @@
 Route module for the API app.py
 """
 from os import getenv
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort, request,redirect
 from flask_cors import (CORS, cross_origin)
 auth = None
 import logging
@@ -84,20 +84,20 @@ def before_request() -> str:
         if auth.authorization_header(request) is None and auth.session_cookie(request) is None:
             print(
                 f"[DEBUG BEFORE REQUEST] No authorization header or session cookie for '{request.endpoint}', aborting with 401")
-            abort(401)
+            redirect('/api/v2/login')
 
     # Check if the current user is authenticated
     if request.endpoint not in ['app_views.create_user']:
         if auth.current_user(request) is None:
             print(
                 f"[DEBUG BEFORE REQUEST] No current user for '{request.endpoint}', aborting with 403")
-            abort(403)
+            redirect('/api/v2/login')
 
     # Check for both authorization header and session cookie (which is unexpected)
     if auth.authorization_header(request) and auth.session_cookie(request):
         print(
             f"[DEBUG BEFORE REQUEST] Both authorization header and session cookie found for '{request.endpoint}', aborting with 401")
-        return None, abort(401)
+        return None, redirect('/api/v2/login')
 
     # Set the current user for the request context
     request.current_user = auth.current_user(request)
