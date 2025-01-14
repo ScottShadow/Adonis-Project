@@ -95,3 +95,15 @@ button:hover {
 .pagination a:hover {
     text-decoration: underline;
 }
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #00ff9c;
+    color: #0d0d0d;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}

@@ -443,7 +443,8 @@ def friends_list():
             User.username.label("friend_name"),
             User.level.label("friend_level"),
             func.max(Log.timestamp).label("last_log_date"),
-            func.max(Log.habit_name).label("last_log_habit_name")
+            func.max(Log.habit_name).label("last_log_habit_name"),
+            func.max(Log.log_details).label("last_log_details")
         ).outerjoin(Log, and_(Log.user_id == User.id, Log.visibility == "Public")).filter(
             User.id.in_(friend_ids_subquery)
         ).group_by(User.id).all()
@@ -458,6 +459,7 @@ def friends_list():
             "name": friend.friend_name,
             "level": friend.friend_level,
             "last_log_date": friend.last_log_date or "No public logs",
+            "log_details": friend.last_log_details or "No log details",
             "habit_name": friend.last_log_habit_name or "No recent habit"
         }
         for friend in friends_with_logs

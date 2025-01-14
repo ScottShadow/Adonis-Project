@@ -17,6 +17,8 @@
                     <th>Name</th>
                     <th>Level</th>
                     <th>Last Public Log</th>
+                    <th>Log Details</th>
+                    <th>Logged At</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,6 +27,7 @@
                     <td>{{ friend.name }}</td>
                     <td>{{ friend.level }}</td>
                     <td>{{ friend.habit_name }}</td>
+                    <td>{{ friend.log_details }}</td>
                     <td>{{ friend.last_log_date }}</td>
                 </tr>
                 {% endfor %}
