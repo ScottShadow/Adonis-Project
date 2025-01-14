@@ -16,9 +16,13 @@
                 <input type="hidden" name="action" value="profile">
                 <button type="submit">Profile</button>
             </form>
+            <form method="GET" action="{{ url_for('chat_views.friends_list') }}">
+                <input type="hidden" name="action" value="friends">
+                <button type="submit">Friends</button>
+            </form>
             <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
                 <input type="hidden" name="action" value="logs">
-                <button type="submit">Logs</button>
+                <button type="submit">Create New Log</button>
             </form>
             <form method="GET" action="{{ url_for('event_views.home') }}">
                 <input type="hidden" name="action" value="Events">

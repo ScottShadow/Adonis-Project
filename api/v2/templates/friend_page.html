@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friends List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/friend_page.css') }}">
+</head>
+
+<body>
+    <div class="friends-list-container">
+        <h1>Your Friends</h1>
+        <table class="friends-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Last Public Log</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for friend in friends %}
+                <tr>
+                    <td>{{ friend.name }}</td>
+                    <td>{{ friend.level }}</td>
+                    <td>{{ friend.habit_name }}</td>
+                    <td>{{ friend.last_log_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('app_views.dashboard_route') }}" class="back-link">Back to Dashboard</a>
+    </div>
+</body>
+
+</html>

@@ -1,10 +1,11 @@
 from api.v2.views import app_views
 from flask import abort, jsonify, request, redirect, url_for, render_template, Blueprint, flash
 from sqlalchemy.orm import joinedload, aliased
-from sqlalchemy import func
+from sqlalchemy import func, and_
 from models.room import Room
 from models.message import Message
 from models.user import User
+from models.log import Log
 from models.friendship import Friendship, FriendshipStatus
 from models.base import SessionLocal
 from models.models_helper import get_db_session
@@ -418,3 +419,52 @@ def unblock_user(user_id):
             flash('No block relationship found.', 'danger')
 
     return redirect(url_for('chat_views.people'))
+
+
+@chat_views.route('/friends')
+def friends_list():
+    # Replace with your method of getting the logged-in user ID
+    current_user_id = request.current_user.id
+
+    with get_db_session() as session:
+
+        # Step 1: Fetch friend IDs
+        friend_ids_subquery = session.query(Friendship.user_id_2).filter(
+            Friendship.user_id_1 == current_user_id,
+            Friendship.status == FriendshipStatus.ACCEPTED
+        ).subquery()
+
+        logging.info(f"Friend IDs fetched for user {current_user_id}")
+        logging.info(f"Friend IDs: {friend_ids_subquery}")
+
+        # Step 2: Fetch user data, latest log timestamp, and habit_name
+        friends_with_logs = session.query(
+            User.id.label("friend_id"),
+            User.username.label("friend_name"),
+            User.level.label("friend_level"),
+            func.max(Log.timestamp).label("last_log_date"),
+            func.max(Log.habit_name).label("last_log_habit_name")
+        ).outerjoin(Log, and_(Log.user_id == User.id, Log.visibility == "Public")).filter(
+            User.id.in_(friend_ids_subquery)
+        ).group_by(User.id).all()
+
+        logging.info(f"Friends with logs fetched for user {current_user_id}")
+        logging.info(f"Friends with logs: {friends_with_logs}")
+
+    # Step 3: Format data for the frontend
+    friends_dict = [
+        {
+            "id": friend.friend_id,
+            "name": friend.friend_name,
+            "level": friend.friend_level,
+            "last_log_date": friend.last_log_date or "No public logs",
+            "habit_name": friend.last_log_habit_name or "No recent habit"
+        }
+        for friend in friends_with_logs
+    ]
+
+    logging.info(f"Formatted friends data for user {current_user_id}")
+    logging.info(f"Formatted friends data: {friends_dict}")
+
+    # Step 4: Render the template
+    return render_template("friend_page.html", friends=friends_dict)

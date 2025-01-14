@@ -6,6 +6,7 @@ import hashlib
 from models.base import Base as SQLAlchemyBase, BaseClass, SessionLocal
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.ext.hybrid import hybrid_property
 from models.tag import Tag
 from models.friendship import Friendship
 from authentication import hash_password, is_valid
@@ -164,7 +165,12 @@ class User(BaseClass, SQLAlchemyBase):
             xp_threshold = (level ** 2) * 100
         return level - 1
 
-    @property
+    @hybrid_property
     def level(self):
         """Get the user's level based on XP."""
         return self.calculate_level()
+
+    @level.expression
+    def level(cls):
+        """SQL expression for calculating level."""
+        return func.floor(cls.total_xp / 1000)  # Use total_xp here

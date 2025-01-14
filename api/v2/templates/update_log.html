@@ -13,17 +13,17 @@
         <h1>Update Log</h1>
         <!-- Update Log Form with POST method -->
         <form action="/api/v2/logs/update" method="POST" id="update-log-form">
-            <label for="log_id">Log ID</label>
-            <input type="text" id="log_id" name="log_id" placeholder="Enter Log ID" required>
-
             <label for="habit_type">Habit Type</label>
-            <input type="text" id="habit_type" name="habit_type" placeholder="Enter Habit Type" required>
+            <input type="text" id="habit_type" name="habit_type" placeholder="Enter Habit Type"
+                value="{{ log.habit_type }}" required>
 
             <label for="habit_name">Habit Name</label>
-            <input type="text" id="habit_name" name="habit_name" placeholder="Enter Habit Name" required>
+            <input type="text" id="habit_name" name="habit_name" placeholder="Enter Habit Name"
+                value="{{ log.habit_name }}" required>
 
             <label for="log_details">Log Details</label>
-            <textarea id="log_details" name="log_details" placeholder="Describe your habit log" required></textarea>
+            <textarea id="log_details" name="log_details" placeholder="Describe your habit log"
+                value="{{ log.log_details }}" required></textarea>
 
             <label for="status">Status</label>
             <select id="status" name="status">
