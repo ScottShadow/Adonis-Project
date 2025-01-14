@@ -28,6 +28,7 @@ from api.v2.views.app_sockets import initialize_socketio, socketio
 
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = "adonis[the_first]@90314!"
 
 app.register_blueprint(app_views)
 app.register_blueprint(auth_views)
@@ -45,7 +46,7 @@ initialize_socketio(app)
 
 auth = SessionDBAuth()
 init_db()
-seed_tags()
+#seed_tags()
 
 
 @app.before_request

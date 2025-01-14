@@ -20,17 +20,65 @@
                 </tr>
             </thead>
             <tbody>
-                {% for user_id, username in users %}
+                {% for user_id, user_info in friendship_statuses.items() %}
                 <tr>
-                    <td>{{ username }}</td>
+                    <td>{{ user_info.username }}</td>
                     <td>
-                        <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=user_id) }}">
-                            <button type="submit">Start DM</button>
+                        {% if user_info.status is none %}
+                        <!-- No relationship: Show "Send Friend Request" -->
+                        <form method="POST" action="{{ url_for('chat_views.send_friend_request', user_id=user_id) }}">
+                            <button type="submit">Send Friend Request</button>
                         </form>
+                        {% elif user_info.status == 'pending' %}
+                        {% if user_info.requester == 'you' %}
+                        <!-- You sent the friend request and it's pending -->
+                        <form method="POST" action="{{ url_for('chat_views.cancel_friend_request', user_id=user_id) }}">
+                            <button type="submit">Cancel Request</button>
+                        </form>
+                        {% elif user_info.requester == 'them' %}
+                        <!-- They sent the friend request and it's pending -->
+                        <form method="POST" action="{{ url_for('chat_views.accept_friend_request', user_id=user_id) }}">
+                            <button type="submit">Accept Request</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('chat_views.reject_friend_request', user_id=user_id) }}">
+                            <button type="submit">Reject Request</button>
+                        </form>
+                        {% endif %}
+                        {% elif user_info.status == 'rejected' %}
+                        <!-- Request was rejected -->
+                        <span>Request Rejected</span>
+                        <form method="POST" action="{{ url_for('chat_views.send_friend_request', user_id=user_id) }}">
+                            <button type="submit">Send Friend Request</button>
+                        </form>
+                        {% elif user_info.status == 'blocked' %}
+                        {% if user_info.requester == 'you' %}
+                        <!-- Blocked -->
+                        <span>Blocked</span>
+                        <form method="POST" action="{{ url_for('chat_views.unblock_user', user_id=user_id) }}">
+                            <button type="submit">Unblock</button>
+                        </form>
+                        {% elif user_info.requester == 'them' %}
+                        <!-- You were blocked-->
+                        {% endif %}
+                        {% elif user_info.status == 'accepted' %}
+                        <!-- Accepted friendship -->
+                        <span>Friend</span>
+                        <!-- send dm -->
+                        <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=user_id) }}">
+                            <button type="submit">Send DM</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('chat_views.unfriend', user_id=user_id) }}">
+                            <button type="submit">Unfriend</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('chat_views.block_user', user_id=user_id) }}">
+                            <button type="submit">Block</button>
+                        </form>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
+
         </table>
 
         <!-- Pagination Controls -->
@@ -52,22 +100,7 @@
         </div>
     </div>
 
-    <style>
-        .pagination a {
-            margin: 0 5px;
-            text-decoration: none;
-            color: #8F00FF;
-        }
 
-        .pagination a.active {
-            font-weight: bold;
-            color: white;
-        }
-
-        .pagination a:hover {
-            text-decoration: underline;
-        }
-    </style>
 </body>
 
 </html>

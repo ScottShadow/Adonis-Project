@@ -7,6 +7,7 @@ from models.base import Base as SQLAlchemyBase, BaseClass, SessionLocal
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
 from sqlalchemy.orm import relationship, backref
 from models.tag import Tag
+from models.friendship import Friendship
 from authentication import hash_password, is_valid
 from models import room_members
 
@@ -39,7 +40,8 @@ class User(BaseClass, SQLAlchemyBase):
 
     # Relationships
     logs = relationship('Log', back_populates='user')
-    """ friendships_1 = relationship(
+
+    friendships_1 = relationship(
         'Friendship', foreign_keys='Friendship.user_id_1', back_populates='user_1')
     friendships_2 = relationship(
         'Friendship', foreign_keys='Friendship.user_id_2', back_populates='user_2')
@@ -47,11 +49,12 @@ class User(BaseClass, SQLAlchemyBase):
     friends = relationship(
         'User',
         secondary='friendships',
-        primaryjoin=id == Friendship.user_id_1,
-        secondaryjoin=id == Friendship.user_id_2,
-        backref=backref('user_friends', lazy='dynamic'),
+        primaryjoin="User.id == Friendship.user_id_1",
+        secondaryjoin="User.id == Friendship.user_id_2",
+        viewonly=True,
+        backref=backref('user_friends', lazy='joined'),
         overlaps='friendships_1,friendships_2',
-    ) """
+    )
     user_tags = relationship('UserTag', back_populates='user')
     rooms = relationship('Room', secondary=room_members,
                          back_populates='users')
