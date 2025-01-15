@@ -102,7 +102,7 @@
                     <tr>
                         <td>{{ friend.username }}</td>
                         <td class="action-buttons">
-                            <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=user_id) }}">
+                            <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=friend.id) }}">
                                 <button type="submit" class="dm-button">Send DM</button>
                             </form>
                             <form class="ajax-action-form" method="POST"
