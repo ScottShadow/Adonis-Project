@@ -4,37 +4,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friends List</title>
+    <title>Friends</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/friend_page.css') }}">
 </head>
 
 <body>
-    <div class="friends-list-container">
-        <h1>Your Friends</h1>
-        <table class="friends-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Level</th>
-                    <th>Last Public Log</th>
-                    <th>Log Details</th>
-                    <th>Logged At</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for friend in friends %}
-                <tr>
-                    <td>{{ friend.name }}</td>
-                    <td>{{ friend.level }}</td>
-                    <td>{{ friend.habit_name }}</td>
-                    <td>{{ friend.log_details }}</td>
-                    <td>{{ friend.last_log_date }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="sidebar">
+        <button onclick="showSection('friend-requests')">Friend Requests</button>
+        <button onclick="showSection('friend-list')">Your Friends</button>
+        <button onclick="showSection('requests-sent')">Requests Sent</button>
+        <button onclick="showSection('friend-logs')">Friends' Logs</button>
+
+    </div>
+    <div class="friends-container">
+
+        <!-- Friend Requests Section -->
+        <section id="friend-requests" class="visible">
+            <h2>Friend Requests</h2>
+            {% if friend_requests %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Requester</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in friend_requests %}
+                    <tr>
+                        <td>{{ request.username }}</td>
+                        <td class="action-buttons">
+                            <form class="ajax-action-form" method="POST"
+                                action="{{ url_for('chat_views.accept_friend_request', user_id=request.id) }}">
+                                <button type="submit" class="accept-button">Accept</button>
+                            </form>
+                            <form class="ajax-action-form" method="POST"
+                                action="{{ url_for('chat_views.reject_friend_request', user_id=request.id) }}">
+                                <button type="submit" class="reject-button">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>You have no pending friend requests.</p>
+            {% endif %}
+        </section>
+        <!-- Friend Requests Sent Section -->
+        <section id="requests-sent" class="hidden">
+            <h2>Requests Sent</h2>
+            {% if sent_requests %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Recipient</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in sent_requests %}
+                    <tr>
+                        <td>{{ request.username }}</td>
+                        <td>
+                            <form class="ajax-action-form" method="POST"
+                                action="{{ url_for('chat_views.cancel_friend_request', user_id=request.id) }}">
+                                <button type="submit" class="reject-button">Cancel Request</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>You haven't sent any friend requests yet.</p>
+            {% endif %}
+            <p></p>
+            <form method="GET" action="{{ url_for('chat_views.people') }}">
+                <input type="hidden" name="action" value="People">
+                <button type="submit" class="accept-button">Find more people</button>
+            </form>
+        </section>
+
+        <!-- Friend List Section -->
+        <section id="friend-list" class="hidden">
+            <h2>Your Friends</h2>
+            {% if friends %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for friend in friends %}
+                    <tr>
+                        <td>{{ friend.username }}</td>
+                        <td class="action-buttons">
+                            <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=user_id) }}">
+                                <button type="submit" class="dm-button">Send DM</button>
+                            </form>
+                            <form class="ajax-action-form" method="POST"
+                                action="{{ url_for('chat_views.unfriend', user_id=friend.id) }}">
+                                <button type="submit" class="reject-button">Remove</button>
+                            </form>
+                            <form class="ajax-action-form" method="POST"
+                                action="{{ url_for('chat_views.block_user', user_id=friend.id) }}">
+                                <button type="submit" class="block-button">Block</button>
+                            </form>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>You don't have any friends yet. Send some friend requests!</p>
+            {% endif %}
+        </section>
+
+        <!-- Friends' Logs Section -->
+        <section id="friend-logs" class="visible">
+            <h2>Friends' Logs</h2>
+            {% if friends %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Level</th>
+                        <th>Last Public Log</th>
+                        <th>Log Details</th>
+                        <th>Logged At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for friend in friends_logs %}
+                    <tr>
+                        <td>{{ friend.name }}</td>
+                        <td>{{ friend.level }}</td>
+                        <td>{{ friend.habit_name }}</td>
+                        <td>{{ friend.log_details }}</td>
+                        <td>{{ friend.last_log_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No public logs from friends yet.</p>
+            {% endif %}
+        </section>
+
         <a href="{{ url_for('app_views.dashboard_route') }}" class="back-link">Back to Dashboard</a>
     </div>
+    <script src="{{ url_for('static', filename='scripts/friend_page.js') }}"></script>
+
 </body>
 
 </html>

@@ -16,27 +16,49 @@
             <thead>
                 <tr>
                     <th>User</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for user_id, user_info in friendship_statuses.items() %}
                 <tr>
+                    <!-- User Column -->
                     <td>{{ user_info.username }}</td>
+
+                    <!-- Status Column -->
                     <td>
                         {% if user_info.status is none %}
-                        <!-- No relationship: Show "Send Friend Request" -->
+                        {% elif user_info.status == 'pending' %}
+                        {% if user_info.requester == 'you' %}
+                        Request Sent
+                        {% elif user_info.requester == 'them' %}
+                        Confirm request?
+                        {% endif %}
+                        {% elif user_info.status == 'rejected' %}
+                        Rejected
+                        {% elif user_info.status == 'blocked' %}
+                        {% if user_info.requester == 'you' %}
+                        Blocked
+                        {% elif user_info.requester == 'them' %}
+                        {% endif %}
+                        {% elif user_info.status == 'accepted' %}
+                        Friend
+                        {% endif %}
+                    </td>
+
+                    <!-- Action Column -->
+                    <td class="action-buttons">
+                        {% if user_info.status is none %}
                         <form method="POST" action="{{ url_for('chat_views.send_friend_request', user_id=user_id) }}">
                             <button type="submit">Send Friend Request</button>
                         </form>
                         {% elif user_info.status == 'pending' %}
                         {% if user_info.requester == 'you' %}
-                        <!-- You sent the friend request and it's pending -->
                         <form method="POST" action="{{ url_for('chat_views.cancel_friend_request', user_id=user_id) }}">
                             <button type="submit">Cancel Request</button>
                         </form>
                         {% elif user_info.requester == 'them' %}
-                        <!-- They sent the friend request and it's pending -->
                         <form method="POST" action="{{ url_for('chat_views.accept_friend_request', user_id=user_id) }}">
                             <button type="submit">Accept Request</button>
                         </form>
@@ -45,25 +67,16 @@
                         </form>
                         {% endif %}
                         {% elif user_info.status == 'rejected' %}
-                        <!-- Request was rejected -->
-                        <span>Request Rejected</span>
                         <form method="POST" action="{{ url_for('chat_views.send_friend_request', user_id=user_id) }}">
                             <button type="submit">Send Friend Request</button>
                         </form>
                         {% elif user_info.status == 'blocked' %}
                         {% if user_info.requester == 'you' %}
-                        <!-- Blocked -->
-                        <span>Blocked</span>
                         <form method="POST" action="{{ url_for('chat_views.unblock_user', user_id=user_id) }}">
                             <button type="submit">Unblock</button>
                         </form>
-                        {% elif user_info.requester == 'them' %}
-                        <!-- You were blocked-->
                         {% endif %}
                         {% elif user_info.status == 'accepted' %}
-                        <!-- Accepted friendship -->
-                        <span>Friend</span>
-                        <!-- send dm -->
                         <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=user_id) }}">
                             <button type="submit">Send DM</button>
                         </form>

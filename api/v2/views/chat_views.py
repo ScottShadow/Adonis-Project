@@ -427,17 +427,37 @@ def friends_list():
     current_user_id = request.current_user.id
 
     with get_db_session() as session:
+        # Fetch friend requests
+        friend_requests = (
+            session.query(User.id, User.username)
+            .join(Friendship, and_(
+                Friendship.user_id_2 == current_user_id,
+                Friendship.user_id_1 == User.id,
+                Friendship.status == FriendshipStatus.PENDING
+            ))
+            .all()
+        )
 
-        # Step 1: Fetch friend IDs
+        friend_requests_dict = [
+            {"id": user_id, "username": username} for user_id, username in friend_requests
+        ]
+
+        # Fetch friends
         friend_ids_subquery = session.query(Friendship.user_id_2).filter(
             Friendship.user_id_1 == current_user_id,
             Friendship.status == FriendshipStatus.ACCEPTED
         ).subquery()
 
-        logging.info(f"Friend IDs fetched for user {current_user_id}")
-        logging.info(f"Friend IDs: {friend_ids_subquery}")
+        friends = session.query(User.id, User.username, User.level).filter(
+            User.id.in_(friend_ids_subquery)
+        ).all()
 
-        # Step 2: Fetch user data, latest log timestamp, and habit_name
+        friends_dict = [
+            {"id": user_id, "username": username, "level": level}
+            for user_id, username, level in friends
+        ]
+
+        # Fetch logs for friends
         friends_with_logs = session.query(
             User.id.label("friend_id"),
             User.username.label("friend_name"),
@@ -449,24 +469,39 @@ def friends_list():
             User.id.in_(friend_ids_subquery)
         ).group_by(User.id).all()
 
-        logging.info(f"Friends with logs fetched for user {current_user_id}")
-        logging.info(f"Friends with logs: {friends_with_logs}")
+        friends_logs_dict = [
+            {
+                "id": friend.friend_id,
+                "name": friend.friend_name,
+                "level": friend.friend_level,
+                "last_log_date": friend.last_log_date or "No public logs",
+                "log_details": friend.last_log_details or "No log details",
+                "habit_name": friend.last_log_habit_name or "No recent habit"
+            }
+            for friend in friends_with_logs
+        ]
+        # Fetch sent friend requests
+        sent_requests = (
+            session.query(User.id, User.username)
+            .join(Friendship, and_(
+                Friendship.user_id_1 == current_user_id,
+                Friendship.user_id_2 == User.id,
+                Friendship.status == FriendshipStatus.PENDING
+            ))
+            .all()
+        )
 
-    # Step 3: Format data for the frontend
-    friends_dict = [
-        {
-            "id": friend.friend_id,
-            "name": friend.friend_name,
-            "level": friend.friend_level,
-            "last_log_date": friend.last_log_date or "No public logs",
-            "log_details": friend.last_log_details or "No log details",
-            "habit_name": friend.last_log_habit_name or "No recent habit"
-        }
-        for friend in friends_with_logs
-    ]
+        sent_requests_dict = [
+            {"id": user_id, "username": username} for user_id, username in sent_requests
+        ]
+        logging.info(
+            f"{friend_requests_dict}{friends_dict}{friends_logs_dict}"
+        )
 
-    logging.info(f"Formatted friends data for user {current_user_id}")
-    logging.info(f"Formatted friends data: {friends_dict}")
-
-    # Step 4: Render the template
-    return render_template("friend_page.html", friends=friends_dict)
+    return render_template(
+        "friend_page.html",
+        friend_requests=friend_requests_dict,
+        friends=friends_dict,
+        friends_logs=friends_logs_dict,
+        sent_requests=sent_requests_dict
+    )

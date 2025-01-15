@@ -107,3 +107,12 @@ button:hover {
     border-radius: 5px;
     transition: background-color 0.3s, box-shadow 0.3s;
 }
+
+/* Align forms and buttons in a single row */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    /* Space between buttons */
+    align-items: center;
+    /* Vertically align buttons */
+}

@@ -78,3 +78,135 @@ h1 {
     background-color: #00e68a;
     box-shadow: 0px 0px 10px #00ff9c;
 }
+
+.friends-table,
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table th,
+table td {
+    border: 1px solid rgb(33 33 33);
+    padding: 8px;
+    text-align: left;
+}
+
+table th {
+    background-color: rgb(25, 25, 25);
+}
+
+button.dm-button {
+    background-color: #2bde55;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button.accept-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button.accept-button:hover {
+    background-color: #218838;
+}
+
+button.reject-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button.reject-button:hover {
+    background-color: #c82333;
+}
+
+button.block-button {
+    background-color: yellow;
+    color: rgb(5, 5, 5);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.friend-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.friend-list th,
+.friend-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.friend-list th {
+    background-color: #f4f4f4;
+}
+
+.friend-list p {
+    font-style: italic;
+    color: #666;
+}
+
+/* Sidebar styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background-color: rgb(30, 30, 30);
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #00ff9c;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.sidebar button:hover {
+    background-color: #0056b3;
+}
+
+/* Content container */
+.friends-container {
+    margin-left: 220px;
+    padding: 20px;
+}
+
+/* Section visibility */
+.hidden {
+    display: none;
+}
+
+/* Align forms and buttons in a single row */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    /* Space between buttons */
+    align-items: center;
+    /* Vertically align buttons */
+}
