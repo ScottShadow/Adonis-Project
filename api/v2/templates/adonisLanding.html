@@ -41,7 +41,8 @@
                         <li class="nav-item"><a class="nav-link me-lg-3" href="#download">Download</a></li> -->
                 </ul>
                 <!-- <a href="{{ url_for('auth_views.login') }}" id="openLoginModal" class="btn btn-primary">Login</a> -->
-                <button id="#openLoginModal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#authModal">
+                <button id="openLoginModal" type="button" class="btn btn-primary" data-toggle="modal"
+                    data-target="#authModal">
                     Login
                 </button>
             </div>
@@ -62,7 +63,8 @@
                             Stay Consistent.
                         </p>
                         <!-- <a id="openModalButton" class="btn btn-success">Get Started</a> -->
-                        <button id="openModalButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#authModal">
+                        <button id="openModalButton" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#authModal" onclick="showSignupForm()">
                             Get Started
                         </button>
                     </div>
@@ -115,31 +117,35 @@
         </div>
     </footer>
     <!-- Signup/Login Modal -->
-    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel"
+        aria-describedby="authModalDesc" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
+                <!-- Signup Form -->
                 <div id="signup-container" class="auth-container active">
                     <h1>Sign Up</h1>
                     <form method="POST" action="{{ url_for('auth_views.signup') }}">
-                        <input type="text" id="first-name" name="first_name" placeholder="First Name" required>
-                        <input type="text" id="last-name" name="last_name" placeholder="Last Name" required>
-                        <input type="text" id="username" name="username" placeholder="Username" required>
-                        <input type="email" id="email" name="email" placeholder="Email" required>
-                        <input type="password" id="password" name="password" placeholder="Password" required>
-                        <button type="submit">Sign Up</button>
+                        <input type="text" name="first_name" placeholder="First Name" required />
+                        <input type="text" name="last_name" placeholder="Last Name" required />
+                        <input type="text" name="username" placeholder="Username" required />
+                        <input type="email" name="email" placeholder="Email" required />
+                        <input type="password" name="password" placeholder="Password" required />
+                        <button type="submit" class="btn btn-primary w-100">Sign Up</button>
                     </form>
-                    <a href="#" class="toggle-link"
-                        data-target="#login-container">Already have an account? Login</a>
+                    <p><a href="#" class="toggle-link" data-target="#login-container">Already have an account? Login</a>
+                    </p>
                 </div>
+
+                <!-- Login Form -->
                 <div id="login-container" class="auth-container">
                     <h1>Login</h1>
                     <form method="POST" action="{{ url_for('auth_views.login') }}">
-                        <input type="email" id="login-email" name="email" placeholder="Email" required>
-                        <input type="password" id="login-password" name="password" placeholder="Password" required>
-                        <button type="submit">Login</button>
+                        <input type="email" name="email" placeholder="Email" required />
+                        <input type="password" name="password" placeholder="Password" required />
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
                     </form>
-                    <a href="#" class="toggle-link"
-                        data-target="#signup-container">Don't have an account? Sign Up</a>
+                    <p><a href="#" class="toggle-link" data-target="#signup-container">Don't have an account? Sign
+                            Up</a></p>
                 </div>
             </div>
         </div>

@@ -12,7 +12,7 @@
     <div class="log-form-container">
         <h1>Update Log</h1>
         <!-- Update Log Form with POST method -->
-        <form action="/api/v2/logs/update" method="POST" id="update-log-form">
+        <form action="{{ url_for('log_views.update_log', log_id=log.id) }}" method="POST" id="update-log-form">
             <label for="habit_type">Habit Type</label>
             <input type="text" id="habit_type" name="habit_type" placeholder="Enter Habit Type"
                 value="{{ log.habit_type }}" required>
@@ -23,7 +23,7 @@
 
             <label for="log_details">Log Details</label>
             <textarea id="log_details" name="log_details" placeholder="Describe your habit log"
-                value="{{ log.log_details }}" required></textarea>
+                required>{{ log.log_details }}</textarea>
 
             <label for="status">Status</label>
             <select id="status" name="status">

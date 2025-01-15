@@ -134,11 +134,14 @@ def signup() -> str:
 
     # Check if the email is already registered
     # existing_users = User.search({'email': email})
-    existing_users = User.search_db({'email': email})
-    if existing_users:
+    existing_email = User.search_db({'email': email})
+    existing_username = User.search_db({'username': username})
+    if existing_email:
         print(f"[DEBUG] Email already registered: {email}")
         return jsonify({'error': 'email already registered'}), 400
-
+    elif existing_username:
+        print(f"[DEBUG] Username already registered: {username}")
+        return jsonify({'error': 'username was taken'}), 400
     try:
         print(f"[DEBUG] Creating new user with email: {email}")
         # Create new user

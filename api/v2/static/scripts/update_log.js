@@ -1,5 +1,5 @@
 document.getElementById('update-log-form').addEventListener('submit', function (event) {
-  event.preventDefault();
+  //event.preventDefault();
 
   const formData = new FormData(this);
 

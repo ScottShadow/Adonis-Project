@@ -23,7 +23,7 @@ $(document).ready(function () {
 
   // Toggle between login and signup forms
   $('.toggle-link').on('click', function (e) {
-    e.preventDefault();
+    //e.preventDefault();
 
     // Debug logs to help during development
     console.log('Toggle link clicked');
@@ -44,3 +44,9 @@ $(document).ready(function () {
   });
 
 });
+
+function showSignupForm() {
+  // Ensure the signup container is active
+  document.querySelector('#signup-container').classList.add('active');
+  document.querySelector('#login-container').classList.remove('active');
+}
