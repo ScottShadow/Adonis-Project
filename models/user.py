@@ -40,7 +40,8 @@ class User(BaseClass, SQLAlchemyBase):
     last_login = Column(DateTime, nullable=True)  # Last login timestamp
 
     # Relationships
-    logs = relationship('Log', back_populates='user')
+    logs = relationship('Log', back_populates='user',
+                        order_by='Log.timestamp.desc()')
 
     friendships_1 = relationship(
         'Friendship', foreign_keys='Friendship.user_id_1', back_populates='user_1')

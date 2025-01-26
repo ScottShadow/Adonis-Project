@@ -457,17 +457,30 @@ def friends_list():
             for user_id, username, level in friends
         ]
 
-        # Fetch logs for friends
+        # Subquery to find the most recent log for each user
+        recent_logs_subquery = session.query(
+            Log.user_id.label("log_user_id"),
+            func.max(Log.timestamp).label("max_timestamp")
+        ).filter(Log.visibility == "Public").group_by(Log.user_id).subquery()
+
+        # Main query to fetch user and log details
         friends_with_logs = session.query(
             User.id.label("friend_id"),
             User.username.label("friend_name"),
             User.level.label("friend_level"),
-            func.max(Log.timestamp).label("last_log_date"),
-            func.max(Log.habit_name).label("last_log_habit_name"),
-            func.max(Log.log_details).label("last_log_details")
-        ).outerjoin(Log, and_(Log.user_id == User.id, Log.visibility == "Public")).filter(
-            User.id.in_(friend_ids_subquery)
-        ).group_by(User.id).all()
+            Log.timestamp.label("last_log_date"),
+            Log.habit_name.label("last_log_habit_name"),
+            Log.log_details.label("last_log_details")
+        ).outerjoin(
+            recent_logs_subquery,
+            recent_logs_subquery.c.log_user_id == User.id
+        ).outerjoin(
+            Log,
+            and_(
+                Log.user_id == recent_logs_subquery.c.log_user_id,
+                Log.timestamp == recent_logs_subquery.c.max_timestamp
+            )
+        ).filter(User.id.in_(friend_ids_subquery)).all()
 
         friends_logs_dict = [
             {
