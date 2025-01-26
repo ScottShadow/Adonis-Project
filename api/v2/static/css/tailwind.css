@@ -1,0 +1,117 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+
+/* Dark Mode (Black & Neon Green) */
+.theme-dark {
+    --background-color: #000000;
+    /* Pure Black */
+    --text-color: #00FF00;
+    text-shadow: 0 0 5px #00FF00, 0 0 10px #00FF00;
+    /* Neon Green */
+    --accent-color: #12cc12;
+    /* Lighter Neon Green */
+
+    @apply bg-[var(--background-color)] text-[var(--text-color)];
+}
+
+.theme-dark button {
+    @apply bg-[var(--accent-color)] text-black hover:bg-green-300;
+}
+
+/* Standard Mode (Soft Neutrals) */
+.theme-standard {
+    --background-color: #F8F9FA;
+    /* Soft White */
+    --text-color: #212529;
+    /* Charcoal Gray */
+    --accent-color: #D4AF37;
+    /* Soft Gold */
+
+    @apply bg-[var(--background-color)] text-[var(--text-color)];
+}
+
+.theme-standard button {
+    @apply bg-[var(--accent-color)] text-black hover:bg-yellow-400;
+}
+
+/* Midnight Mode (Cool & Elegant) */
+.theme-midnight {
+    --background-gradient: linear-gradient(180deg, #000000, #121C3D);
+    /* Black to Deep Navy */
+    --text-color: #BB86FC;
+    text-shadow: 0 0 5px var(--text-color), 0 0 10px var(--text-color);
+    /* Soft Purple */
+    --accent-color: #7C4DFF;
+    /* Turquoise */
+
+    @apply bg-gradient-to-b from-black to-[#121C3D] text-[var(--text-color)];
+}
+
+.theme-midnight button {
+    @apply bg-[var(--accent-color)] text-black hover:bg-teal-300;
+}
+
+.theme-midnight button:hover {
+    transition: background-color 0.3s ease-in-out, transform 0.2s;
+    transform: scale(1.05);
+    /* Slight Zoom */
+    box-shadow: 0 0 8px var(--accent-color);
+    /* Turquoise Glow */
+}
+
+/* pretty Mode (Soft & Relaxing) */
+.theme-pretty {
+    --background-color: #FAF8F7;
+    /* Cream White */
+    --text-color: #6A1B9A;
+    /* Soft Purple */
+    --accent-color: #FFB3C6;
+    /* Light Pink */
+
+    @apply bg-[var(--background-color)] text-[var(--text-color)];
+}
+
+.theme-pretty button {
+    @apply bg-[var(--accent-color)] text-white hover:bg-pink-400;
+}
+
+/* lagoon Mode (Cool & Refreshing) */
+.theme-lagoon {
+    --background-color: #0A9C91;
+    /* Light Aqua */
+    --text-color: #ffffff;
+    /* Teal */
+    --accent-color: #1C4542;
+    /* Bright Cyan */
+
+    @apply bg-[var(--background-color)] text-[var(--text-color)];
+}
+
+.theme-lagoon button {
+    @apply bg-[var(--accent-color)] text-white hover:bg-[#1C4542];
+}
+
+/* Blue Serenity (Relaxing Blues) */
+.theme-serenity {
+    --background-color: #E3F2FD;
+    /* Light Sky Blue */
+    --text-color: #1565c0;
+    /* Deep Blue */
+    --accent-color: #0068DC;
+    /* Bright Sky Blue */
+
+    @apply bg-[var(--background-color)] text-[var(--text-color)];
+}
+
+.theme-serenity button {
+    @apply bg-[var(--accent-color)] text-white hover:bg-[#2196F3];
+    /* Slightly darker blue on hover */
+}
+
+.theme-serenity button:hover {
+    transition: background-color 0.3s ease-in-out, transform 0.2s;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px var(--accent-color);
+    /* Blue Glow */
+}
