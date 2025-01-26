@@ -261,6 +261,16 @@ def update_log(log_id):
                     "No habit_name provided for log_id: %s", log_id)
                 return jsonify({'error': 'No habit_name provided'}), 400
 
+            visibility = data.get('visibility')
+            if visibility:
+                log.visibility = visibility
+                logging.info("Updated visibility for log_id: %s to %s",
+                             log_id, visibility)
+            else:
+                logging.warning(
+                    "No visibility provided for log_id: %s", log_id)
+                return jsonify({'error': 'No visibility provided'}), 400
+
             log_details = data.get('log_details')
             log.log_details = log_details
             logging.info("Updated log_details for log_id: %s", log_id)
