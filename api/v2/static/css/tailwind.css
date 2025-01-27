@@ -1,117 +1,124 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Dancing+Script:wght@400;700&family=Lora:wght@400;700&family=Roboto+Slab:wght@400;700&family=Quicksand:wght@400;700&family=Press+Start+2P&display=swap');
 
 
-/* Dark Mode (Black & Neon Green) */
-.theme-dark {
-    --background-color: #000000;
-    /* Pure Black */
-    --text-color: #00FF00;
-    text-shadow: 0 0 5px #00FF00, 0 0 10px #00FF00;
-    /* Neon Green */
-    --accent-color: #12cc12;
-    /* Lighter Neon Green */
 
-    @apply bg-[var(--background-color)] text-[var(--text-color)];
+button,
+input,
+textarea {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.theme-dark button {
-    @apply bg-[var(--accent-color)] text-black hover:bg-green-300;
-}
 
-/* Standard Mode (Soft Neutrals) */
+
+/* Theme Variables */
 .theme-standard {
-    --background-color: #F8F9FA;
-    /* Soft White */
-    --text-color: #212529;
-    /* Charcoal Gray */
-    --accent-color: #D4AF37;
-    /* Soft Gold */
-
-    @apply bg-[var(--background-color)] text-[var(--text-color)];
-}
-
-.theme-standard button {
-    @apply bg-[var(--accent-color)] text-black hover:bg-yellow-400;
-}
-
-/* Midnight Mode (Cool & Elegant) */
-.theme-midnight {
-    --background-gradient: linear-gradient(180deg, #000000, #121C3D);
-    /* Black to Deep Navy */
-    --text-color: #BB86FC;
-    text-shadow: 0 0 5px var(--text-color), 0 0 10px var(--text-color);
-    /* Soft Purple */
+    --background-color: #121C3D;
+    --text-color: #E4CFFF;
     --accent-color: #7C4DFF;
-    /* Turquoise */
-
-    @apply bg-gradient-to-b from-black to-[#121C3D] text-[var(--text-color)];
+    --background-color-contrast: #0D1A2B;
+    --accent-color-contrast: #00E5FF;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 8px #7C4DFF, 0 0 16px #7C4DFF;
+    box-shadow: 0 0 12px #7C4DFF, 0 0 24px #7C4DFF inset;
 }
 
-.theme-midnight button {
-    @apply bg-[var(--accent-color)] text-black hover:bg-teal-300;
-}
-
-.theme-midnight button:hover {
-    transition: background-color 0.3s ease-in-out, transform 0.2s;
-    transform: scale(1.05);
-    /* Slight Zoom */
-    box-shadow: 0 0 8px var(--accent-color);
-    /* Turquoise Glow */
-}
-
-/* pretty Mode (Soft & Relaxing) */
-.theme-pretty {
-    --background-color: #FAF8F7;
-    /* Cream White */
-    --text-color: #6A1B9A;
-    /* Soft Purple */
-    --accent-color: #FFB3C6;
-    /* Light Pink */
-
-    @apply bg-[var(--background-color)] text-[var(--text-color)];
-}
-
-.theme-pretty button {
-    @apply bg-[var(--accent-color)] text-white hover:bg-pink-400;
-}
-
-/* lagoon Mode (Cool & Refreshing) */
-.theme-lagoon {
-    --background-color: #0A9C91;
-    /* Light Aqua */
+.theme-pink-romance {
+    --background-color: #e99ba8;
     --text-color: #ffffff;
-    /* Teal */
-    --accent-color: #1C4542;
-    /* Bright Cyan */
-
-    @apply bg-[var(--background-color)] text-[var(--text-color)];
+    --accent-color: #f42552;
+    --background-color-contrast: #F05F7F;
+    --accent-color-contrast: #D96D7E;
+    font-family: 'Dancing Script', cursive;
 }
 
-.theme-lagoon button {
-    @apply bg-[var(--accent-color)] text-white hover:bg-[#1C4542];
+.theme-ocean-breeze {
+    --background-color: #A0D9CF;
+    --text-color: #ffffff;
+    --accent-color: #0c6660;
+    --background-color-contrast: #0A9C91;
+    --accent-color-contrast: #1C4542;
+    font-family: 'Lora', serif;
 }
 
-/* Blue Serenity (Relaxing Blues) */
-.theme-serenity {
-    --background-color: #E3F2FD;
-    /* Light Sky Blue */
-    --text-color: #1565c0;
-    /* Deep Blue */
-    --accent-color: #0068DC;
-    /* Bright Sky Blue */
-
-    @apply bg-[var(--background-color)] text-[var(--text-color)];
+.theme-sandstorm {
+    --background-color: #071739;
+    --text-color: black;
+    --accent-color: #E3C39D;
+    --background-color-contrast: #4B6382;
+    --accent-color-contrast: #A68868;
+    font-family: 'Roboto Slab', serif;
+    @apply bg-gradient-to-b from-[var(--background-color)] from-80% to-[var(--background-color-contrast)] to-120%;
 }
 
-.theme-serenity button {
-    @apply bg-[var(--accent-color)] text-white hover:bg-[#2196F3];
-    /* Slightly darker blue on hover */
+.theme-whimsical-dream {
+    --background-color: #7B466A;
+    --text-color: #D391B0;
+    --accent-color: #5D3C64;
+    --background-color-contrast: #0C0420;
+    --accent-color-contrast: #BA6E8F;
+    font-family: 'Quicksand', sans-serif;
+    @apply bg-gradient-to-r from-[var(--background-color)] to-[var(--background-color-contrast)];
 }
 
-.theme-serenity button:hover {
-    transition: background-color 0.3s ease-in-out, transform 0.2s;
+.theme-neon-dream {
+    --background-color: #000000;
+    --text-color: #00FF9C;
+    --accent-color: #8F00FF;
+    --background-color-contrast: #2B2B4D;
+    --accent-color-contrast: #FFFFFF;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 8px var(--text-color), 0 0 16px var(--text-color);
+    box-shadow: 0 0 12px var(--background-color-contrast), 0 0 24px var(--background-color-contrast) inset;
+    @apply bg-radial from-[#0f0f0f] from-0% via-[#070707] via-50% to-[var(--background-color)] to-60%;
+}
+
+/* Global Theme Application */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+    transition: font-family 0.5s ease-in-out;
+}
+
+button {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+button:hover {
+    background-color: var(--accent-color-contrast);
+    color: var(--accent-color);
     transform: scale(1.05);
-    box-shadow: 0 0 10px var(--accent-color);
-    /* Blue Glow */
+}
+
+a:hover {
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-color-contrast);
+    border-color: var(--accent-color);
+}
+
+input {
+    background-color: var(--background-color-contrast);
+    color: var(--text-color);
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+    width: 10px;
+    background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color-contrast);
 }

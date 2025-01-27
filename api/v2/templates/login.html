@@ -5,43 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Adonis App</title>
-    <link rel="stylesheet" href="../static/css/output.css">
+    <!--     <link rel="stylesheet" href="../static/css/output.css"> -->
     <!-- Flask: Uncomment below for server -->
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
 </head>
 
-<body class="container mx-auto min-h-screen">
-    <!-- Theme Switcher -->
-    <div class="fixed bottom-4 right-4 flex space-x-2 sm:bottom-2 sm:right-2">
-        <!-- Standard Mode -->
-        <button class="w-8 h-8 rounded-full focus:outline-none" onclick="setTheme('theme-standard')"
-            aria-label="Standard Mode" style="background-color: #F8F9FA; border: 2px solid #D4AF37;">
-        </button>
-        <!-- Lagoon Mode -->
-        <button class="w-8 h-8 rounded-full focus:outline-none" onclick="setTheme('theme-lagoon')"
-            aria-label="Lagoon Mode" style="background-color: #0A9C91; border: 2px solid #1C4542;">
-        </button>
-        <!-- Serenity Mode -->
-        <button class="w-8 h-8 rounded-full focus:outline-none" onclick="setTheme('theme-serenity')"
-            aria-label="Serenity Mode" style="background-color: #E3F2FD; border: 2px solid #42A5F5;">
-        </button>
-        <!-- Pretty Mode -->
-        <button class="w-8 h-8 rounded-full focus:outline-none" onclick="setTheme('theme-pretty')"
-            aria-label="Pretty Mode" style="background-color: #FAF8F7; border: 2px solid #FFB3C6;">
-        </button>
-        <!-- Midnight Mode -->
-        <button class="w-8 h-8 rounded-full focus:outline-none" onclick="setTheme('theme-midnight')"
-            aria-label="Midnight Mode" style="background-color: #121212; border: 2px solid #03DAC5;">
-        </button>
-        <!-- Dark Mode -->
-        <button class="w-8 h-8 rounded-full focus:outline-none" onclick="setTheme('theme-dark')" aria-label="Dark Mode"
-            style="background-color: #000000; border: 2px solid #1AFF1A;">
-        </button>
-    </div>
+<body class="container flex mx-auto min-h-screen justify-center items-center align-middle">
+
+    {% include 'theme-switcher.html' %}
+
 
 
     <!-- Login Form -->
-    <div class="p-6 rounded-lg shadow-lg text-center max-w-sm justify-center items-center">
+    <div class="login-container relative p-6 rounded-lg shadow-lg text-center max-w-sm align-middle m-10">
         <h1 class="text-3xl font-orbitron">Login</h1>
         <form method="POST" action="{{ url_for('auth_views.login') }}">
             <input type="text" name="email" placeholder="Email" class="w-full p-3 mt-4 rounded border focus:ring-2"
@@ -57,38 +33,6 @@
         </a>
     </div>
 
-    <script>
-        window.onload = function () {
-            const savedTheme = localStorage.getItem('theme');
-            const themeToApply = savedTheme || 'theme-standard'; // Fallback to 'theme-standard'
-
-            console.log('Saved theme from localStorage:', savedTheme);
-            console.log('Applying theme:', themeToApply);
-
-            setTheme(themeToApply);
-        };
-        function setTheme(theme) {
-            // Remove all existing theme classes from the body
-            const themeClasses = [
-                'theme-dark',
-                'theme-lagoon',
-                'theme-pretty',
-                'theme-standard',
-                'theme-midnight',
-                'theme-serenity'
-            ];
-            document.body.classList.remove(...themeClasses);
-
-            // Apply the selected theme class
-            document.body.classList.add(theme);
-
-            // Save the selected theme to localStorage
-            localStorage.setItem('theme', theme);
-        }
-
-        // Load the saved theme on page load
-
-    </script>
 </body>
 
 </html>

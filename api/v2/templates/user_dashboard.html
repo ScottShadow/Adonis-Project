@@ -5,145 +5,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gamified Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js" defer></script>
+
+
 </head>
 
-<body>
-    <div class="dashboard">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <form method="GET" action="{{ url_for('user_views.view_profile') }}">
-                <input type="hidden" name="action" value="profile">
-                <button type="submit">Profile</button>
-            </form>
-            <form method="GET" action="{{ url_for('chat_views.friends_list') }}">
-                <input type="hidden" name="action" value="friends">
-                <button type="submit">Friends</button>
-            </form>
-            <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
-                <input type="hidden" name="action" value="logs">
-                <button type="submit">Create New Log</button>
-            </form>
-            <form method="GET" action="{{ url_for('event_views.home') }}">
-                <input type="hidden" name="action" value="Events">
-                <button type="submit">Events</button>
-            </form>
-            <form method="GET" action="{{ url_for('user_views.easter_egg') }}">
-                <input type="hidden" name="action" value="Events">
-                <button type="submit">DONT CLICK Here</button>
-            </form>
-            <form method="GET" action="{{ url_for('chat_views.global_chat') }}">
-                <input type="hidden" name="action" value="Global Chat">
-                <button type="submit">Global Chat</button>
-            </form>
-            <form method="GET" action="{{ url_for('chat_views.people') }}">
-                <input type="hidden" name="action" value="People">
-                <button type="submit">People</button>
-            </form>
+<body class="bg-[var(--background-color)] text-[var(--text-color)] min-h-screen flex flex-col md:flex-row">
+    {% include 'theme-switcher.html' %}
+    <!-- Sidebar -->
+    <div x-data="sidebar()" x-init="$nextTick(() => { console.log('Alpine initialized!') })" class="relative">
+
+        <div :class="isOpen ? 'w-screen md:w-[20%]' : 'w-[10px]'"
+            class="fixed top-0 left-0 h-full bg-[var(--accent-color)] transition-all duration-300 ease-in-out shadow-lg z-50">
+
+            <!-- Draggable/Clickable Area -->
+            <div @click="toggle()" @touchstart="startDrag($event)" @touchend="endDrag($event)"
+                class="h-full bg-[var(--accent-color-contrast)] cursor-pointer" :class="isOpen ? 'w-full' : 'w-[5px]'">
+                <!-- Sidebar Content -->
+                <nav x-show="isOpen" class="mt-4 p-6 text-[var(--text-color)] space-y-4">
+                    <form method="GET" action="{{ url_for('user_views.view_profile') }}">
+                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Profile</button>
+                    </form>
+                    <form method="GET" action="{{ url_for('chat_views.friends_list') }}">
+                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Friends</button>
+                    </form>
+                    <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
+                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Create New
+                            Log</button>
+                    </form>
+                    <form method="GET" action="{{ url_for('chat_views.global_chat') }}">
+                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Global Chat</button>
+                    </form>
+                    <form method="GET" action="{{ url_for('chat_views.people') }}">
+                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">People</button>
+                    </form>
+                    <form method="GET" action="{{ url_for('event_views.home') }}">
+                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Events</button>
+                    </form>
+                    <form method="GET" action="{{ url_for('user_views.easter_egg') }}">
+                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Easter Egg</button>
+                    </form>
+
+                </nav>
+            </div>
+
 
         </div>
+    </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <table>
-                <!-- User Info -->
-                <thead>
-                    <tr>
-                        <th colspan="3">User Information</th>
-
-                    </tr>
-                </thead>
+    <!-- Main Content -->
+    <div class="main-content flex-1 p-6 space-y-6">
+        <!-- User Info -->
+        <div class="bg-[var(--background-color-contrast)] p-4 rounded shadow">
+            <h2 class="text-lg font-semibold">User Information</h2>
+            <table class="w-full text-left">
                 <tbody>
-                    <tr>
-                        <td>User Name</td>
-                        <td>{{ user_name }} </td>
+                    <tr class="border-b border-[var(--accent-color)]">
+                        <td class="py-2">User Name</td>
+                        <td>{{ user_name }}</td>
                         <td>
                             <form action="{{ url_for('auth_views.logout') }}" method="POST">
-                                <input type="hidden" name="action" value="Logout">
-                                <button type="submit">Logout</button>
+                                <button
+                                    class="bg-[var(--accent-color-contrast)] hover:bg-[var(--accent-color)] text-[var(--text-color)] py-1 px-3 rounded">
+                                    Logout
+                                </button>
                             </form>
                         </td>
                     </tr>
                     <tr>
-                        <td>Level</td>
+                        <td class="py-2">Level</td>
                         <td>{{ user_level }}</td>
                         <td></td>
                     </tr>
-
                 </tbody>
             </table>
+        </div>
 
-            <!-- XP Progress Bar -->
-            <table>
+        <!-- XP Progress Bar -->
+        <div class="bg-[var(--background-color-contrast)] p-4 rounded shadow">
+            <h2 class="text-lg font-semibold">XP Progress</h2>
+            <div class="w-full bg-[var(--accent-color-contrast)] rounded h-6 overflow-hidden">
+                <div class="bg-[var(--accent-color)] h-full" style="width: {{ xp_percentage }}%;"></div>
+            </div>
+        </div>
+
+        <!-- Recent Logs -->
+        <div class="bg-[var(--background-color-contrast)] p-4 rounded shadow">
+            <h2 class="text-lg font-semibold">Recent Logs</h2>
+            <table class="w-full text-left">
                 <thead>
                     <tr>
-                        <th colspan="2">XP Progress</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="2">
-                            <div class="xp-bar">
-                                <div class="xp-bar-fill" style="width: {{ xp_percentage }}%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- Recent Logs -->
-            <table>
-                <thead>
-                    <tr>
-                        <th>Habit Name</th>
-                        <th>Habit Type</th>
-                        <th>Description</th>
+                        <th class="border-b border-[var(--accent-color)] py-2">Habit Name</th>
+                        <th class="border-b border-[var(--accent-color)] py-2">Habit Type</th>
+                        <th class="border-b border-[var(--accent-color)] py-2">Description</th>
+                        <th class="border-b border-[var(--accent-color)] py-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for log in recent_logs %}
-                    <tr>
-                        <td>{{ log.habit_name }}</td>
+                    <tr class="border-b border-[var(--accent-color)]">
+                        <td class="py-2">{{ log.habit_name }}</td>
                         <td>{{ log.habit_type }}</td>
                         <td>{{ log.log_details }}</td>
                         <td>
-                            <!-- Button that routes to the log's update page -->
                             <form method="GET" action="{{ url_for('log_views.update_log', log_id=log.id) }}"
-                                style="display: inline;">
-                                <button type="submit">Edit</button>
+                                class="inline">
+                                <button
+                                    class="bg-[var(--accent-color-contrast)] hover:bg-[var(--accent-color)] text-[var(--text-color)] py-1 px-3 rounded">
+                                    Edit
+                                </button>
                             </form>
-                            <!-- Button to delete the log -->
                             <form method="POST" action="{{ url_for('log_views.delete_log', log_id=log.id) }}"
-                                style="display: inline;">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit">Delete</button>
+                                class="inline">
+                                <button class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
+                                    Delete
+                                </button>
                             </form>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
 
-            <!-- Activity Summary -->
-            <table>
-                <thead>
-                    <tr>
-                        <th colspan="2">Activity Summary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="2">
-                            <div class="summary-chart">
-                                <!-- Placeholder for activity chart -->
-                                Activity Chart Goes Here
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Activity Summary -->
+        <div class="bg-[var(--background-color-contrast)] p-4 rounded shadow">
+            <h2 class="text-lg font-semibold">Activity Summary</h2>
+            <div
+                class="summary-chart h-48 flex items-center justify-center bg-[var(--accent-color)] rounded text-white">
+                Activity Chart Goes Here
+            </div>
         </div>
     </div>
+    <script>
+        function sidebar() {
+            return {
+                isOpen: false, // Sidebar state
+                startX: 0, // Tracks touch starting X position
+                endX: 0, // Tracks touch ending X position
+
+                toggle() {
+                    this.isOpen = !this.isOpen;
+                },
+
+                startDrag(event) {
+                    this.startX = event.touches[0].clientX; // Record the starting touch point
+                },
+
+                endDrag(event) {
+                    this.endX = event.changedTouches[0].clientX; // Record the ending touch point
+                    if (this.endX - this.startX > 50) {
+                        // Swipe right
+                        this.isOpen = true;
+                    } else if (this.startX - this.endX > 50) {
+                        // Swipe left
+                        this.isOpen = false;
+                    }
+                }
+            };
+        }
+    </script>
 </body>
 
 </html>
