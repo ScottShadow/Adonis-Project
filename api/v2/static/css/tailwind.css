@@ -52,11 +52,11 @@ textarea {
 }
 
 .theme-whimsical-dream {
-    --background-color: #7B466A;
-    --text-color: #D391B0;
-    --accent-color: #5D3C64;
-    --background-color-contrast: #0C0420;
-    --accent-color-contrast: #BA6E8F;
+    --background-color: #7b466a;
+    --text-color: #f6c6de;
+    --accent-color: #BA6E8F;
+    --background-color-contrast: #5d3c64;
+    --accent-color-contrast: #0C0420;
     font-family: 'Quicksand', sans-serif;
     @apply bg-gradient-to-r from-[var(--background-color)] to-[var(--background-color-contrast)];
 }
