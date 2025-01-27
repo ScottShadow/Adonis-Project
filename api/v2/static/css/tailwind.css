@@ -13,14 +13,15 @@ textarea {
 
 /* Theme Variables */
 .theme-standard {
-    --background-color: #121C3D;
-    --text-color: #E4CFFF;
+    --background-color: #0c0225;
+    --text-color: #D6BE6F;
     --accent-color: #7C4DFF;
-    --background-color-contrast: #0D1A2B;
-    --accent-color-contrast: #00E5FF;
+    --background-color-contrast: #121C3D;
+    --accent-color-contrast: #4321A3;
     font-family: 'Orbitron', sans-serif;
-    text-shadow: 0 0 8px #7C4DFF, 0 0 16px #7C4DFF;
-    box-shadow: 0 0 12px #7C4DFF, 0 0 24px #7C4DFF inset;
+    text-shadow: 0 0 8px var(--text-color), 0 0 16px var(--background-color);
+    box-shadow: 0 0 12px var(--background-color-contrast), 0 0 24px var(--background-color-contrast) inset;
+
 }
 
 .theme-pink-romance {
@@ -43,10 +44,10 @@ textarea {
 
 .theme-sandstorm {
     --background-color: #071739;
-    --text-color: black;
-    --accent-color: #E3C39D;
+    --text-color: white;
+    --accent-color: #A68868;
     --background-color-contrast: #4B6382;
-    --accent-color-contrast: #A68868;
+    --accent-color-contrast: #E3C39D;
     font-family: 'Roboto Slab', serif;
     @apply bg-gradient-to-b from-[var(--background-color)] from-80% to-[var(--background-color-contrast)] to-120%;
 }
@@ -66,9 +67,9 @@ textarea {
     --text-color: #00FF9C;
     --accent-color: #8F00FF;
     --background-color-contrast: #2B2B4D;
-    --accent-color-contrast: #FFFFFF;
+    --accent-color-contrast: #6711a9;
     font-family: 'Orbitron', sans-serif;
-    text-shadow: 0 0 8px var(--text-color), 0 0 16px var(--text-color);
+    text-shadow: 0 0 8px var(--text-color), 0 0 16px var(--background-color);
     box-shadow: 0 0 12px var(--background-color-contrast), 0 0 24px var(--background-color-contrast) inset;
     @apply bg-radial from-[#0f0f0f] from-0% via-[#070707] via-50% to-[var(--background-color)] to-60%;
 }
