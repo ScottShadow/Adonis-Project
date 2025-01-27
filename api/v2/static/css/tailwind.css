@@ -58,7 +58,7 @@ textarea {
     --background-color-contrast: #BA6E8F;
     --accent-color-contrast: #0C0420;
     font-family: 'Quicksand', sans-serif;
-    @apply bg-gradient-to-r from-[var(--background-color)] to-[var(--background-color-contrast)];
+    @apply bg-gradient-to-l from-[var(--background-color)] to-[var(--background-color-contrast)];
 }
 
 .theme-neon-dream {
@@ -92,8 +92,12 @@ button:hover {
     transform: scale(1.05);
 }
 
-a:hover {
+a {
     color: var(--accent-color);
+}
+
+a:hover {
+    color: var(--accent-color-contrast);
     text-shadow: 0 0 10px var(--accent-color);
 }
 

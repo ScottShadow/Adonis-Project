@@ -21,7 +21,7 @@
 
             <!-- Draggable/Clickable Area -->
             <div @click="toggle()" @touchstart="startDrag($event)" @touchend="endDrag($event)"
-                class="h-full bg-[var(--accent-color-contrast)] cursor-pointer" :class="isOpen ? 'w-full' : 'w-[5px]'">
+                class="h-full bg-[var(--accent-color-contrast)] cursor-pointer" :class="isOpen ? 'w-full' : 'w-[25px]'">
                 <!-- Sidebar Content -->
                 <nav x-show="isOpen" class="mt-4 p-6 text-[var(--text-color)] space-y-4">
                     <form method="GET" action="{{ url_for('user_views.view_profile') }}">
