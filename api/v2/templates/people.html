@@ -5,114 +5,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>People</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/people.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
 </head>
 
-<body>
-    <div class="people-container">
-        <h1>People</h1>
-        <!-- Dynamic Table of Users using Jinja2 -->
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user_id, user_info in friendship_statuses.items() %}
-                <tr>
-                    <!-- User Column -->
-                    <td>{{ user_info.username }}</td>
+<body class="bg-[var(--background-color)] text-[var(--text-color)] min-h-screen flex flex-col md:flex-row p">
+    <div class="flex-1 p-6 space-y-6">
+        {% include 'theme-switcher.html' %}
+        {% include 'sidebar.html' %}
 
-                    <!-- Status Column -->
-                    <td>
-                        {% if user_info.status is none %}
-                        {% elif user_info.status == 'pending' %}
-                        {% if user_info.requester == 'you' %}
-                        Request Sent
-                        {% elif user_info.requester == 'them' %}
-                        Confirm request?
-                        {% endif %}
-                        {% elif user_info.status == 'rejected' %}
-                        Rejected
-                        {% elif user_info.status == 'blocked' %}
-                        {% if user_info.requester == 'you' %}
-                        Blocked
-                        {% elif user_info.requester == 'them' %}
-                        {% endif %}
-                        {% elif user_info.status == 'accepted' %}
-                        Friend
-                        {% endif %}
-                    </td>
+        <div class="table-container">
+            <h1 class="text-lg font-semibold">People</h1>
+            <!-- Dynamic Table of Users using Jinja2 -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user_id, user_info in friendship_statuses.items() %}
+                    <tr>
+                        <!-- User Column -->
+                        <td>{{ user_info.username }}</td>
 
-                    <!-- Action Column -->
-                    <td class="action-buttons">
-                        {% if user_info.status is none %}
-                        <form method="POST" action="{{ url_for('chat_views.send_friend_request', user_id=user_id) }}">
-                            <button type="submit">Send Friend Request</button>
-                        </form>
-                        {% elif user_info.status == 'pending' %}
-                        {% if user_info.requester == 'you' %}
-                        <form method="POST" action="{{ url_for('chat_views.cancel_friend_request', user_id=user_id) }}">
-                            <button type="submit">Cancel Request</button>
-                        </form>
-                        {% elif user_info.requester == 'them' %}
-                        <form method="POST" action="{{ url_for('chat_views.accept_friend_request', user_id=user_id) }}">
-                            <button type="submit">Accept Request</button>
-                        </form>
-                        <form method="POST" action="{{ url_for('chat_views.reject_friend_request', user_id=user_id) }}">
-                            <button type="submit">Reject Request</button>
-                        </form>
-                        {% endif %}
-                        {% elif user_info.status == 'rejected' %}
-                        <form method="POST" action="{{ url_for('chat_views.send_friend_request', user_id=user_id) }}">
-                            <button type="submit">Send Friend Request</button>
-                        </form>
-                        {% elif user_info.status == 'blocked' %}
-                        {% if user_info.requester == 'you' %}
-                        <form method="POST" action="{{ url_for('chat_views.unblock_user', user_id=user_id) }}">
-                            <button type="submit">Unblock</button>
-                        </form>
-                        {% endif %}
-                        {% elif user_info.status == 'accepted' %}
-                        <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=user_id) }}">
-                            <button type="submit">Send DM</button>
-                        </form>
-                        <form method="POST" action="{{ url_for('chat_views.unfriend', user_id=user_id) }}">
-                            <button type="submit">Unfriend</button>
-                        </form>
-                        <form method="POST" action="{{ url_for('chat_views.block_user', user_id=user_id) }}">
-                            <button type="submit">Block</button>
-                        </form>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <!-- Pagination Controls -->
-        <div class="pagination">
-            {% if current_page > 1 %}
-            <a href="{{ url_for('chat_views.people') }}?page={{ current_page - 1 }}">&laquo; Previous</a>
-            {% endif %}
+                        <!-- Status Column -->
+                        <td>
+                            {% if user_info.status is none %}
+                            {% elif user_info.status == 'pending' %}
+                            {% if user_info.requester == 'you' %}
+                            Request Sent
+                            {% elif user_info.requester == 'them' %}
+                            Confirm request?
+                            {% endif %}
+                            {% elif user_info.status == 'rejected' %}
+                            Rejected
+                            {% elif user_info.status == 'blocked' %}
+                            {% if user_info.requester == 'you' %}
+                            Blocked
+                            {% elif user_info.requester == 'them' %}
+                            {% endif %}
+                            {% elif user_info.status == 'accepted' %}
+                            Friend
+                            {% endif %}
+                        </td>
 
-            {% for page in range(1, total_pages + 1) %}
-            <a href="{{ url_for('chat_views.people') }}?page={{ page }}"
-                class="{{ 'active' if page == current_page else '' }}">
-                {{ page }}
-            </a>
-            {% endfor %}
-
-            {% if current_page < total_pages %} <a
-                href="{{ url_for('chat_views.people') }}?page={{ current_page + 1 }}">Next &raquo;</a>
+                        <!-- Action Column -->
+                        <td class="action-buttons">
+                            {% if user_info.status is none %}
+                            <form method="POST"
+                                action="{{ url_for('chat_views.send_friend_request', user_id=user_id) }}">
+                                <button type="submit">Send Friend Request</button>
+                            </form>
+                            {% elif user_info.status == 'pending' %}
+                            {% if user_info.requester == 'you' %}
+                            <form method="POST"
+                                action="{{ url_for('chat_views.cancel_friend_request', user_id=user_id) }}">
+                                <button type="submit">Cancel Request</button>
+                            </form>
+                            {% elif user_info.requester == 'them' %}
+                            <form method="POST"
+                                action="{{ url_for('chat_views.accept_friend_request', user_id=user_id) }}">
+                                <button type="submit">Accept Request</button>
+                            </form>
+                            <form method="POST"
+                                action="{{ url_for('chat_views.reject_friend_request', user_id=user_id) }}">
+                                <button type="submit">Reject Request</button>
+                            </form>
+                            {% endif %}
+                            {% elif user_info.status == 'rejected' %}
+                            <form method="POST"
+                                action="{{ url_for('chat_views.send_friend_request', user_id=user_id) }}">
+                                <button type="submit">Send Friend Request</button>
+                            </form>
+                            {% elif user_info.status == 'blocked' %}
+                            {% if user_info.requester == 'you' %}
+                            <form method="POST" action="{{ url_for('chat_views.unblock_user', user_id=user_id) }}">
+                                <button type="submit">Unblock</button>
+                            </form>
+                            {% endif %}
+                            {% elif user_info.status == 'accepted' %}
+                            <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=user_id) }}">
+                                <button type="submit">Send DM</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('chat_views.unfriend', user_id=user_id) }}">
+                                <button type="submit">Unfriend</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('chat_views.block_user', user_id=user_id) }}">
+                                <button type="submit">Block</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <!-- Pagination Controls -->
+            <div class="pagination">
+                {% if current_page > 1 %}
+                <a href="{{ url_for('chat_views.people') }}?page={{ current_page - 1 }}">&laquo; Previous</a>
                 {% endif %}
+
+                {% for page in range(1, total_pages + 1) %}
+                <a href="{{ url_for('chat_views.people') }}?page={{ page }}"
+                    class="{{ 'active' if page == current_page else '' }}">
+                    {{ page }}
+                </a>
+                {% endfor %}
+
+                {% if current_page < total_pages %} <a
+                    href="{{ url_for('chat_views.people') }}?page={{ current_page + 1 }}">Next &raquo;</a>
+                    {% endif %}
+            </div>
+            <a href="{{ url_for('app_views.dashboard_route') }}" class="back-link">Back to Dashboard</a>
+
         </div>
-        <a href="{{ url_for('app_views.dashboard_route') }}" class="back-link">Back to Dashboard</a>
-
     </div>
-
 </body>
 
 </html>

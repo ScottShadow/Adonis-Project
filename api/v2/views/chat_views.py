@@ -50,7 +50,7 @@ def people():
 
     # Pagination parameters
     page = int(request.args.get('page', 1))
-    per_page = 8  # Number of users per page
+    per_page = 10  # Number of users per page
 
     with get_db_session() as session:
         # Get the total number of users excluding the current user
