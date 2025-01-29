@@ -25,10 +25,10 @@ textarea {
 }
 
 .theme-pink-romance {
-    --background-color: #e99ba8;
+    --background-color: #F05F7F;
     --text-color: #ffffff;
     --accent-color: #f42552;
-    --background-color-contrast: #F05F7F;
+    --background-color-contrast: #e99ba8;
     --accent-color-contrast: #D96D7E;
     font-family: 'Dancing Script', cursive;
 }
