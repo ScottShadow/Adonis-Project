@@ -114,6 +114,12 @@ input {
     color: var(--text-color);
 }
 
+input[type="text"],
+textarea,
+select {
+    @apply w-full p-2 mb-3 rounded-md border-none bg-[var(--accent-color)] text-[var(--text-color)] text-sm;
+}
+
 /* Scrollbar Customization */
 ::-webkit-scrollbar {
     width: 10px;
@@ -130,7 +136,7 @@ input {
 }
 
 .table-container {
-    @apply bg-[var(--background-color-contrast)] p-4 rounded shadow overflow-x-auto;
+    @apply bg-[var(--background-color-contrast)] p-4 rounded shadow overflow-x-auto h-max;
 }
 
 .table {
@@ -147,5 +153,5 @@ input {
 }
 
 .table-actions {
-    @apply flex space-x-2 justify-center;
+    @apply flex space-x-2 items-start;
 }

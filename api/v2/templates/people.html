@@ -20,7 +20,7 @@
                 <thead>
                     <tr>
                         <th>User</th>
-                        <th>Status</th>
+                        <th class="hidden">Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -31,7 +31,7 @@
                         <td>{{ user_info.username }}</td>
 
                         <!-- Status Column -->
-                        <td>
+                        <td class="hidden">
                             {% if user_info.status is none %}
                             {% elif user_info.status == 'pending' %}
                             {% if user_info.requester == 'you' %}
@@ -52,7 +52,7 @@
                         </td>
 
                         <!-- Action Column -->
-                        <td class="action-buttons">
+                        <td class="table-actions">
                             {% if user_info.status is none %}
                             <form method="POST"
                                 action="{{ url_for('chat_views.send_friend_request', user_id=user_id) }}">
@@ -87,7 +87,7 @@
                             {% endif %}
                             {% elif user_info.status == 'accepted' %}
                             <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=user_id) }}">
-                                <button type="submit">Send DM</button>
+                                <button type="submit">DM</button>
                             </form>
                             <form method="POST" action="{{ url_for('chat_views.unfriend', user_id=user_id) }}">
                                 <button type="submit">Unfriend</button>
