@@ -1,0 +1,70 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js" defer></script>
+<!-- Sidebar -->
+<div x-data="sidebar()" x-init="$nextTick(() => { console.log('Alpine initialized!') })" class="relative">
+
+    <div :class="isOpen ? 'w-screen md:w-[20%]' : 'w-[30px]'"
+        class="fixed top-0 left-0 h-full bg-[var(--accent-color)] transition-all duration-300 ease-in-out shadow-lg z-50">
+
+        <!-- Draggable/Clickable Area -->
+        <div @click="toggle()" @touchstart="startDrag($event)" @touchend="endDrag($event)"
+            class="h-full bg-[var(--accent-color-contrast)] cursor-pointer" :class="isOpen ? 'w-full' : 'w-[25px]'">
+            <!-- Sidebar Content -->
+            <nav x-show="isOpen" class="mt-4 p-6 text-[var(--text-color)] space-y-4">
+                <form method="GET" action="{{ url_for('user_views.view_profile') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Profile</button>
+                </form>
+                <form method="GET" action="{{ url_for('chat_views.friends_list') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Friends</button>
+                </form>
+                <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Create New
+                        Log</button>
+                </form>
+                <form method="GET" action="{{ url_for('chat_views.global_chat') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Global Chat</button>
+                </form>
+                <form method="GET" action="{{ url_for('chat_views.people') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">People</button>
+                </form>
+                <form method="GET" action="{{ url_for('event_views.home') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Events</button>
+                </form>
+                <form method="GET" action="{{ url_for('user_views.easter_egg') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Easter Egg</button>
+                </form>
+
+            </nav>
+        </div>
+
+
+    </div>
+</div>
+<script>
+    function sidebar() {
+        return {
+            isOpen: false, // Sidebar state
+            startX: 0, // Tracks touch starting X position
+            endX: 0, // Tracks touch ending X position
+
+            toggle() {
+                this.isOpen = !this.isOpen;
+            },
+
+            startDrag(event) {
+                this.startX = event.touches[0].clientX; // Record the starting touch point
+            },
+
+            endDrag(event) {
+                this.endX = event.changedTouches[0].clientX; // Record the ending touch point
+                if (this.endX - this.startX > 50) {
+                    // Swipe right
+                    this.isOpen = true;
+                } else if (this.startX - this.endX > 50) {
+                    // Swipe left
+                    this.isOpen = false;
+                }
+            }
+        };
+    }
+</script>

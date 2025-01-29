@@ -5,24 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Friends</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/friend_page.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
 </head>
 
-<body>
-    <div class="sidebar">
-        <button onclick="showSection('friend-requests')">Friend Requests</button>
-        <button onclick="showSection('friend-list')">Your Friends</button>
-        <button onclick="showSection('requests-sent')">Requests Sent</button>
-        <button onclick="showSection('friend-logs')">Friends' Logs</button>
+<body class="bg-[var(--background-color)] text-[var(--text-color)] min-h-screen flex flex-col md:flex-row">
+    <div class="flex-1 p-6 space-y-6">
+        {% include 'theme-switcher.html' %}
+        {% include 'navbar.html' %}
 
-    </div>
-    <div class="friends-container">
+
 
         <!-- Friend Requests Section -->
-        <section id="friend-requests" class="visible">
-            <h2>Friend Requests</h2>
+        <section class="table-container" id="friend-requests" class="visible">
+            <h2 class="text-lg font-semibold">Friend Requests</h2>
             {% if friend_requests %}
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Requester</th>
@@ -31,9 +28,9 @@
                 </thead>
                 <tbody>
                     {% for request in friend_requests %}
-                    <tr>
-                        <td>{{ request.username }}</td>
-                        <td class="action-buttons">
+                    <tr class="border-b border-[var(--accent-color)]">
+                        <td class="py-3 px-4">{{ request.username }}</td>
+                        <td class="table-actions">
                             <form class="ajax-action-form" method="POST"
                                 action="{{ url_for('chat_views.accept_friend_request', user_id=request.id) }}">
                                 <button type="submit" class="accept-button">Accept</button>
@@ -52,10 +49,10 @@
             {% endif %}
         </section>
         <!-- Friend Requests Sent Section -->
-        <section id="requests-sent" class="hidden">
-            <h2>Requests Sent</h2>
+        <section class="table-container" id="requests-sent" class="hidden">
+            <h2 class="text-lg font-semibold">Requests Sent</h2>
             {% if sent_requests %}
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Recipient</th>
@@ -64,9 +61,9 @@
                 </thead>
                 <tbody>
                     {% for request in sent_requests %}
-                    <tr>
-                        <td>{{ request.username }}</td>
-                        <td>
+                    <tr class="border-b border-[var(--accent-color)]">
+                        <td class="py-3 px-4">{{ request.username }}</td>
+                        <td class="table-actions">
                             <form class="ajax-action-form" method="POST"
                                 action="{{ url_for('chat_views.cancel_friend_request', user_id=request.id) }}">
                                 <button type="submit" class="reject-button">Cancel Request</button>
@@ -87,10 +84,10 @@
         </section>
 
         <!-- Friend List Section -->
-        <section id="friend-list" class="hidden">
-            <h2>Your Friends</h2>
+        <section class="table-container" id="friend-list" class="hidden">
+            <h2 class="text-lg font-semibold">Your Friends</h2>
             {% if friends %}
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Username</th>
@@ -99,11 +96,11 @@
                 </thead>
                 <tbody>
                     {% for friend in friends %}
-                    <tr>
-                        <td>{{ friend.username }}</td>
-                        <td class="action-buttons">
+                    <tr class="border-b border-[var(--accent-color)]">
+                        <td class="py-3 px-4">{{ friend.username }}</td>
+                        <td class="table-actions">
                             <form method="POST" action="{{ url_for('chat_views.start_dm', user_id=friend.id) }}">
-                                <button type="submit" class="dm-button">Send DM</button>
+                                <button type="submit" class="dm-button">DM</button>
                             </form>
                             <form class="ajax-action-form" method="POST"
                                 action="{{ url_for('chat_views.unfriend', user_id=friend.id) }}">
@@ -125,10 +122,10 @@
         </section>
 
         <!-- Friends' Logs Section -->
-        <section id="friend-logs" class="visible">
-            <h2>Friends' Logs</h2>
+        <section class="table-container" id="friend-logs" class="visible">
+            <h2 class="text-lg font-semibold">Friends' Logs</h2>
             {% if friends %}
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -140,12 +137,12 @@
                 </thead>
                 <tbody>
                     {% for friend in friends_logs %}
-                    <tr>
-                        <td>{{ friend.name }}</td>
-                        <td>{{ friend.level }}</td>
-                        <td>{{ friend.habit_name }}</td>
-                        <td>{{ friend.log_details }}</td>
-                        <td>{{ friend.last_log_date }}</td>
+                    <tr class="border-b border-[var(--accent-color)]">
+                        <td class="py-3 px-4">{{ friend.name }}</td>
+                        <td class="py-3 px-4">{{ friend.level }}</td>
+                        <td class="py-3 px-4">{{ friend.habit_name }}</td>
+                        <td class="py-3 px-4">{{ friend.log_details }}</td>
+                        <td class="py-3 px-4">{{ friend.last_log_date }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -155,9 +152,11 @@
             {% endif %}
         </section>
 
-        <a href="{{ url_for('app_views.dashboard_route') }}" class="back-link">Back to Dashboard</a>
+        <a href="{{ url_for('app_views.dashboard_route') }}"
+            class="bg-[var(--background-color)] mt-4 text-sm underline">Back to Dashboard</a>
     </div>
     <script src="{{ url_for('static', filename='scripts/friend_page.js') }}"></script>
+    <!-- JavaScript -->
 
 </body>
 

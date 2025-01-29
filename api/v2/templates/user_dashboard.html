@@ -12,54 +12,14 @@
 </head>
 
 <body class="bg-[var(--background-color)] text-[var(--text-color)] min-h-screen flex flex-col md:flex-row">
-    {% include 'theme-switcher.html' %}
-    <!-- Sidebar -->
-    <div x-data="sidebar()" x-init="$nextTick(() => { console.log('Alpine initialized!') })" class="relative">
-
-        <div :class="isOpen ? 'w-screen md:w-[20%]' : 'w-[30px]'"
-            class="fixed top-0 left-0 h-full bg-[var(--accent-color)] transition-all duration-300 ease-in-out shadow-lg z-50">
-
-            <!-- Draggable/Clickable Area -->
-            <div @click="toggle()" @touchstart="startDrag($event)" @touchend="endDrag($event)"
-                class="h-full bg-[var(--accent-color-contrast)] cursor-pointer" :class="isOpen ? 'w-full' : 'w-[25px]'">
-                <!-- Sidebar Content -->
-                <nav x-show="isOpen" class="mt-4 p-6 text-[var(--text-color)] space-y-4">
-                    <form method="GET" action="{{ url_for('user_views.view_profile') }}">
-                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Profile</button>
-                    </form>
-                    <form method="GET" action="{{ url_for('chat_views.friends_list') }}">
-                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Friends</button>
-                    </form>
-                    <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
-                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Create New
-                            Log</button>
-                    </form>
-                    <form method="GET" action="{{ url_for('chat_views.global_chat') }}">
-                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Global Chat</button>
-                    </form>
-                    <form method="GET" action="{{ url_for('chat_views.people') }}">
-                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">People</button>
-                    </form>
-                    <form method="GET" action="{{ url_for('event_views.home') }}">
-                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Events</button>
-                    </form>
-                    <form method="GET" action="{{ url_for('user_views.easter_egg') }}">
-                        <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Easter Egg</button>
-                    </form>
-
-                </nav>
-            </div>
-
-
-        </div>
-    </div>
-
     <!-- Main Content -->
     <div class="main-content flex-1 p-6 space-y-6">
+        {% include 'theme-switcher.html' %}
+        {% include 'sidebar.html' %}
         <!-- User Info -->
-        <div class="bg-[var(--background-color-contrast)] p-4 rounded shadow">
+        <div class="table-container">
             <h2 class="text-lg font-semibold">User Information</h2>
-            <table class="w-full text-left">
+            <table class="table">
                 <tbody>
                     <tr class="border-b border-[var(--accent-color)]">
                         <td class="py-2">User Name</td>
@@ -83,7 +43,7 @@
         </div>
 
         <!-- XP Progress Bar -->
-        <div class="bg-[var(--background-color-contrast)] p-4 rounded shadow">
+        <div class="table-container">
             <h2 class="text-lg font-semibold">XP Progress</h2>
             <div class="w-full bg-[var(--accent-color-contrast)] rounded h-6 overflow-hidden">
                 <div class="bg-[var(--accent-color)] h-full" style="width: {{ xp_percentage }}%;"></div>
@@ -91,9 +51,9 @@
         </div>
 
         <!-- Recent Logs -->
-        <div class="bg-[var(--background-color-contrast)] p-4 rounded shadow">
+        <div class="table-container">
             <h2 class="text-lg font-semibold">Recent Logs</h2>
-            <table class="w-full text-left">
+            <table class="table">
                 <thead>
                     <tr>
                         <th class="border-b border-[var(--accent-color)] py-2">Habit Name</th>
@@ -108,17 +68,16 @@
                         <td class="py-2">{{ log.habit_name }}</td>
                         <td>{{ log.habit_type }}</td>
                         <td>{{ log.log_details }}</td>
-                        <td>
+                        <td class="table-actions">
                             <form method="GET" action="{{ url_for('log_views.update_log', log_id=log.id) }}"
                                 class="inline">
-                                <button
-                                    class="bg-[var(--accent-color-contrast)] hover:bg-[var(--accent-color)] text-[var(--text-color)] py-1 px-3 rounded">
+                                <button>
                                     Edit
                                 </button>
                             </form>
                             <form method="POST" action="{{ url_for('log_views.delete_log', log_id=log.id) }}"
                                 class="inline">
-                                <button class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
+                                <button>
                                     Delete
                                 </button>
                             </form>
@@ -130,7 +89,7 @@
         </div>
 
         <!-- Activity Summary -->
-        <div class="bg-[var(--background-color-contrast)] p-4 rounded shadow">
+        <div class="table-container">
             <h2 class="text-lg font-semibold">Activity Summary</h2>
             <div
                 class="summary-chart h-48 flex items-center justify-center bg-[var(--accent-color)] rounded text-white">
@@ -138,34 +97,7 @@
             </div>
         </div>
     </div>
-    <script>
-        function sidebar() {
-            return {
-                isOpen: false, // Sidebar state
-                startX: 0, // Tracks touch starting X position
-                endX: 0, // Tracks touch ending X position
 
-                toggle() {
-                    this.isOpen = !this.isOpen;
-                },
-
-                startDrag(event) {
-                    this.startX = event.touches[0].clientX; // Record the starting touch point
-                },
-
-                endDrag(event) {
-                    this.endX = event.changedTouches[0].clientX; // Record the ending touch point
-                    if (this.endX - this.startX > 50) {
-                        // Swipe right
-                        this.isOpen = true;
-                    } else if (this.startX - this.endX > 50) {
-                        // Swipe left
-                        this.isOpen = false;
-                    }
-                }
-            };
-        }
-    </script>
 </body>
 
 </html>

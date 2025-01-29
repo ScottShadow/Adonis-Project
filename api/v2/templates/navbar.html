@@ -1,0 +1,47 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+
+<!-- Navigation Bar -->
+<div class="relative bg-[var(--background-color-contrast)] shadow-md">
+    <nav class="container mx-auto flex items-center md:justify-center p-4">
+        <!-- Logo -->
+        <div class="hidden items-center">
+            <img src="logo.png" alt="Logo" class="h-10 w-auto">
+        </div>
+
+        <!-- Hamburger Menu (Mobile) -->
+        <button id="menu-toggle" class="block md:hidden p-2">
+            <div class="w-6 h-1 bg-[var(--background-color-contrast)] mb-1"></div>
+            <div class="w-6 h-1 bg-[var(--background-color-contrast)] mb-1"></div>
+            <div class="w-6 h-1 bg-[var(--background-color-contrast)]"></div>
+        </button>
+
+        <!-- Navigation Links -->
+        <div id="menu" class="hidden md:bg-[var(--background-color-contrast)] bg-[var(--accent-color-contrast)] md:flex flex-col md:flex-row space-y-2 md:space-x-10 md:justify-center md:items-center absolute md:static  
+        shadow-md md:shadow-none w-max md:w-auto p-2 ml-0 mt-60 md:m-1 z-10 transition-all duration-300 ease-in-out">
+            <button onclick="showSection('friend-requests')" class="block  md:py-0">Friend
+                Requests</button>
+            <button onclick="showSection('friend-list')" class="block  md:py-0">Your Friends</button>
+            <button onclick="showSection('requests-sent')" class="block  md:py-0">Requests
+                Sent</button>
+            <button onclick="showSection('friend-logs')" class="block  md:py-0">Friends' Logs</button>
+            <a href="{{ url_for('app_views.dashboard_route') }}"
+                class="block !bg-[var(--accent-color)] !text-[var(--text-color)] hover:bg-[var(--accent-color-contrast)] focus:bg-[var(--accent-color-contrast)] focus:text-[var(--background-color)] py-1 px-3 m md:py-2  w-max">
+                Back to Dashboard
+            </a>
+        </div>
+    </nav>
+</div>
+<script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('menu');
+
+    menuToggle.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+    });
+
+    function showSection(sectionId) {
+        document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+        document.getElementById(sectionId).classList.remove('hidden');
+        menu.classList.toggle('hidden');
+    }
+</script>
