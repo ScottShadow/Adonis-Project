@@ -144,7 +144,7 @@ select {
 }
 
 .table {
-    @apply w-full text-left border-collapse;
+    @apply min-w-full text-left border-collapse;
 }
 
 .table th,

@@ -62,16 +62,16 @@
                             {% if user_info.requester == 'you' %}
                             <form method="POST"
                                 action="{{ url_for('chat_views.cancel_friend_request', user_id=user_id) }}">
-                                <button type="submit">Cancel Request</button>
+                                <button type="submit">Cancel</button>
                             </form>
                             {% elif user_info.requester == 'them' %}
                             <form method="POST"
                                 action="{{ url_for('chat_views.accept_friend_request', user_id=user_id) }}">
-                                <button type="submit">Accept Request</button>
+                                <button type="submit">Accept</button>
                             </form>
                             <form method="POST"
                                 action="{{ url_for('chat_views.reject_friend_request', user_id=user_id) }}">
-                                <button type="submit">Reject Request</button>
+                                <button type="submit">Reject</button>
                             </form>
                             {% endif %}
                             {% elif user_info.status == 'rejected' %}
