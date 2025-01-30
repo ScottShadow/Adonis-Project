@@ -9,28 +9,24 @@
 </head>
 
 <body class="container flex mx-auto min-h-screen justify-center items-center align-middle">
-    <div class="bg-[var(--background-color-contrast)] rounded-lg p-6 shadow-lg">
-        {% include 'theme-switcher.html' %}
+    <div class="bg-[var(--background-color-contrast)] rounded-lg p-10 shadow-lg">
+        <script src="{{ url_for('static', filename='scripts/theme-saver.js') }}"></script>
         {% include 'sidebar.html' %}
         <h1>Create a New Log</h1>
         <!-- Form with POST method -->
         <form action="/api/v2/logs/create" method="POST" id="create-log-form">
             <label for="habit_type">Habit Type:</label>
             <select id="habit_type" name="habit_type" onchange="toggleCustomHabit()">
-                <option value="strength_training">Strength Training</option>
-                <option value="stretching">Stretching</option>
-                <option value="yoga">Yoga</option>
-                <option value="meditation">Meditation</option>
                 <option value="reading">Reading</option>
+                <option value="meal_prep">Meal Prep</option>
+                <option value="journaling">Journal</option>
+                <option value="strength_training">Gym</option>
+                <option value="stretching">Stretching</option>
+                <option value="meditation">Meditation</option>
                 <option value="writing">Writing</option>
-                <option value="coding">Coding</option>
                 <option value="painting">Painting</option>
                 <option value="music_practice">Music Practice</option>
-                <option value="journaling">Journaling</option>
-                <option value="house_cleaning">House Cleaning</option>
                 <option value="gardening">Gardening</option>
-                <option value="meal_prep">Meal Prep</option>
-                <option value="sleep">Sleep</option>
                 <option value="custom">Custom Habit</option>
 
             </select>

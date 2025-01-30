@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Log</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/update_log.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
 </head>
 
-<body>
-    <div class="log-form-container">
-        <h1>Update Log</h1>
+<body class="container flex mx-auto min-h-screen justify-center items-center align-middle">
+    <script src="{{ url_for('static', filename='scripts/theme-saver.js') }}"></script>
+    <div class="bg-[var(--background-color-contrast)] rounded-lg p-10 shadow-lg">
+        <h1 class="text-lg font-semibold">Update Log</h1>
         <!-- Update Log Form with POST method -->
         <form action="{{ url_for('log_views.update_log', log_id=log.id) }}" method="POST" id="update-log-form">
             <label for="habit_type">Habit Type</label>
@@ -44,8 +45,8 @@
 
         <!-- Back to Dashboard Link -->
         <a href="{{ url_for('app_views.dashboard_route') }}" class="dashboard-link">Back to Dashboard</a>
-    </div>
 
+    </div>
     <script src="{{ url_for('static', filename='scripts/update_log.js') }}"></script>
 </body>
 

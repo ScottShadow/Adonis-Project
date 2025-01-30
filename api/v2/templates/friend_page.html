@@ -10,9 +10,39 @@
 
 <body class="bg-[var(--background-color)] text-[var(--text-color)] min-h-screen flex flex-col md:flex-row">
     <div class="flex-1 p-6 space-y-6">
-        {% include 'theme-switcher.html' %}
-        {% include 'navbar.html' %}
+        <script src="{{ url_for('static', filename='scripts/theme-saver.js') }}"></script>
 
+        <!-- Navigation Bar -->
+        <div class="relative bg-[var(--background-color-contrast)] shadow-md">
+            <nav class="container mx-auto flex items-center md:justify-center p-4">
+                <!-- Logo -->
+                <div class="hidden items-center">
+                    <img src="logo.png" alt="Logo" class="h-10 w-auto">
+                </div>
+
+                <!-- Hamburger Menu (Mobile) -->
+                <button id="menu-toggle" class="block md:hidden p-2">
+                    <div class="w-6 h-1 bg-[var(--background-color-contrast)] mb-1"></div>
+                    <div class="w-6 h-1 bg-[var(--background-color-contrast)] mb-1"></div>
+                    <div class="w-6 h-1 bg-[var(--background-color-contrast)]"></div>
+                </button>
+
+                <!-- Navigation Links -->
+                <div id="menu" class="hidden md:bg-[var(--background-color-contrast)] bg-[var(--accent-color-contrast)] md:flex flex-col md:flex-row space-y-2 md:space-x-10 md:justify-center md:items-center absolute md:static  
+        shadow-md md:shadow-none w-max md:w-auto p-2 ml-0 mt-60 md:m-1 z-10 transition-all duration-300 ease-in-out">
+                    <button onclick="showSection('friend-requests')" class="block  md:py-0">Friend
+                        Requests</button>
+                    <button onclick="showSection('friend-list')" class="block  md:py-0">Your Friends</button>
+                    <button onclick="showSection('requests-sent')" class="block  md:py-0">Requests
+                        Sent</button>
+                    <button onclick="showSection('friend-logs')" class="block  md:py-0">Friends' Logs</button>
+                    <a href="{{ url_for('app_views.dashboard_route') }}"
+                        class="block !bg-[var(--accent-color)] !text-[var(--text-color)] hover:bg-[var(--accent-color-contrast)] focus:bg-[var(--accent-color-contrast)] focus:text-[var(--background-color)] py-1 px-3 m md:py-2  w-max">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </nav>
+        </div>
 
 
         <!-- Friend Requests Section -->
@@ -45,7 +75,7 @@
                 </tbody>
             </table>
             {% else %}
-            <p>You have no pending friend requests.</p>
+            <p>You have not received any friend requests yet.</p>
             {% endif %}
         </section>
         <!-- Friend Requests Sent Section -->
@@ -129,9 +159,9 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Level</th>
-                        <th>Last Public Log</th>
-                        <th>Log Details</th>
+                        <th class="hidden">Level</th>
+                        <th>Last Log</th>
+                        <th>Details</th>
                         <th>Logged At</th>
                     </tr>
                 </thead>
@@ -139,7 +169,7 @@
                     {% for friend in friends_logs %}
                     <tr class="border-b border-[var(--accent-color)]">
                         <td class="py-3 px-4">{{ friend.name }}</td>
-                        <td class="py-3 px-4">{{ friend.level }}</td>
+                        <td class="py-3 px-4 hidden">{{ friend.level }}</td>
                         <td class="py-3 px-4">{{ friend.habit_name }}</td>
                         <td class="py-3 px-4">{{ friend.log_details }}</td>
                         <td class="py-3 px-4">{{ friend.last_log_date }}</td>
@@ -157,7 +187,20 @@
     </div>
     <script src="{{ url_for('static', filename='scripts/friend_page.js') }}"></script>
     <!-- JavaScript -->
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const menu = document.getElementById('menu');
 
+        menuToggle.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            menu.classList.toggle('hidden');
+        }
+    </script>
 </body>
 
 </html>

@@ -5,56 +5,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
 </head>
 
-<body>
-    <div class="profile-container">
-        <h1>User Profile</h1>
+<body class="container flex mx-auto min-h-screen justify-center items-center align-middle">
+    {% include 'theme-switcher.html' %}
+    {% include 'sidebar.html' %}
+    <div class="flex-1 p-6 space-y-6">
+        <div class="table-container">
+            <h1>User Profile</h1>
 
-        <!-- Profile Update Form -->
-        <form action="/api/v2/profile" method="POST">
-            <table>
-                <thead>
-                    <tr>
-                        <th colspan="2">Profile Information</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><label for="first_name">First Name:</label></td>
-                        <td><input type="text" id="first_name" name="first_name" value="{{ user.first_name }}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="last_name">Last Name:</label></td>
-                        <td><input type="text" id="last_name" name="last_name" value="{{ user.last_name }}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="username">Username:</label></td>
-                        <td><input type="text" id="username" name="username" value="{{ user.username }}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="profile_info">Profile Info:</label></td>
-                        <td><textarea id="profile_info" name="profile_info">{{ user.profile_info }}</textarea></td>
-                    </tr>
-                    <tr>
-                        <td><label for="password">Current Password (required):</label></td>
-                        <td><input type="password" id="password" name="password" required></td>
-                    </tr>
-                    <tr>
-                        <td><label for="new_password">New Password:</label></td>
-                        <td><input type="password" id="new_password" name="new_password"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="confirm_new_password">Confirm New Password:</label></td>
-                        <td><input type="password" id="confirm_new_password" name="confirm_new_password"></td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- Profile Update Form -->
+            <form action="/api/v2/profile" method="POST">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Profile Information</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><label for="first_name">First Name:</label></td>
+                            <td><input type="text" id="first_name" name="first_name" value="{{ user.first_name }}"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="last_name">Last Name:</label></td>
+                            <td><input type="text" id="last_name" name="last_name" value="{{ user.last_name }}"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="username">Username:</label></td>
+                            <td><input type="text" id="username" name="username" value="{{ user.username }}"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="profile_info">Profile Info:</label></td>
+                            <td><textarea id="profile_info" name="profile_info">{{ user.profile_info }}</textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="password">Current Password (required):</label></td>
+                            <td><input type="password" id="password" name="password" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="new_password">New Password:</label></td>
+                            <td><input type="password" id="new_password" name="new_password"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="confirm_new_password">Confirm New Password:</label></td>
+                            <td><input type="password" id="confirm_new_password" name="confirm_new_password"></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-            <button type="submit">Update Profile</button>
-            <a href="{{ url_for('app_views.dashboard_route') }}">Dashboard</a>
-        </form>
+                <button type="submit">Update Profile</button>
+                <a href="{{ url_for('app_views.dashboard_route') }}">Dashboard</a>
+            </form>
+        </div>
     </div>
 </body>
 

@@ -85,7 +85,7 @@ body {
 button {
     background-color: var(--accent-color);
     color: var(--text-color);
-    @apply py-1 px-3 rounded;
+    @apply mt-2 py-1 px-3 rounded;
 }
 
 button:hover {
@@ -115,9 +115,13 @@ input {
 }
 
 input[type="text"],
+input[type="password"],
 textarea,
 select {
-    @apply w-full p-2 mb-3 rounded-md border-none bg-[var(--accent-color)] text-[var(--text-color)] text-sm;
+    @apply w-full rounded-md py-1 px-1 md:px-3 ring-2 ring-[var(--accent-color-contrast)] outline-none transition duration-200 ease-in-out;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    font-size: 1rem;
 }
 
 /* Scrollbar Customization */
