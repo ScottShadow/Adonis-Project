@@ -38,7 +38,7 @@
         // Join the DM room
         socket.emit('join', { room_id: room_id });
 
-        // Send message 
+        // Send message
         document.getElementById('chat-form').onsubmit = function (e) {
             e.preventDefault();
             var message = document.getElementById('message-input').value;
@@ -59,6 +59,7 @@
 
         socket.on("notification", (data) => {
             console.log("New notification:", data);
+            if (data.from === "{{ user.username }}") return;
             showNotification(data);
         });
         function showNotification(data) {

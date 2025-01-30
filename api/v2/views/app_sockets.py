@@ -36,7 +36,9 @@ def handle_connect():
         return False  # Prevent the connection if the user is not authenticated
     flask_session['user_id'] = user.id
     flask_session['username'] = user.username
-    print(f"User {user.username} connected")
+    join_room(str(user.id))  # Make user join their personal notification room
+
+    logging.info(f"User {user.username} connected and joined room {user.id}")
 
 
 @socketio.on('message')
@@ -73,7 +75,7 @@ def handle_message(data):
                                 "from": username,
                                 "message": "sent you a new message",
                                 "room_id": room_id
-                            }, room=room_id)  # Notify only the recipient
+                            }, room=str(user.id))  # Notify only the recipient
                             print(
                                 f"Notification sent to user {user.username} ")
     except Exception as e:
