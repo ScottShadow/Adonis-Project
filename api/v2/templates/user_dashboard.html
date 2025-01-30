@@ -13,9 +13,10 @@
 
 <body class="bg-[var(--background-color)] text-[var(--text-color)] min-h-screen flex flex-col md:flex-row">
     <!-- Main Content -->
-    <div class="main-content flex-1 p-6 space-y-6">
+    {% include 'sidebar.html' %}
+    <div class="main-content flex-1 p-4 ml-4 space-y-6">
         <script src="{{ url_for('static', filename='scripts/theme-saver.js') }}"></script>
-        {% include 'sidebar.html' %}
+
         <!-- User Info -->
         <div class="table-container">
             <h2 class="text-lg font-semibold">User Information</h2>

@@ -9,6 +9,15 @@
         <!-- Draggable/Clickable Area -->
         <div @click="toggle()" @touchstart="startDrag($event)" @touchend="endDrag($event)"
             class="h-full bg-[var(--accent-color-contrast)] cursor-pointer" :class="isOpen ? 'w-full' : 'w-[25px]'">
+            <button id="menu"
+                class="block !w-[30px] h-screen p-2 !mt-0 !bg-[var(--accent-color-contrast)] items-center hover:bg- focus:bg-[var(--accent-color-contrast)]"
+                :class="isOpen ? 'hidden' : 'flex'">
+                <div class="flex flex-col justify-center h-1/5" :class="isOpen ? 'hidden' : 'flex'">
+                    <div class="w-1 h-10 bg-[var(--background-color-contrast)] mb-5"></div>
+                    <div class="w-1 h-10 bg-[var(--background-color-contrast)] mb-5"></div>
+                    <div class="w-1 h-10 bg-[var(--background-color-contrast)]"></div>
+                </div>
+            </button>
             <!-- Sidebar Content -->
             <nav x-show="isOpen" class="mt-4 p-6 text-[var(--text-color)] space-y-4">
                 <form method="GET" action="{{ url_for('user_views.view_profile') }}">
