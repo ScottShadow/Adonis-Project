@@ -39,7 +39,7 @@ def global_chat():
         logging.debug("Global room messages: %s", messages)
 
         formatted_messages = [{"username": message.user.username,
-                               "content": message.content, "created_at": message.created_at} for message in messages]
+                               "content": message.content, "created_at": message.created_at.strftime('%I:%M %p %b/%d')} for message in messages]
         return render_template('global_chat.html', room=global_room, messages=formatted_messages, user=user)
 
 
@@ -161,7 +161,7 @@ def start_dm(user_id):
             joinedload(Message.user)).filter_by(room_id=room.id).all()"""
 
         formatted_messages = [{"username": message.user.username,
-                               "content": message.content, "created_at": message.created_at}
+                               "content": message.content, "created_at": message.created_at.strftime('%I:%M %p %b/%d')}
                               for message in messages]
 
         return render_template('dm_page.html', room=room, messages=formatted_messages, user=user)

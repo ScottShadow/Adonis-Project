@@ -1,5 +1,4 @@
-from flask_socketio import join_room, leave_room, send, emit
-from flask_socketio import SocketIO, send, emit, join_room
+from flask_socketio import SocketIO, emit, join_room, leave_room, send, emit, disconnect
 from flask import request, abort, session as flask_session
 from models.user import User
 from models.room import Room
@@ -33,6 +32,7 @@ def handle_connect():
     from api.v2.app import auth
     user = auth.current_user(request)  # Authenticate the user when connecting
     if user is None:
+        disconnect()
         return False  # Prevent the connection if the user is not authenticated
     flask_session['user_id'] = user.id
     flask_session['username'] = user.username
@@ -60,13 +60,35 @@ def handle_message(data):
             session.add(message)
             session.commit()
             pay_load = {"username": username,
-                        "message": message_content, "created_at": message.created_at.strftime('%Y-%m-%d %H:%M:%S')}
+                        "message": message_content, "created_at": message.created_at.strftime('%I:%M %p %b/%d')}
             # Emit the message to everyone in the room
             emit('message', pay_load, room=room_id)
+
+            room = session.query(Room).filter_by(id=room_id).first()
+            if room:
+                for user in room.users:
+                    if user.id != user_id:  # Don't notify the sender
+                        if not is_user_in_room(user.id, room_id):
+                            emit('notification', {
+                                "from": username,
+                                "message": "sent you a new message",
+                                "room_id": room_id
+                            }, room=room_id)  # Notify only the recipient
+                            print(
+                                f"Notification sent to user {user.username} ")
     except Exception as e:
         logging.error(f"Error in handle_message: {e}")
         emit(
             'error', {'message': 'An error occurred while sending the message'})
+
+
+def is_user_in_room(user_id, room_id):
+    """Check if a user is currently in a chat room."""
+    session_data = socketio.server.manager.get_participants('/', room_id)
+    # Extract session IDs from tuples
+    # Unpacking to extract only the SID
+    session_ids = {sid for sid, *_ in session_data}
+    return str(user_id) in session_ids
 
 
 @socketio.on('disconnect')
@@ -83,6 +105,9 @@ def handle_join_dm(data):
     with get_db_session() as session:
         room_id = data['room']
         room = session.query(Room).filter_by(id=room_id).first()
+        if not room:
+            emit('status', {'msg': 'Room not found.'})
+            return
         user_id = flask_session.get('user_id')
         current_user = session.query(User).filter_by(id=user_id).first()
         # Check if the current user is in the room

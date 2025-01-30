@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Direct Message</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dm_page.css') }}">
+    <script src="{{ url_for('static', filename='scripts/request_notifications.js') }}"></script>
 </head>
 
 <body>
@@ -37,7 +38,7 @@
         // Join the DM room
         socket.emit('join', { room_id: room_id });
 
-        // Send message
+        // Send message 
         document.getElementById('chat-form').onsubmit = function (e) {
             e.preventDefault();
             var message = document.getElementById('message-input').value;
@@ -56,7 +57,22 @@
             chatWindow.scrollTop = chatWindow.scrollHeight;
         });
 
+        socket.on("notification", (data) => {
+            console.log("New notification:", data);
+            showNotification(data);
+        });
+        function showNotification(data) {
+            if (Notification.permission === "granted") {
+                new Notification(`New message from ${data.from}`, {
+                    body: data.message,
+                    icon: "/static/images/notification-icon.png",
+                });
+            } else {
+                console.log("Notifications are disabled.");
+            }
+        }
     </script>
+
 
 </body>
 
