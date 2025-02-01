@@ -17,4 +17,4 @@ pymysql==1.1.1
 sqlalchemy
 mysql-connector-python
 pywebpush==2.0.3
-web-push==3.6.7
+web-push==1.0.4
