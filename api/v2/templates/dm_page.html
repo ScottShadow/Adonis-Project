@@ -169,9 +169,7 @@
     </script>
     <script>
         var socket = io.connect('https://adonis-project-production.up.railway.app/', {
-            transports: ["websocket", "polling"],
-            reconnection: true,
-            reconnectionAttempts: 5
+            transports: ["websocket"]
         });
 
         var room_id = "{{ room.id }}";
