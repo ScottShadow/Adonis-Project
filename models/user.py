@@ -4,7 +4,7 @@ from datetime import datetime
 
 import hashlib
 from models.base import Base as SQLAlchemyBase, BaseClass, SessionLocal
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, func
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, Text, func
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.hybrid import hybrid_property
 from models.tag import Tag
@@ -29,6 +29,8 @@ class User(BaseClass, SQLAlchemyBase):
     first_name = Column(String(250), nullable=True)
     last_name = Column(String(250), nullable=True)
     age = Column(Integer, nullable=True)
+    # Add a push_subscription field (TEXT) to store Web Push subscriptions.
+    push_subscription = Column(Text, nullable=True)
     # Assumes skills are stored as a comma-separated string
     skills = Column(String(250), nullable=True)
 

@@ -11,6 +11,7 @@ from models.base import SessionLocal
 from models.models_helper import get_db_session
 from api.v2.app import logging
 from math import ceil
+import os
 
 # app = app_views
 
@@ -164,7 +165,7 @@ def start_dm(user_id):
                                "content": message.content, "created_at": message.created_at.strftime('%I:%M %p %b/%d')}
                               for message in messages]
 
-        return render_template('dm_page.html', room=room, messages=formatted_messages, user=user)
+        return render_template('dm_page.html', room=room, messages=formatted_messages, user=user, VAPID_PUBLIC_KEY=os.environ.get('VAPID_PUBLIC_KEY'), MY_WEBSITE_URL=os.environ.get('MY_WEBSITE_URL', "http://localhost:5000/"))
 
 
 @chat_views.route('/dm/<room_id>', methods=['GET'])

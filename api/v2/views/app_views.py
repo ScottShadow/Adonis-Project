@@ -199,3 +199,21 @@ def xp_for_current_level(user_level):
     logging.debug("user_level == %s -- res-curent == %s, ", user_level, res)
 
     return res
+
+@app_views.route('/sw.js', methods=['GET'], strict_slashes=False)
+def service_worker():
+    import os
+    from flask import current_app, send_from_directory, make_response
+    # Print the current app root for debugging
+    print(f"current_app.root_path: {current_app.root_path}")
+    
+    # Adjust the path relative to current_app.root_path (which is in api/v2/views)
+    sw_path = os.path.join(current_app.root_path, 'static', 'scripts')
+    sw_path = os.path.abspath(sw_path)  # Get the absolute path
+    
+    print(f"Serving sw.js from: {sw_path}")  # Debug: Verify the path
+    
+    response = make_response(send_from_directory(sw_path, 'sw.js'))
+    # Allow the service worker to control pages from the root
+    response.headers['Service-Worker-Allowed'] = '/'
+    return response

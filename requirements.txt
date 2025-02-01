@@ -16,3 +16,5 @@ waitress==3.0.0
 pymysql==1.1.1
 sqlalchemy
 mysql-connector-python
+pywebpush==2.0.3
+web-push==3.6.7

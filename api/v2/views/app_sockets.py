@@ -6,8 +6,10 @@ from models.message import Message
 from models.models_helper import get_db_session
 from api.v2.app import logging
 from datetime import datetime
-
+import os
 socketio = SocketIO()
+MY_WEBSITE_URL = os.getenv(
+    'MY_WEBSITE_URL', "http://localhost:5000/")
 
 
 def initialize_socketio(app):
@@ -70,14 +72,22 @@ def handle_message(data):
             if room:
                 for user in room.users:
                     if user.id != user_id:  # Don't notify the sender
+                        from api.v2.views.event_views import send_push_notification
                         if not is_user_in_room(user.id, room_id):
+                            # User is active in the chat -> Emit a WebSocket notification
                             emit('notification', {
                                 "from": username,
                                 "message": "sent you a new message",
                                 "room_id": room_id
-                            }, room=str(user.id))  # Notify only the recipient
-                            print(
-                                f"Notification sent to user {user.username} ")
+                            }, room=str(user.id))
+                            # User is offline -> Send push notification via Web Push API
+                            send_push_notification(
+                                username, message_content, f"{MY_WEBSITE_URL}/api/v2/start_dm/{user_id}", user.id
+                            )
+                        else:
+                            send_push_notification(
+                                username, message_content, f"{MY_WEBSITE_URL}/api/v2/start_dm/{user_id}", user.id
+                            )
     except Exception as e:
         logging.error(f"Error in handle_message: {e}")
         emit(
