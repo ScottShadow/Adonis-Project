@@ -30,7 +30,10 @@
             Don't have an account? Sign up
         </a>
     </div>
-
+    <script>
+        fetch('/wake_db', { method: "GET" })
+            .catch(error => console.error(error));;
+    </script>
 </body>
 
 </html>

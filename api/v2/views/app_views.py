@@ -3,8 +3,10 @@
 """
 # from flask import Blueprint
 from api.v2.views import app_views
-from flask import abort, jsonify, request, redirect, url_for, render_template
+from flask import abort, jsonify, request, redirect, url_for, render_template, jsonify
 from models.user import User
+from sqlalchemy import select
+from models.models_helper import get_db_session
 import os
 
 # users_views = Blueprint("users_views", __name__)
@@ -174,7 +176,8 @@ def dashboard_route():
                                    xp_needed=xp_needed_next,
                                    xp_percentage=xp_percentage,
                                    recent_logs=recent_logs,
-                                   VAPID_PUBLIC_KEY=os.environ.get('VAPID_PUBLIC_KEY'),
+                                   VAPID_PUBLIC_KEY=os.environ.get(
+                                       'VAPID_PUBLIC_KEY'),
                                    MY_WEBSITE_URL=os.environ.get('MY_WEBSITE_URL', "http://localhost:5000/"))
 
     except Exception as e:
@@ -203,20 +206,28 @@ def xp_for_current_level(user_level):
 
     return res
 
+
 @app_views.route('/sw.js', methods=['GET'], strict_slashes=False)
 def service_worker():
     import os
     from flask import current_app, send_from_directory, make_response
     # Print the current app root for debugging
     print(f"current_app.root_path: {current_app.root_path}")
-    
+
     # Adjust the path relative to current_app.root_path (which is in api/v2/views)
     sw_path = os.path.join(current_app.root_path, 'static', 'scripts')
     sw_path = os.path.abspath(sw_path)  # Get the absolute path
-    
+
     print(f"Serving sw.js from: {sw_path}")  # Debug: Verify the path
-    
+
     response = make_response(send_from_directory(sw_path, 'sw.js'))
     # Allow the service worker to control pages from the root
     response.headers['Service-Worker-Allowed'] = '/'
     return response
+
+
+@app_views.route("/wake_db", methods=['GET'], strict_slashes=False)
+def wake_db():
+    with get_db_session() as session:
+        session.execute(select(1))
+    return jsonify({"message": "Database is awake"}), 200
