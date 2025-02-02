@@ -5,6 +5,7 @@
 from api.v2.views import app_views
 from flask import abort, jsonify, request, redirect, url_for, render_template
 from models.user import User
+import os
 
 # users_views = Blueprint("users_views", __name__)
 
@@ -172,7 +173,9 @@ def dashboard_route():
                                    current_xp=current_xp,
                                    xp_needed=xp_needed_next,
                                    xp_percentage=xp_percentage,
-                                   recent_logs=recent_logs)
+                                   recent_logs=recent_logs,
+                                   VAPID_PUBLIC_KEY=os.environ.get('VAPID_PUBLIC_KEY'),
+                                   MY_WEBSITE_URL=os.environ.get('MY_WEBSITE_URL', "http://localhost:5000/"))
 
     except Exception as e:
         return jsonify({'error': f'Error loading dashboard: {str(e)}'}), 500

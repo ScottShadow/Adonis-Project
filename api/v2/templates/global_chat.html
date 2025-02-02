@@ -27,6 +27,8 @@
         </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script>
+    <script>{% include 'request_notifications.js' %}</script>
+
     <script>
         var room_id = "{{ room.id }}";  // Ensure this is rendered as a real value
         var socket = io(["https://adonis-project-production.up.railway.app", "http://localhost:5000"], {
