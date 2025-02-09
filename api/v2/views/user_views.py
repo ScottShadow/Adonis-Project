@@ -9,6 +9,7 @@ from models.base import BaseClass
 from authentication import hash_password
 import os
 from api.v2.app import auth, logging
+
 user_views = Blueprint("user_views", __name__, url_prefix="/api/v2")
 
 
@@ -70,7 +71,8 @@ def view_profile() -> str:
             logging.info("User profile saved")
             logging.info(f"User: {user.to_json()}")
             # Reset the session for the user
-            auth.destroy_session(request)
+            if auth:
+                auth.destroy_session(request)
             print(f"[DEBUG] Session ID Loading")
             session_id = auth.create_session(user.id)
 
