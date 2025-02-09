@@ -70,6 +70,7 @@ def view_profile() -> str:
             user.save()
             logging.info("User profile saved")
             logging.info(f"User: {user.to_json()}")
+            return redirect(url_for('app_views.dashboard_route'))
             # Reset the session for the user
             auth.destroy_session(request)
             print(f"[DEBUG] Session ID Loading")
