@@ -71,8 +71,7 @@ def view_profile() -> str:
             logging.info("User profile saved")
             logging.info(f"User: {user.to_json()}")
             # Reset the session for the user
-            if auth:
-                auth.destroy_session(request)
+            auth.destroy_session(request)
             print(f"[DEBUG] Session ID Loading")
             session_id = auth.create_session(user.id)
 
@@ -87,8 +86,8 @@ def view_profile() -> str:
                 print("[DEBUG] Returning JSON response")
                 return response, 201
             else:
-                print("[DEBUG] Redirecting to dashboard")
-                response = render_template('user_profile.html', user=user)
+                print("[DEBUG] Redirecting to login")
+                response = redirect(url_for('app_views.dashboard_route'))
                 response = make_response(response)
                 response.set_cookie(session_name, session_id,
                                     max_age=auth.session_duration, path='/', samesite='Lax')
