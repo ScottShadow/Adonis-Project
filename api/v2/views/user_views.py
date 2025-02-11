@@ -55,6 +55,8 @@ def view_profile() -> str:
             if data.get('username'):
                 user.username = data.get('username')
             logging.info(f"Username updated to: {user.username}")
+            if data.get('email'):
+                user.email = data.get('email')
             if data.get('profile_info'):
                 user.profile_info = data.get('profile_info')
             logging.info(f"Profile info updated to: {user.profile_info}")
