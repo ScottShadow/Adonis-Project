@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Dancing+Script:wght@400;700&family=Lora:wght@400;700&family=Roboto+Slab:wght@400;700&family=Quicksand:wght@400;700&family=Press+Start+2P&display=swap');
-
+@source "./public/*.{html,js}";
+@plugin "daisyui";
 
 
 button,
@@ -141,7 +142,7 @@ select {
 }
 
 .table-container {
-    @apply bg-[var(--background-color-contrast)] p-4 rounded shadow overflow-x-auto h-max;
+    @apply bg-[var(--background-color-contrast)] p-4 rounded shadow overflow-x-auto h-max border-2 border-[var(--accent-color)];
 }
 
 .table {
@@ -159,4 +160,16 @@ select {
 
 .table-actions {
     @apply flex space-x-2 items-start;
+}
+
+.reaction-btn {
+    transition: transform 0.2s;
+}
+
+.reaction-btn:hover {
+    transform: scale(1.1);
+}
+
+.reaction-btn.active {
+    transform: scale(1.2);
 }

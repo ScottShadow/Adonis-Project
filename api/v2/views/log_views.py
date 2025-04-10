@@ -7,7 +7,7 @@ from api.v2.views import log_views
 from flask import request, jsonify, render_template, Blueprint, url_for, redirect
 from models.log import Log
 from models.user import User
-from api.v2.app import auth
+from models.friendship import Friendship, FriendshipStatus
 from models.base import SessionLocal
 from models.models_helper import get_db_session
 from sqlalchemy import func
@@ -179,6 +179,25 @@ def create_log():
             f"[DEBUG CREATE LOG] Log Initialized successfully with id: {new_log.id} and XP {new_log.xp}")
 
         new_log.save()
+
+        if new_log.visibility == 'Public':
+            with get_db_session() as session:
+                # Find the user's circle
+                from models.room import Room, RoomTypes
+                user_circle = session.query(Room).filter_by(
+                    name=f"circle_{user.id}", type=RoomTypes.CIRCLE).first()
+
+                if user_circle:
+                    from api.v2.views.event_views import NotificationService
+                    NotificationService.notify_room(
+                        room_id=user_circle.id,
+                        sender_id=user.id,
+                        message_content=f"{user.username} added a new log: {new_log.habit_name}"
+                    )
+                    print(
+                        f"[CREATE LOG] Notification sent to circle {user_circle.id}")
+                    logging.info(
+                        f"[CREATE LOG] Notification sent to circle {user_circle.id}")
 
         print(
             f"[DEBUG CREATE LOG] Log saved successfully with id: {new_log.id}")

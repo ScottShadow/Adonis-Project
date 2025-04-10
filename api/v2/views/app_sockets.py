@@ -64,30 +64,14 @@ def handle_message(data):
             session.add(message)
             session.commit()
             pay_load = {"username": username,
-                        "message": message_content, "created_at": message.created_at.strftime('%I:%M %p %b/%d')}
+                        "message": message_content, "created_at": message.created_at.isoformat() + 'Z'}
             # Emit the message to everyone in the room
             emit('message', pay_load, room=room_id)
 
-            room = session.query(Room).filter_by(id=room_id).first()
-            if room:
-                for user in room.users:
-                    if user.id != user_id:  # Don't notify the sender
-                        from api.v2.views.event_views import send_push_notification
-                        if not is_user_in_room(user.id, room_id):
-                            # User is active in the chat -> Emit a WebSocket notification
-                            emit('notification', {
-                                "from": username,
-                                "message": "sent you a new message",
-                                "room_id": room_id
-                            }, room=str(user.id))
-                            # User is offline -> Send push notification via Web Push API
-                            send_push_notification(
-                                username, message_content, f"{MY_WEBSITE_URL}/api/v2/start_dm/{user_id}", user.id
-                            )
-                        else:
-                            send_push_notification(
-                                username, message_content, f"{MY_WEBSITE_URL}/api/v2/start_dm/{user_id}", user.id
-                            )
+            from .event_views import NotificationService
+
+            NotificationService.notify_room(
+                room_id, user_id, message_content)
     except Exception as e:
         logging.error(f"Error in handle_message: {e}")
         emit(
@@ -133,8 +117,6 @@ def handle_join_dm(data):
 
 
 # Handle message sent by a user
-
-
 @socketio.on('send_message')
 def handle_send_message(data):
     room_id = data['room']
@@ -154,3 +136,32 @@ def handle_send_message(data):
             'username': current_user.username,
             'content': content
         }, room=room_id)
+
+
+@socketio.on("seen")
+def update_last_seen(data):
+    room_id = data.get("room_id")
+    with get_db_session() as session:
+        user_id = flask_session.get('user_id')
+        current_user = session.query(User).filter_by(id=user_id).first()
+
+        # check to see if status already exist
+        if isinstance(room_id, list):
+            for room in room_id:
+                verify_status(session, current_user.id, room)
+        else:
+            verify_status(session, current_user.id, room_id)
+
+
+def verify_status(session, user_id, room_id):
+    from models.room import ActivityStatus
+    status = session.query(ActivityStatus).filter_by(
+        room_id=room_id, user_id=user_id).first()
+    if not status:
+        status = ActivityStatus(
+            room_id=room_id, user_id=user_id)
+        session.add(status)
+    # trigger onupdate
+    else:
+        status.updated_at = datetime.utcnow()
+    session.commit()

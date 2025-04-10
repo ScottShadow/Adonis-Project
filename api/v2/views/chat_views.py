@@ -2,7 +2,7 @@ from api.v2.views import app_views
 from flask import abort, jsonify, request, redirect, url_for, render_template, Blueprint, flash
 from sqlalchemy.orm import joinedload, aliased
 from sqlalchemy import func, and_
-from models.room import Room
+from models.room import Room, UserSubscription, RoomTypes, ActivityStatus
 from models.message import Message
 from models.user import User
 from models.log import Log
@@ -12,6 +12,8 @@ from models.models_helper import get_db_session
 from api.v2.app import logging
 from math import ceil
 import os
+from datetime import datetime
+
 
 # app = app_views
 
@@ -30,7 +32,7 @@ def global_chat():
         global_room = session.query(Room).filter_by(name="Global").first()
 
         if not global_room:
-            global_room = Room(name="Global", is_dm=False)
+            global_room = Room(name="Global", is_dm=False, type=RoomTypes.CHAT)
             session.add(global_room)
             session.commit()
             logging.debug("Global room created: %s", global_room)
@@ -40,7 +42,7 @@ def global_chat():
         logging.debug("Global room messages: %s", messages)
 
         formatted_messages = [{"username": message.user.username,
-                               "content": message.content, "created_at": message.created_at.strftime('%I:%M %p %b/%d')} for message in messages]
+                               "content": message.content, "created_at": message.created_at.isoformat() + 'Z'} for message in messages]
         return render_template('global_chat.html', room=global_room, messages=formatted_messages, user=user)
 
 
@@ -123,14 +125,10 @@ def start_dm(user_id):
 
         current_user_id = user.id
 
-        # Check if a room already exists for this DM
-        room = (session.query(Room)
-                .filter(Room.is_dm == True)
-                .join(Room.users)
-                .filter(User.id.in_([user_id, current_user_id]))
-                .group_by(Room.id)
-                .having(func.count(User.id) == 2)
-                .first())
+        # Check if a room already exists for this DMz
+        from .chat_helper import find_dm_room
+
+        room = find_dm_room(session, current_user_id, user_id)
 
         # Fetch the other user
         other_user = session.query(User).filter_by(id=user_id).first()
@@ -144,41 +142,72 @@ def start_dm(user_id):
         if room is None:
             # Create new DM room
             room_name = f"DM between {user.username} and {other_user.username}"
-            room = Room(name=room_name, is_dm=True)
+            room = Room(name=room_name, is_dm=True, type=RoomTypes.CHAT)
+            # print(f"[DEBUG START DM] new room of type chat made")
             session.add(room)
             session.flush()
 
             # Add both users to the room
-            room.users.append(user)
-            room.users.append(other_user)
-            session.flush()
+            # room.users.append(user)
+            sub1 = UserSubscription(user_id=user_id, room_id=room.id)
+            # room.users.append(other_user)
+            sub2 = UserSubscription(user_id=current_user_id, room_id=room.id)
+            session.add_all([sub1, sub2])
             session.commit()
 
             logging.debug(f"DM room created: {room}")
-
+            logging.debug(f"Subscriptions created: {sub1} {sub2}")
+        last_seen_at = session.query(ActivityStatus).filter_by(
+            user_id=current_user_id, room_id=room.id).first()
+        last_seen_at = datetime(
+            1980, 1, 1) if not last_seen_at else last_seen_at.updated_at
         # Get all messages in the DM room
         messages = room.messages
         """messages = session.query(Message).options(
             joinedload(Message.user)).filter_by(room_id=room.id).all()"""
-
+        marker_inserted = False
+        messages_marked = []
+        for message in messages:
+            if not marker_inserted and message.created_at > last_seen_at:
+                messages_marked.append(UnreadMarker())
+                marker_inserted = True
+            messages_marked.append(message)
         formatted_messages = [{"username": message.user.username,
-                               "content": message.content, "created_at": message.created_at.strftime('%I:%M %p %b/%d')}
-                              for message in messages]
+                               "content": message.content, "created_at": message.created_at.isoformat() + 'Z'}
+                              for message in messages_marked]
 
-        return render_template('dm_page.html', room=room, messages=formatted_messages, user=user, VAPID_PUBLIC_KEY=os.environ.get('VAPID_PUBLIC_KEY'), MY_WEBSITE_URL=os.environ.get('MY_WEBSITE_URL', "http://localhost:5000/"))
+        return render_template('dm_page.html', friend=other_user.username, room=room, messages=formatted_messages, user=user, VAPID_PUBLIC_KEY=os.environ.get('VAPID_PUBLIC_KEY'), MY_WEBSITE_URL=os.environ.get('MY_WEBSITE_URL', "http://localhost:5000/"))
+
+
+class UnreadMarker:
+    def __init__(self):
+        self.user = type('Anonymous', (), {'username': ''})()
+        self.content = '__UNREAD_MARKER__'
+        self.created_at = datetime(1980, 1, 1)
 
 
 @chat_views.route('/dm/<room_id>', methods=['GET'])
 def dm_page(room_id):
     with get_db_session() as session:
+        current_user = request.current_user
         room = session.query(Room).filter_by(id=room_id).first()
 
         if request.current_user not in room.users:
             return "Unauthorized", 403  # Ensure only the two users in the DM can access it
+        last_seen_at = session.query(ActivityStatus).filter_by(
+            user_id=current_user.id, room_id=room.id).first() | 0
 
         messages = session.query(Message).options(
             joinedload(Message.user)).filter_by(room_id=room.id).all()
-    return render_template('dm_page.html', room=room, messages=messages)
+        marker_inserted = False
+        messages_marked = []
+        for message in messages:
+            if not marker_inserted and message.created_at > last_seen_at:
+                messages_marked.append("__UNREAD_MARKER__")
+                marker_inserted = True
+
+            messages_marked.append(message)
+    return render_template('dm_page.html', room=room, messages=messages_marked)
 
 
 @chat_views.route('/friends/request/<user_id>', methods=['POST'])
@@ -194,7 +223,7 @@ def send_friend_request(user_id):
         abort(401, description="Unauthorized access.")
 
     current_user_id = user.id
-
+    from models.user import User
     # Validate the target user ID
     with get_db_session() as session:
         other_user = session.query(User).filter_by(id=user_id).first()
@@ -228,6 +257,11 @@ def send_friend_request(user_id):
         logging.info(f"Friendship created: {friendship}")
         session.add(friendship)
         session.commit()
+        from .event_views import NotificationService
+
+        notification_content = f"You got a Friend Request from {user.username}"
+        NotificationService.notify_personal_circle(
+            current_user_id, user_id, notification_content)
 
         logging.info(
             f"Friend request sent from user {current_user_id} to {user_id}.")
@@ -268,7 +302,7 @@ def accept_friend_request(user_id):
     current_user_id = user.id
 
     with get_db_session() as session:
-        # Find the friendship request where the current user is the recipient (user_id_2)
+        # Find the pending friendship request
         friendship = session.query(Friendship).filter(
             Friendship.user_id_1 == user_id,
             Friendship.user_id_2 == current_user_id,
@@ -276,21 +310,42 @@ def accept_friend_request(user_id):
         ).first()
 
         if friendship:
-            # If a friendship request is found, update the status to "accepted"
+            # Accept the friendship
             friendship.status = FriendshipStatus.ACCEPTED
             logging.info(
                 f"Friendship accepted between user {current_user_id} and {user_id}.{friendship}"
             )
             session.commit()
 
-            # Optionally, you can create a reverse friendship entry for user_id_2 to user_id_1 (bidirectional friendship)
             reverse_friendship = Friendship(
                 user_id_1=current_user_id, user_id_2=user_id, status=FriendshipStatus.ACCEPTED)
             session.add(reverse_friendship)
+            session.commit()
             logging.info(
                 f"Reverse friendship created between user {current_user_id} and {user_id}.{reverse_friendship}"
             )
-            session.commit()
+
+            # Ensure both users have their personal circles
+            from .chat_helper import create_user_circle
+            create_user_circle(current_user_id)
+            create_user_circle(user_id)
+
+            # Subscribe each user to the other's circle
+            user_circle_1 = session.query(Room).filter_by(
+                name=f"circle_{current_user_id}").first()
+            user_circle_2 = session.query(Room).filter_by(
+                name=f"circle_{user_id}").first()
+
+            if user_circle_1 and user_circle_2:
+                # Add user_2 to user_1's circle
+                session.add(UserSubscription(
+                    user_id=user_id, room_id=user_circle_1.id))
+                # Add user_1 to user_2's circle
+                session.add(UserSubscription(
+                    user_id=current_user_id, room_id=user_circle_2.id))
+                session.commit()
+                logging.info(
+                    f"Users {user_id} and {current_user_id} added to each other's circles.")
 
             flash('Friend request accepted!', 'success')
         else:
@@ -508,6 +563,11 @@ def friends_list():
         sent_requests_dict = [
             {"id": user_id, "username": username} for user_id, username in sent_requests
         ]
+        friend_request_rooms = session.query(Room.id).filter(
+            and_(Room.name.like("%Personal%"),
+                 Room.name.like(f"%{current_user_id}%"))
+        ).all()
+        rooms = [room[0] for room in friend_request_rooms]
         logging.info(
             f"{friend_requests_dict}{friends_dict}{friends_logs_dict}"
         )
@@ -517,5 +577,6 @@ def friends_list():
         friend_requests=friend_requests_dict,
         friends=friends_dict,
         friends_logs=friends_logs_dict,
-        sent_requests=sent_requests_dict
+        sent_requests=sent_requests_dict,
+        rooms=rooms,
     )

@@ -8,6 +8,20 @@ from models.models_helper import calculate_xp
 
 
 class Log(BaseClass, SQLAlchemyBase):
+    """Model for tracking user logs related to habits.
+
+    Attributes:
+        user_id (str): ID of the user associated with the log.
+        habit_type (str): Type of habit (e.g., 'Exercise', 'Reading').
+        habit_name (str): Name of the habit (e.g., 'Morning Run').
+        log_details (str): Optional details about the log.
+        timestamp (datetime): When the log was created.
+        xp (int): Experience points associated with the log.
+        source (str): Source of the log (e.g., 'Manual', 'API').
+        status (str): Status of the log (e.g., 'Completed', 'Pending').
+        visibility (str): Visibility setting for the log (e.g., 'Private', 'Public').
+        shared_with (str): Optional field for users or groups the log is shared with.
+    """
     __tablename__ = 'logs'
 
     user_id = Column(String(36), ForeignKey('users.id'), nullable=False)
@@ -33,6 +47,12 @@ class Log(BaseClass, SQLAlchemyBase):
 
     # Define relationships
     user = relationship('User', back_populates='logs')
+    comments = relationship(
+        'Comment', primaryjoin="and_(foreign(Comment.entity_id) == Log.id, Comment.entity_type == 'EntityType.HABIT_LOG')",
+        backref='log', cascade="all, delete-orphan"
+    )
+    reactions = relationship("Reaction", primaryjoin="and_(foreign(Reaction.entity_id) == Log.id, Reaction.entity_type == 'EntityType.HABIT_LOG')",
+                             backref="log", lazy="joined")
 
     def __init__(self, *args: list, **kwargs: dict):
         """Initialize a Log instance."""

@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gamified Dashboard</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js" defer></script>
 
 
 </head>
@@ -19,37 +20,101 @@
 
         <!-- User Info -->
         <div class="table-container">
-            <h2 class="text-lg font-semibold">User Information</h2>
-            <table class="table">
+            <table class="table-auto md:!min-w-full">
                 <tbody>
-                    <tr class="border-b border-[var(--accent-color)]">
+                    <tr class="table-row py-3 border-b border-[var(--accent-color)]">
                         <td class="py-2">User Name</td>
-                        <td>{{ user_name }}</td>
+                        <td class="py-2">{{ user_name }}</td>
+                    </tr>
+                    <tr class="flex flex-row justify-between space-x-4 border-0 border-[var(--accent-color)]">
+                        <td class="table-actions">
+                            <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
+                                <button class="btn create-new-btn"><svg xmlns="http://www.w3.org/2000/svg" height="2rem"
+                                        viewBox="0 -960 960 960" width="2rem" fill="#e3e3e3">
+                                        <path
+                                            d="M458-456v135q0 9.25 6.82 16.12 6.83 6.88 16 6.88 9.18 0 16.18-6.88 7-6.87 7-16.12v-135h135q9.25 0 16.13-6.82 6.87-6.83 6.87-16 0-9.18-6.87-16.18-6.88-7-16.13-7H504v-137q0-9.25-6.82-16.13-6.83-6.87-16-6.87-9.18 0-16.18 6.87-7 6.88-7 16.13v137H321q-9.25 0-16.12 6.82-6.88 6.83-6.88 16 0 9.18 6.88 16.18 6.87 7 16.12 7h137Zm22.45 340q-75.09 0-141.49-28.41T222.73-222.6q-49.84-49.78-78.28-116.05Q116-404.93 116-480.28q0-75.62 28.47-141.74t78.35-116.13q49.88-50 116.05-77.92Q405.04-844 480.28-844q75.61 0 141.72 27.89 66.12 27.89 116.13 77.85 50.02 49.96 77.94 116.24Q844-555.73 844-480.37q0 75.37-27.89 141.43t-77.84 115.99q-49.94 49.94-116.21 78.45Q555.8-116 480.45-116Zm-.45-46q132.51 0 225.26-92.74Q798-347.49 798-480t-92.74-225.26Q612.51-798 480-798t-225.26 92.74Q162-612.51 162-480t92.74 225.26Q347.49-162 480-162Zm0-318Z" />
+                                    </svg></button>
+                            </form>
+                            <form><!-- Notifications Button and Modal (inside your dashboard layout) -->
+                                <div x-data="notificationModalData()" x-init="init()" class="inline">
+                                    <!-- Notifications Button -->
+                                    <button type="button" class="btn notifications-btn"
+                                        onclick="notificationModal.showModal()" @click="$data.fetchNotifications()">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 -960 960 960"
+                                            width="2rem" fill="#e3e3e3">
+                                            <path
+                                                d="M235.29-196q-9.24 0-16.27-6.82-7.02-6.83-7.02-16 0-9.18 6.88-16.18 6.87-7 16.12-7h5v-290q0-89 58-156.5T444-770v-37q0-15 10.5-25.5T480-843q15 0 25.5 10.5T516-807v37q88 14 146.5 80.8T721-532v290h5q9.25 0 16.13 6.82 6.87 6.83 6.87 16 0 9.18-6.87 16.18t-16.11 7H235.29ZM479.58-84Q453-84 434.5-102.8T416-148h128q0 27-18.92 45.5Q506.15-84 479.58-84Z" />
+                                        </svg>
+                                    </button>
+
+                                    <!-- Daisy Modal for Notifications -->
+                                    <dialog id="notificationModal" class="modal">
+                                        <div class="modal-box bg-[var(--accent-color)]">
+                                            <h3 class="text-lg font-bold ">Notifications
+                                            </h3>
+                                            <!-- Notification List -->
+                                            <div
+                                                class="overflow-x-auto rounded-box border border-base-content/5 bg-[var(--background-color)] mt-4">
+                                                <table class="table">
+                                                    <!-- Table Head -->
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Latest</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Loop through notifications -->
+                                                        <template x-for="(notification, index) in notifications"
+                                                            :key="index">
+                                                            <tr @click="window.location.href = `${notification.url}`"
+                                                                class="bg-[var(--accent-color)] hover:bg-[var(--accent-color)]/30">
+                                                                <td x-text="notification.template">
+                                                                </td>
+                                                                <td
+                                                                    x-text="moment.utc(notification.latest_time).local().calendar()">
+                                                                </td>
+
+                                                            </tr>
+                                                        </template>
+                                                        <!-- Fallback if no notifications -->
+                                                        <template x-if="notifications.length === 0">
+                                                            <tr>
+                                                                <td colspan="2" class="text-center py-2">No
+                                                                    notifications</td>
+                                                            </tr>
+                                                        </template>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- Modal Actions -->
+                                            <div class="modal-action">
+                                                <form method="dialog">
+                                                    <button class="btn" onclick="event.preventDefault()"
+                                                        @click="$data.closeModal()">Close</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </dialog>
+                                </div>
+                            </form>
+                        </td>
                         <td>
                             <form action="{{ url_for('auth_views.logout') }}" method="POST">
                                 <button
-                                    class="bg-[var(--accent-color-contrast)] hover:bg-[var(--accent-color)] text-[var(--text-color)] py-1 px-3 rounded">
-                                    Logout
+                                    class="btn btn-soft bg-[var(--accent-color-contrast)] hover:bg-[var(--accent-color)] text-[var(--text-color)] py-1 px-3 rounded">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 -960 960 960"
+                                        width="2rem" fill="#e3e3e3">
+                                        <path
+                                            d="M242-164q-33.7 0-55.85-22.15T164-242v-476q0-33.7 22.15-55.85T242-796h216q9.3 0 16.15 6.79 6.85 6.79 6.85 16T474.15-757q-6.85 7-16.15 7H242q-12 0-22 10t-10 22v476q0 12 10 22t22 10h216q9.3 0 16.15 6.79 6.85 6.79 6.85 16T474.15-171q-6.85 7-16.15 7H242Zm461-294H410.96q-9.28 0-16.12-6.79-6.84-6.79-6.84-16t6.84-16.21q6.84-7 16.12-7H703l-58-58q-9-9-9.5-19.07t9.5-18q10-7.93 17.5-6.93t15.5 9l90 90q12 11.64 12 26.82T768-453l-89 89q-7 7-16 8t-17.48-8Q636-372 635-380.5t9-18.5l59-59Z" />
+                                    </svg>
                                 </button>
                             </form>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="py-2">Level</td>
-                        <td>{{ user_level }}</td>
-                        <td></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- XP Progress Bar -->
-        <div class="table-container">
-            <h2 class="text-lg font-semibold">XP Progress</h2>
-            <div class="w-full bg-[var(--accent-color-contrast)] rounded h-6 overflow-hidden">
-                <div class="bg-[var(--accent-color)] h-full" style="width: {{ xp_percentage }}%;"></div>
-            </div>
-        </div>
 
         <!-- Recent Logs -->
         <div class="table-container">
@@ -61,19 +126,23 @@
                         <td class="py-2">You Dont Have Any Logs Yet, Save Something!</td>
                         <td class="table-actions">
                             <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
-                                <button>Create New
-                                    Log</button>
+                                <button class="btn">Create New
+                                    Log<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 -960 960 960"
+                                        width="2rem" fill="#e3e3e3">
+                                        <path
+                                            d="M458-456v135q0 9.25 6.82 16.12 6.83 6.88 16 6.88 9.18 0 16.18-6.88 7-6.87 7-16.12v-135h135q9.25 0 16.13-6.82 6.87-6.83 6.87-16 0-9.18-6.87-16.18-6.88-7-16.13-7H504v-137q0-9.25-6.82-16.13-6.83-6.87-16-6.87-9.18 0-16.18 6.87-7 6.88-7 16.13v137H321q-9.25 0-16.12 6.82-6.88 6.83-6.88 16 0 9.18 6.88 16.18 6.87 7 16.12 7h137Zm22.45 340q-75.09 0-141.49-28.41T222.73-222.6q-49.84-49.78-78.28-116.05Q116-404.93 116-480.28q0-75.62 28.47-141.74t78.35-116.13q49.88-50 116.05-77.92Q405.04-844 480.28-844q75.61 0 141.72 27.89 66.12 27.89 116.13 77.85 50.02 49.96 77.94 116.24Q844-555.73 844-480.37q0 75.37-27.89 141.43t-77.84 115.99q-49.94 49.94-116.21 78.45Q555.8-116 480.45-116Zm-.45-46q132.51 0 225.26-92.74Q798-347.49 798-480t-92.74-225.26Q612.51-798 480-798t-225.26 92.74Q162-612.51 162-480t92.74 225.26Q347.49-162 480-162Zm0-318Z" />
+                                    </svg></button>
                             </form>
                         </td>
                     </tr>
                 </tbody>
             </table>
             {% else %}
-            <table class="table !min-w-[650px]">
+            <table class="table table-auto min-w-[650px]">
                 <thead>
                     <tr>
                         <th class="border-b border-[var(--accent-color)] py-2">Habit Name</th>
-                        <th class="border-b border-[var(--accent-color)] py-2">Habit Type</th>
+                        <!-- <th class="border-b border-[var(--accent-color)] py-2">Habit Type</th> -->
                         <th class="border-b border-[var(--accent-color)] py-2">Description</th>
                         <th class="border-b border-[var(--accent-color)] py-2">Actions</th>
                     </tr>
@@ -82,18 +151,18 @@
                     {% for log in recent_logs %}
                     <tr class="border-b border-[var(--accent-color)]">
                         <td class="py-2">{{ log.habit_name }}</td>
-                        <td>{{ log.habit_type }}</td>
-                        <td>{{ log.log_details }}</td>
+                        <!-- <td>{{ log.habit_type }}</td> -->
+                        <td class="text-pretty">{{ log.log_details }}</td>
                         <td class="table-actions">
                             <form method="GET" action="{{ url_for('log_views.update_log', log_id=log.id) }}"
                                 class="inline">
-                                <button>
+                                <button class="btn btn-soft">
                                     Edit
                                 </button>
                             </form>
                             <form method="POST" action="{{ url_for('log_views.delete_log', log_id=log.id) }}"
                                 class="inline">
-                                <button>
+                                <button class="btn btn-soft">
                                     Delete
                                 </button>
                             </form>
@@ -115,6 +184,45 @@
         </div>
     </div>
     <script>{% include 'request_notifications.js' %}</script>
+
+    <!-- AlpineJS Component for Notifications -->
+    <script>
+        function notificationModalData() {
+            return {
+                notifications: [], // Array to store fetched notifications
+
+                init() {
+                    // Optionally fetch on initialization, or wait until modal is opened
+                    this.fetchNotifications();
+                },
+
+                openModal() {
+                    // Fetch notifications when modal is opened
+                    this.fetchNotifications();
+                },
+
+                closeModal() {
+                    // Close the modal using its native method
+                    document.getElementById('notificationModal').close();
+                },
+
+                async fetchNotifications() {
+                    try {
+                        const response = await fetch('/api/v2/notifications');
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        // Update notifications array with data from the API
+                        this.notifications = await response.json();
+                        //console.log(this.notifications);
+                    } catch (error) {
+                        console.error('Error fetching notifications:', error);
+                        this.notifications = [];
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 
 </html>

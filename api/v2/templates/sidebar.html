@@ -20,21 +20,27 @@
             </button>
             <!-- Sidebar Content -->
             <nav x-show="isOpen" class="mt-4 p-6 text-[var(--text-color)] space-y-4">
+                <form method="GET" action="{{ url_for('app_views.dashboard_route') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Dashboard</button>
+                </form>
                 <form method="GET" action="{{ url_for('user_views.view_profile') }}">
                     <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Profile</button>
-                </form>
-                <form method="GET" action="{{ url_for('chat_views.friends_list') }}">
-                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Friends</button>
                 </form>
                 <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
                     <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Create New
                         Log</button>
                 </form>
-                <form method="GET" action="{{ url_for('chat_views.global_chat') }}">
-                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Global Chat</button>
-                </form>
                 <form method="GET" action="{{ url_for('chat_views.people') }}">
                     <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">People</button>
+                </form>
+                <form method="GET" action="{{ url_for('chat_views.friends_list') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Friends</button>
+                </form>
+                <form method="GET" action="{{ url_for('habit_views.habit_board') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Habit Board</button>
+                </form>
+                <form method="GET" action="{{ url_for('chat_views.global_chat') }}">
+                    <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Global Chat</button>
                 </form>
                 <form method="GET" action="{{ url_for('event_views.home') }}">
                     <button class="w-full py-2 px-4 bg-[var(--accent-color-contrast)] rounded">Events</button>

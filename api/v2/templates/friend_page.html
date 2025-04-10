@@ -185,9 +185,30 @@
         <a href="{{ url_for('app_views.dashboard_route') }}"
             class="bg-[var(--background-color)] mt-4 text-sm underline">Back to Dashboard</a>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script>
     <script src="{{ url_for('static', filename='scripts/friend_page.js') }}"></script>
+
     <!-- JavaScript -->
     <script>
+        var socket = io(["https://adonis-project-production.up.railway.app", "http://localhost:5000"], {
+            transports: ["websocket", "polling"],
+            reconnection: true,
+            reconnectionAttempts: 5
+        });
+        let rooms = {{ rooms | safe }};
+        let seenTimeout;
+        const updateSeen = () => {
+            clearTimeout(seenTimeout);
+            seenTimeout = setTimeout(() => {
+                socket.emit('seen', { room_id: rooms });
+            }, 1000); // adjust timing as needed
+        };
+        window.addEventListener('focus', () => {
+            updateSeen();
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+            updateSeen();
+        });
         const menuToggle = document.getElementById('menu-toggle');
         const menu = document.getElementById('menu');
 

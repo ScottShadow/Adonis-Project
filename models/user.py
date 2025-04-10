@@ -7,10 +7,7 @@ from models.base import Base as SQLAlchemyBase, BaseClass, SessionLocal
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime, Text, func
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.hybrid import hybrid_property
-from models.tag import Tag
-from models.friendship import Friendship
 from authentication import hash_password, is_valid
-from models import room_members
 
 
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
@@ -60,8 +57,19 @@ class User(BaseClass, SQLAlchemyBase):
         overlaps='friendships_1,friendships_2',
     )
     user_tags = relationship('UserTag', back_populates='user')
-    rooms = relationship('Room', secondary=room_members,
-                         back_populates='users')
+    # rooms = relationship('Room', secondary=room_members,
+    #                      back_populates='users')
+
+    read_status = relationship(
+        "ActivityStatus", back_populates="user", cascade="all, delete-orphan")
+
+    subscriptions = relationship(
+        "UserSubscription", back_populates="user", cascade="all, delete-orphan")
+    reactions = relationship(
+        "Reaction", backref="user", cascade="all, delete-orphan"
+    )
+    comments = relationship(
+        "Comment", backref="user", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}', username='{self.username}')>"
@@ -99,12 +107,12 @@ class User(BaseClass, SQLAlchemyBase):
         self.last_login = kwargs.get(
             'last_login', None)  # Optional, can be None
 
-    @ property
+    @property
     def password(self) -> str:
         """Getter for the hashed password"""
         return self._hashed_password
 
-    @ password.setter
+    @password.setter
     def password(self, pwd: str):
         """Setter for a new password: encrypt using SHA256"""
         if pwd is None or not isinstance(pwd, str):

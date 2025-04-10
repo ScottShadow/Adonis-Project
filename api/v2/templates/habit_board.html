@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Board</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <!-- Optionally include your custom colors if not in output.css -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-colors.css') }}"> -->
+</head>
+
+<body class="bg-[var(--background-color)] text-[var(--text-color)] min-h-screen pl-8 p-4">
+    {% include 'sidebar.html' %}
+
+    <script src="{{ url_for('static', filename='scripts/theme-saver.js') }}"></script>
+
+    <div class="max-w-xl mx-auto space-y-4">
+        {% if not logs %}
+        <p class="text-[var(--text-color)]">No logs found. Add Friends.</p>
+        <form method="GET" action="{{ url_for('chat_views.people') }}">
+            <input type="hidden" name="action" value="People">
+            <button type="submit" class="accept-button">Find more people</button>
+        </form>
+        {% endif %}
+        {% for log in logs %}
+        <div
+            class="wrapper-div bg-[var(--background-color-contrast)] rounded-xl shadow-md overflow-hidden p-4 border-2 !border-[var(--accent-color)]">
+            <!-- User Profile Section -->
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-md font-bold text-[var(--accent-color-contrast)] tracking-wide group-hover:underline">
+                    {{ log.user.username }}
+                </h3>
+                <p class="text-xs text-[var(--text-color)] log-timestamp" data-timestamp="{{ log.timestamp }}"
+                    id="log-{{ loop.index }}" title="{{ log.timestamp }}"></p>
+            </div>
+
+            <!-- Habit Title -->
+            <h2 class="text-lg font-semibold text-[var(--text-color)] leading-tight">
+                {{ log.habit_name }}
+            </h2>
+
+            <!-- Habit Type -->
+            <span
+                class="inline-block px-2 py-0.5 bg-[var(--text-color)] bg-opacity-20 text-[var(--accent-color)] text-xs rounded-full uppercase tracking-wide mb-2">
+                {{ log.habit_type }}
+            </span>
+
+            <!-- Log Content -->
+            <p class="text-sm text-[var(--text-color)] leading-snug">
+                {{ log.log_details }}
+            </p>
+            <div class="flex items-center justify-center space-x-4 border-t p-2">
+                <!-- Reaction Buttons -->
+                <button
+                    class="btn reaction-btn flex items-center text-sm text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors"
+                    data-log-id="{{ log.id }}" data-reaction-type="motivated"
+                    data-log-owner-id="{{ log.user.owner_id }}">
+                    <span class="mr-1"><svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 -960 960 960"
+                            width="2rem" fill="#e3e3e3">
+                            <path
+                                d="M492-434 262.28-203.28Q254-195 245.33-195q-8.66 0-16.33-8-8-7.67-8-16.33 0-8.67 8-16.67l376-377H441.63v39q0 9.25-6.75 16.12-6.75 6.88-15.82 6.88-9.06 0-16.06-6.85-7-6.85-7-16.06v-45.33q0-16.76 11.48-28.26Q418.95-659 435-659h181q15.31 0 29.66 6Q660-647 672-635l158 157q21 21 40.35 32.64Q889.7-433.73 910-432q10.88 3.96 17.44 9.49 6.56 5.53 6.56 15.01 0 11.5-6.5 17.5t-15.5 3q-31-5-61.5-21T794-452l-85-79-125 123 57 58q15 15 11.5 32.5T632-290l-161 94q-9 6-17.06 2.56-8.06-3.45-14-12.5-5.94-9.06-3.68-17.1 2.26-8.03 11.74-13.96l152-88-108-109Zm-313 5q-9.25 0-16.12-6.82-6.88-6.83-6.88-16 0-9.18 6.88-16.18 6.87-7 16.12-7h120q9.25 0 16.13 6.82 6.87 6.83 6.87 16 0 9.18-6.87 16.18-6.88 7-16.13 7H179ZM83-575q-9.25 0-16.12-6.82-6.88-6.83-6.88-16Q60-607 66.88-614q6.87-7 16.12-7h120q9.25 0 16.13 6.82 6.87 6.83 6.87 16 0 9.18-6.87 16.18-6.88 7-16.13 7H83Zm731-81q-26 0-42.5-17.43-16.5-17.44-16.5-43Q755-742 771.5-759t42.5-17q26 0 42.5 17.43 16.5 17.44 16.5 43Q873-690 856.5-673T814-656Zm-635-65q-9.25 0-16.12-6.82-6.88-6.83-6.88-16 0-9.18 6.88-16.18 6.87-7 16.12-7h120q9.25 0 16.13 6.82 6.87 6.83 6.87 16 0 9.18-6.87 16.18-6.88 7-16.13 7H179Z" />
+                        </svg></span>
+                    <span class="reaction-count" data-reaction-type="motivated">
+                        {{ log.reactions.get("motivated", 0) }}
+                    </span>
+                </button>
+                <button
+                    class="reaction-btn flex items-center text-sm text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors"
+                    data-log-id="{{ log.id }}" data-reaction-type="inspired"
+                    data-log-owner-id=" {{ log.user.owner_id }}">
+                    <span class="mr-1"><img src="{{ url_for('static', filename='img/inspired.png') }}" alt="inspired"
+                            class="w-8 h-8"></span>
+                    <span class="reaction-count" data-reaction-type="inspired">
+                        {{ log.reactions.get("inspired", 0) }}
+                    </span>
+                </button>
+                <button
+                    class="reaction-btn flex items-center text-sm text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors"
+                    data-log-id="{{ log.id }}" data-reaction-type="educated"
+                    data-log-owner-id="{{ log.user.owner_id }}">
+                    <span class="mr-1"><img src="{{ url_for('static', filename='img/educated.png') }}" alt="educated"
+                            class="w-8 h-8"></span>
+                    <span class="reaction-count" data-reaction-type="educated">
+                        {{ log.reactions.get("educated", 0) }}
+                    </span>
+                </button>
+            </div>
+
+            <!-- Comment Section -->
+            {% if log.comments %}
+
+            <div class="comments-section border-t p-2" data-log-id="{{ log.id }}">
+                <p class="text-[var(--text-color)] font-semi text-sm">Comments:</p>
+                {% for comment in log.comments %}
+                <div class="comment-self flex items-center justify-between m-2">
+                    <!-- Username and comment -->
+                    <div class="flex items-start space-x-2">
+                        <span class="text-[var(--text-color)] font-semibold text-sm">{{ comment.user.username }}</span>
+                        <p class="text-[var(--text-color)] text-sm" data-comment-id="{{ comment.id }}">{{ comment.text
+                            }}</p>
+                    </div>
+
+                    {% if comment.user.user_id == current_user.id %}
+                    <!-- Dropdown aligned to the end -->
+                    <div class="relative dropdown dropdown-top dropdown-end shadow-none border-0">
+                        <div tabindex="0" role="button" class="btn bg-transparent border-none hover:bg-inherit p-0 m-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 -960 960 960" width="2rem"
+                                fill="#e3e3e3">
+                                <path
+                                    d="M251.63-446q-14.18 0-23.9-10.1-9.73-10.09-9.73-24.27t10.1-23.9q10.09-9.73 24.27-9.73t23.9 10.1q9.73 10.09 9.73 24.27t-10.1 23.9Q265.81-446 251.63-446Zm228 0q-14.18 0-23.9-10.1-9.73-10.09-9.73-24.27t10.1-23.9q10.09-9.73 24.27-9.73t23.9 10.1q9.73 10.09 9.73 24.27t-10.1 23.9Q493.81-446 479.63-446Zm228 0q-14.18 0-23.91-10.1-9.72-10.09-9.72-24.27t10.1-23.9q10.09-9.73 24.27-9.73t23.91 10.1q9.72 10.09 9.72 24.27t-10.1 23.9Q721.81-446 707.63-446Z" />
+                            </svg>
+                        </div>
+                        <ul tabindex="0"
+                            class="dropdown-content menu bg-[var(--accent-color)] text-[var(--text-color)] rounded-box z-10 w-auto p-2">
+                            <li><button class="delete-comment text-[var(--text-color)]"
+                                    data-comment-id="{{ comment.id }}"><svg xmlns="http://www.w3.org/2000/svg"
+                                        height="2rem" viewBox="0 -960 960 960" width="2rem" fill="#e3e3e3">
+                                        <path
+                                            d="M340-164q-33.7 0-55.85-22.15T262-242v-458h-38q-9.3 0-16.15-6.79-6.85-6.79-6.85-16t6.85-16.21q6.85-7 16.15-7h158v-12q0-12.3 9.65-22.15Q401.3-790 414-790h134q12.7 0 22.35 9.65Q580-770.7 580-758v12h158q9.3 0 16.15 6.79 6.85 6.79 6.85 16T754.15-707q-6.85 7-16.15 7h-38v457.57Q700-208 677.85-186T622-164H340Zm314-536H308v458q0 14 9 23t23 9h282q14 0 23-9t9-23v-458Zm-346 0v490-490Zm173 277 66 66q8 8 16 8t17-9q9-9 9-16.5t-9-16.5l-66-65 66-66q8-8 8.5-16t-8.5-17q-9-9-16.5-9t-16.5 9l-66 66-66-66q-8-8-15.5-8.5T383-555q-9 9-9 16.5t9 16.5l65 66-66 66q-8 8-8 15.5t9 16.5q9 9 16.5 9t16.5-9l65-65Z" />
+                                    </svg></button></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <!-- Comment Input -->
+            <div class="p-4 border-t border-[var(--accent-color)]/10">
+                <form class="comment-form flex items-center space-x-3">
+                    <input type="text" placeholder="Add a comment..."
+                        class="comment-input flex-1 border border-[var(--accent-color-contrast)] rounded-full py-2 px-4 text-sm focus:outline-none focus:border-[var(--accent-color)]">
+                    <button
+                        class="comment-btn text-[var(--accent-color)] font-semibold text-sm hover:text-[var(--accent-color)] my-0"
+                        data-log-id="{{ log.id }}" data-log-owner-id="{{ log.user.owner_id }}">Post</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='scripts/interactions.js') }}"></script>
+    <script>
+        const currentUser = {{ current_user | tojson }};
+        const rooms = {{ rooms | safe }};
+        const currentUserId = currentUser.id; // Use current user's id
+        var socket = io(["https://adonis-project-production.up.railway.app", "http://localhost:5000"], {
+            transports: ["websocket", "polling"],
+            reconnection: true,
+            reconnectionAttempts: 5
+        });
+        let seenTimeout;
+        const updateSeen = () => {
+            clearTimeout(seenTimeout);
+            seenTimeout = setTimeout(() => {
+                socket.emit('seen', { room_id: rooms });
+            }, 1000); // adjust timing as needed
+        };
+
+        document.querySelectorAll('.log-timestamp').forEach(el => {
+            const raw = el.dataset.timestamp;
+            const localTime = moment.utc(raw).local();
+            const displayTime = moment().diff(localTime, 'hours') < 24
+                ? localTime.fromNow()
+                : localTime.format('MMM D, YYYY h:mm A');
+
+            el.textContent = displayTime;
+        });
+
+        document.addEventListener("click", async function (event) {
+            // Handle comment posting
+            if (event.target.classList.contains("comment-btn")) {
+                const logId = event.target.getAttribute("data-log-id");
+                const ownerId = event.target.getAttribute("data-log-owner-id");
+                const inputField = event.target.previousElementSibling;
+                const commentText = inputField.value.trim();
+
+                if (commentText) {
+                    response = await postComment(ownerId, logId, "habit_log", commentText);
+                    //console.log(response);
+                    inputField.value = "";
+
+                    // Locate the existing comment section
+                    let commentsSection = document.querySelector(`.comments-section[data-log-id='${logId}']`);
+
+                    if (!commentsSection) {
+                        // If it doesn't exist, create it
+                        const wrapper = event.target.closest(".wrapper-div");
+                        commentsSection = document.createElement("div");
+                        commentsSection.classList.add("comments-section", "border-t", "p-2");
+                        commentsSection.setAttribute("data-log-id", logId);
+                        commentsSection.innerHTML = `<p class="text-[var(--text-color)] font-semi text-sm">Comments:</p>`;
+
+                        const commentInputSection = wrapper.querySelector(".p-4.border-t");
+
+                        wrapper.insertBefore(commentsSection, commentInputSection);
+                    }
+
+                    // Add the new comment
+                    const newComment = document.createElement("div");
+                    const commentId = response.comment_id;
+                    newComment.classList.add("comment-self", "flex", "items-start", "justify-between", "m-2");
+                    newComment.innerHTML = `
+                    
+    <!-- Username and comment -->
+    <div class="flex items-start space-x-2">
+        <span class="text-[var(--text-color)] font-semibold text-sm">${currentUser.username}</span>
+        <p class="text-[var(--text-color)] text-sm" data-comment-id="${commentId}">${commentText}</p>
+    </div>
+
+    <!-- Dropdown for the current user -->
+    <div class="relative dropdown dropdown-top dropdown-end shadow-none border-0">
+        <div tabindex="0" role="button" class="btn bg-transparent border-none hover:bg-inherit p-0 m-1">
+            <svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 -960 960 960" width="2rem" fill="#e3e3e3">
+                <path d="M251.63-446q-14.18 0-23.9-10.1-9.73-10.09-9.73-24.27t10.1-23.9q10.09-9.73 24.27-9.73t23.9 10.1q9.73 10.09 9.73 24.27t-10.1 23.9Q265.81-446 251.63-446Zm228 0q-14.18 0-23.9-10.1-9.73-10.09-9.73-24.27t10.1-23.9q10.09-9.73 24.27-9.73t23.9 10.1q9.73 10.09 9.73 24.27t-10.1 23.9Q493.81-446 479.63-446Zm228 0q-14.18 0-23.91-10.1-9.72-10.09-9.72-24.27t10.1-23.9q10.09-9.73 24.27-9.73t23.91 10.1q9.72 10.09 9.72 24.27t-10.1 23.9Q721.81-446 707.63-446Z" />
+            </svg>
+        </div>
+        <ul tabindex="0" class="dropdown-content menu bg-[var(--accent-color)] text-[var(--text-color)] rounded-box z-10 w-auto p-2">
+            <li>
+                <button class="delete-comment text-[var(--text-color)]" data-comment-id="${commentId}">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 -960 960 960" width="2rem" fill="#e3e3e3">
+                        <path d="M340-164q-33.7 0-55.85-22.15T262-242v-458h-38q-9.3 0-16.15-6.79-6.85-6.79-6.85-16t6.85-16.21q6.85-7 16.15-7h158v-12q0-12.3 9.65-22.15Q401.3-790 414-790h134q12.7 0 22.35 9.65Q580-770.7 580-758v12h158q9.3 0 16.15 6.79 6.85 6.79 6.85 16T754.15-707q-6.85 7-16.15 7h-38v457.57Q700-208 677.85-186T622-164H340Zm314-536H308v458q0 14 9 23t23 9h282q14 0 23-9t9-23v-458Zm-346 0v490-490Zm173 277 66 66q8 8 16 8t17-9q9-9 9-16.5t-9-16.5l-66-65 66-66q8-8 8.5-16t-8.5-17q-9-9-16.5-9t-16.5 9l-66 66-66-66q-8-8-15.5-8.5T383-555q-9 9-9 16.5t9 16.5l65 66-66 66q-8 8-8 15.5t9 16.5q9 9 16.5 9t16.5-9l65-65Z" />
+                    </svg>
+                </button>
+            </li>
+        </ul>
+    </div>
+`;
+                    commentsSection.appendChild(newComment);
+                    updateSeen();
+                }
+            }
+        });
+
+        document.addEventListener("click", async function (event) {
+            // Reaction Buttons
+            if (event.target.closest(".reaction-btn")) {
+                const button = event.target.closest(".reaction-btn");
+                const logId = button.getAttribute("data-log-id");
+                const ownerId = button.getAttribute("data-log-owner-id");
+
+                const reactionType = button.getAttribute("data-reaction-type");
+
+                try {
+                    updateSeen();
+                    const response = await addReaction(ownerId, logId, "habit_log", reactionType);
+                    const countSpan = button.querySelector(".reaction-count");
+                    let currentCount = parseInt(countSpan.innerText) || 0;
+                    //console.log(response);
+                    if (response.status === 201) {
+                        countSpan.innerText = currentCount + 1; // Reaction added
+                    } else if (response.status === 204) {
+                        countSpan.innerText = Math.max(currentCount - 1, 0); // Reaction removed
+                        console.log('Reaction removed successfully');
+                    }
+
+                } catch (error) {
+                    console.error("Error updating reaction:", error);
+                }
+            }
+        });
+        //delete comment
+        document.addEventListener("click", async function (event) {
+            const deleteButton = event.target.closest(".delete-comment");
+            if (deleteButton) {
+                const commentWrapper = deleteButton.closest(".comment-self");
+                const commentId = deleteButton.getAttribute("data-comment-id");
+
+                try {
+                    const response = await removeComment(commentId);
+                    if (response.status === 203 && commentWrapper) {
+                        commentWrapper.remove();
+                    }
+                } catch (error) {
+                    console.error("Error deleting comment:", error);
+                }
+                updateSeen();
+            }
+        });
+
+
+        setInterval(() => {
+            updateSeen();
+        }, 3000);
+        socket.on("disconnect", () => {
+
+        })
+        let commentInputs = document.getElementsByClassName('comment-input');
+        for (let i = 0; i < commentInputs.length; i++) {
+            commentInputs[i].addEventListener('focus', updateSeen);
+        }
+        let commentForms = document.getElementsByClassName('comment-form');
+        for (let i = 0; i < commentForms.length; i++) {
+            commentForms[i].addEventListener('submit', function (e) {
+                socket.emit('seen', { room_id: rooms });
+                e.preventDefault();
+            });
+        }
+
+        window.addEventListener('focus', function () {
+            location.reload();
+            updateSeen();
+        });
+    </script>
+
+</body>
+
+</html>

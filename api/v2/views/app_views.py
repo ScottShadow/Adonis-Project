@@ -229,5 +229,5 @@ def service_worker():
 @app_views.route("/wake_db", methods=['GET'], strict_slashes=False)
 def wake_db():
     with get_db_session() as session:
-        session.execute(select(1))
+        session.query(User).filter_by(id=1).first()
     return jsonify({"message": "Database is awake"}), 200

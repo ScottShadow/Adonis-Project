@@ -12,7 +12,8 @@ class SessionExpAuth(SessionAuth):
         """Initialize the SessionExpAuth with session duration."""
         super().__init__()
         try:
-            self.session_duration = int(os.getenv('SESSION_DURATION', 3600))
+            self.session_duration = int(
+                os.getenv('SESSION_DURATION', 10800000))
             print(f"[DEBUG] Session duration: {self.session_duration}")
         except ValueError:
             self.session_duration = 0
