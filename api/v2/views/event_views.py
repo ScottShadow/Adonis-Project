@@ -156,9 +156,12 @@ class NotificationService:
                     url = f"{url_for('chat_views.friends_list')}"
                     event_type = EventTypes.FRIEND_REQUEST
 
-                else:
+                elif any(word in message_content for word in ["inspired", "educated", "motivated"]):
                     url = f"{url_for('habit_views.habit_board')}"
                     event_type = EventTypes.REACTION
+                else:
+                    url = f"{url_for('habit_views.habit_board')}"
+                    event_type = EventTypes.POST
                 room_name = request.current_user.username
 
             elif room.type == RoomTypes.COMMENT:

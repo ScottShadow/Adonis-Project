@@ -68,7 +68,7 @@
                     </span>
                 </button>
                 <button
-                    class="reaction-btn flex items-center text-sm text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors"
+                    class="btn reaction-btn flex items-center text-sm text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors"
                     data-log-id="{{ log.id }}" data-reaction-type="inspired"
                     data-log-owner-id=" {{ log.user.owner_id }}">
                     <span class="mr-1"><img src="{{ url_for('static', filename='img/inspired.png') }}" alt="inspired"
@@ -78,7 +78,7 @@
                     </span>
                 </button>
                 <button
-                    class="reaction-btn flex items-center text-sm text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors"
+                    class="btn reaction-btn flex items-center text-sm text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors"
                     data-log-id="{{ log.id }}" data-reaction-type="educated"
                     data-log-owner-id="{{ log.user.owner_id }}">
                     <span class="mr-1"><img src="{{ url_for('static', filename='img/educated.png') }}" alt="educated"
