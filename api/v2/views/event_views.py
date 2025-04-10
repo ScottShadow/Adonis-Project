@@ -368,7 +368,10 @@ def get_notifications():
                         ids = room.name.split(" and ")
                         friend_id = ids[0].split(" for ")[1]
                         id2 = ids[1]
-                        friend = session.query(User).get(friend_id)
+                        if friend_id == user_id:
+                            friend_id = id2
+                        friend = session.query(User).filter(
+                            User.id == friend_id).first()
 
                         request_events = events_query.filter(
                             NotificationEvent.event_type == EventTypes.FRIEND_REQUEST,
@@ -389,7 +392,7 @@ def get_notifications():
                                 "group": friend.id,
                                 "count": count,
                                 "latest_time": latest_time.isoformat() + 'Z',
-                                "template": f"{friend.username} sent you a friend request"
+                                "template": f"{friend.username} sent you a Friend request"
                             })
 
                 # CHAT rooms: ignore global chat; handle DM rooms
