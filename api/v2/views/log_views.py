@@ -7,7 +7,6 @@ from api.v2.views import log_views
 from flask import request, jsonify, render_template, Blueprint, url_for, redirect
 from models.log import Log
 from models.user import User
-from models.friendship import Friendship, FriendshipStatus
 from models.base import SessionLocal
 from models.models_helper import get_db_session
 from sqlalchemy import func
@@ -67,11 +66,11 @@ def get_logs():
 
         # Filter by dates if provided
         if start_date:
-            print(f"[DEBUG] Start date: {start_date}")
+            # print(f"[DEBUG] Start date: {start_date}")
             logs_query = logs_query.filter(
                 func.date(Log.created_at) >= start_date)
         if end_date:
-            print(f"[DEBUG] End date: {end_date}")
+            # print(f"[DEBUG] End date: {end_date}")
             logs_query = logs_query.filter(
                 func.date(Log.created_at) <= end_date)
 
@@ -110,7 +109,7 @@ def get_log_with_id(log_id: str):
         session = SessionLocal()
         filters = {'id': log_id}
         log = session.query(Log).filter_by(**filters).first()
-        print(f"[DEBUG GET LOG] Retrieved log: {log}")
+        # print(f"[DEBUG GET LOG] Retrieved log: {log}")
         if log:
             return jsonify(log.to_json()), 200
         else:
@@ -131,7 +130,8 @@ def create_log():
     try:
         user = request.current_user
         if not user:
-            print("[DEBUG CREATE LOG] Unauthorized access: No user found.")
+            logging.error(
+                "[DEBUG CREATE LOG] Unauthorized access: No user found.")
             return jsonify({'error': 'Unauthorized access'}), 401
 
         if request.is_json:
@@ -139,7 +139,7 @@ def create_log():
         else:
             data = request.form
 
-        print(f"[DEBUG CREATE LOG] Received data: {data}")
+        # print(f"[DEBUG CREATE LOG] Received data: {data}")
         habit_type = data.get('habit_type')
         habit_name = data.get('habit_name')
         if not habit_type or not habit_name:
@@ -148,16 +148,15 @@ def create_log():
             }), 400
 
         log_details = data.get('log_details', None)
-        print(
-            f"[DEBUG CREATE LOG] Parsed fields: habit_type={habit_type}, habit_name={habit_name}")
+        # print(f"[DEBUG CREATE LOG] Parsed fields: habit_type={habit_type}, habit_name={habit_name}")
 
         # Debug the user and log information before saving
-        print(f"[DEBUG CREATE LOG] Creating new log for user_id: {user.id}")
+        # print(f"[DEBUG CREATE LOG] Creating new log for user_id: {user.id}")
 
         habit_type = request.form.get('habit_type')
         difficulty = request.form.get('difficulty')
         visibility = request.form.get('visibility')
-        print(f"[Debug CREATE LOG] Habit visibility: {visibility}")
+        # print(f"[Debug CREATE LOG] Habit visibility: {visibility}")
         custom_xp = data.get('custom_xp', None)
         from models.models_helper import calculate_xp
         xp_value = calculate_xp(habit_type=habit_type, difficulty=difficulty, custom_xp=int(
@@ -175,8 +174,7 @@ def create_log():
         )
         # Create log entry and calculate XP based on difficulty
 
-        print(
-            f"[DEBUG CREATE LOG] Log Initialized successfully with id: {new_log.id} and XP {new_log.xp}")
+        # print(f"[DEBUG CREATE LOG] Log Initialized successfully with id: {new_log.id} and XP {new_log.xp}")
 
         new_log.save()
 
@@ -194,13 +192,11 @@ def create_log():
                         sender_id=user.id,
                         message_content=f"{user.username} added a new log: {new_log.habit_name}"
                     )
-                    print(
-                        f"[CREATE LOG] Notification sent to circle {user_circle.id}")
+                    # print(f"[CREATE LOG] Notification sent to circle {user_circle.id}")
                     logging.info(
                         f"[CREATE LOG] Notification sent to circle {user_circle.id}")
 
-        print(
-            f"[DEBUG CREATE LOG] Log saved successfully with id: {new_log.id}")
+        # print(f"[DEBUG CREATE LOG] Log saved successfully with id: {new_log.id}")
         if request.is_json:
             return jsonify(new_log.to_json()), 201
         else:
@@ -208,7 +204,7 @@ def create_log():
             return response
 
     except Exception as e:
-        print(f"[DEBUG CREATE LOG] Error occurred: {str(e)}")
+        logging.error(f"[DEBUG CREATE LOG] Error occurred: {str(e)}")
         return jsonify({'error': f'Error creating log: {str(e)}'}), 500
 
 
@@ -364,11 +360,10 @@ def update_log_form(log_id):
             return jsonify({'error': 'Unauthorized access'}), 401
 
         with get_db_session() as session:
-            print(f"[DEBUG UPDATE LOG] Received log_id: {log_id}")
+            # print(f"[DEBUG UPDATE LOG] Received log_id: {log_id}")
             log = session.query(Log).filter_by(
                 id=log_id, user_id=user.id).first()
-            print(
-                f"[DEBUG] Request data: {request.args}, {request.form}")
+            # print(f"[DEBUG] Request data: {request.args}, {request.form}")
             if not log:
                 return jsonify({'error': 'Log not found'}), 404
 

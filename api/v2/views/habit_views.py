@@ -49,7 +49,7 @@ def organize_habit_board_feed(logs):
 
 @habit_views.route('/habit_board', methods=['GET'], strict_slashes=False)
 def habit_board():
-    print(f"[DEBUG] Rendering habit_board.html")
+    # print(f"[DEBUG] Rendering habit_board.html")
 
     user = request.current_user
     logs, rooms = get_habit_board_feed(user.id)
@@ -61,7 +61,7 @@ def habit_board():
 
 @habit_views.route('/habit_board/<log_id>', methods=['GET'], strict_slashes=False)
 def single_habit_board(log_id):
-    print(f"[DEBUG] Fetching Habit Log ID: {log_id}")
+    # print(f"[DEBUG] Fetching Habit Log ID: {log_id}")
 
     user = request.current_user
     room = request.args.get("room")
@@ -127,7 +127,7 @@ def single_habit_board(log_id):
 
 @habit_views.route('/habit_board/comments', methods=['GET'], strict_slashes=False)
 def habit_board_comments():
-    print(f"[DEBUG] getting alpine comments")
+    # print(f"[DEBUG] getting alpine comments")
     user = request.current_user
     logs, _ = get_habit_board_feed(user.id)
     habit_feed = organize_habit_board_feed(logs)

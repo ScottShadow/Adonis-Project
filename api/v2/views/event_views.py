@@ -219,19 +219,19 @@ class NotificationService:
                 "message": message_content,
                 "url": url
             }
-            # print("[DEBUG EVENT NOTIFICATION]User Subscription:",
-                  user.push_subscription)
+            # print("[DEBUG EVENT NOTIFICATION]User Subscription:",user.push_subscription)
             try:
                 webpush(
-                    subscription_info = json.loads(user.push_subscription),
-                    data = json.dumps(payload),
-                    vapid_private_key = VAPID_PRIVATE_KEY,
-                    vapid_claims = VAPID_CLAIMS
+                    subscription_info=json.loads(user.push_subscription),
+                    data=json.dumps(payload),
+                    vapid_private_key=VAPID_PRIVATE_KEY,
+                    vapid_claims=VAPID_CLAIMS
                 )
-                #print(f"Push notification sent to user {recipient_id}")
+                # print(f"Push notification sent to user {recipient_id}")
 
             except Exception as e:
-                #print(f"WebPush failed for user {recipient_id}: {e}")
+                pass
+                # print(f"WebPush failed for user {recipient_id}: {e}")
 
     @staticmethod
     def get_personal_room_id(user1_id, user2_id):
@@ -252,7 +252,7 @@ class NotificationService:
             room_id = NotificationService.get_personal_room_id(
                 user1_id, user2_id)
             room = session.query(Room).filter_by(id=room_id).first()
-            #print(f"[DEBUG EVENT PERSONAL] {room}")
+            # print(f"[DEBUG EVENT PERSONAL] {room}")
             if not room:
 
                 room = Room(
@@ -267,7 +267,7 @@ class NotificationService:
                 session.add(UserSubscription(
                     user_id=user2_id, room_id=room_id))
                 session.commit()
-                #print(f"[DEBUG EVENT PERSONAL] {room}")
+                # print(f"[DEBUG EVENT PERSONAL] {room}")
 
             return room
 
@@ -285,8 +285,7 @@ class NotificationService:
                     NotificationService.notify_room(
                         room.id, sender_id, message_content)
                 else:
-                    #print(
-                        f"Personal room not found for users {sender_id} and {receiver_id}")
+                    # print(f"Personal room not found for users {sender_id} and {receiver_id}")
                     logging.error(
                         f"Personal room not found for users {sender_id} and {receiver_id}")
 
@@ -317,7 +316,7 @@ def get_notifications():
             user_rooms = session.query(Room).join(UserSubscription).filter(
                 UserSubscription.user_id == user_id
             ).all()
-            #print(f"[Debug Notifications rooms] {user_rooms}")
+            # print(f"[Debug Notifications rooms] {user_rooms}")
             comment_events_all = []
             # Process each room based on its type and naming convention
             for room in user_rooms:
@@ -336,7 +335,7 @@ def get_notifications():
                         NotificationEvent.created_at > last_seen if last_seen else True).order_by(NotificationEvent.created_at).all()
                     comment_events_all.append(comment_events)
                     ###
-                    #print(f"[Debug Notifications COMMENT {comment_events}]")
+                    # print(f"[Debug Notifications COMMENT {comment_events}]")
 
                 # CIRCLE rooms: if room name starts with "circle_", count new posts
                 elif room.type == RoomTypes.CIRCLE:
@@ -344,7 +343,7 @@ def get_notifications():
                         circle_events = events_query.filter(
                             NotificationEvent.event_type == EventTypes.POST,
                             NotificationEvent.created_at > last_seen if last_seen else True).all()
-                        #print(f"[Debug Notifications CIRCLE {circle_events}]")
+                        # print(f"[Debug Notifications CIRCLE {circle_events}]")
                         friend_id = room.name.split("_")[1]
                         friend = session.query(
                             User).get(friend_id)
@@ -400,7 +399,7 @@ def get_notifications():
                         chat_events = events_query.filter(
                             NotificationEvent.event_type == EventTypes.MESSAGE,
                             NotificationEvent.created_at > last_seen if last_seen else True).all()
-                        #print(f"[Debug Notifications CHAT {chat_events}]")
+                        # print(f"[Debug Notifications CHAT {chat_events}]")
 
                         count = len(chat_events)
                         if count > 0:
@@ -435,7 +434,7 @@ def get_notifications():
                         # For any other chat rooms, you may add additional grouping logic as needed
                         chat_events = events_query.filter(
                             NotificationEvent.event_type == None).all()
-                        #print(f"[Debug Notifications None {chat_events}]")
+                        # print(f"[Debug Notifications None {chat_events}]")
                         count = len(chat_events)
                         if count > 0:
                             latest_time = max(
@@ -450,7 +449,7 @@ def get_notifications():
                             })
 
             ###
-            #print(f"[Debug Notifications COMMENT {comment_events_all}]")
+            # print(f"[Debug Notifications COMMENT {comment_events_all}]")
             # Group events by post identifier extracted from content (this is an example logic)
 
             grouped = {}
