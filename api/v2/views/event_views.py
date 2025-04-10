@@ -246,33 +246,33 @@ class NotificationService:
         return hashlib.md5(combined.encode()).hexdigest()
 
     @staticmethod
-    def ensure_personal_room(user1_id, user2_id):
+    def ensure_personal_room(user1_id, user2_id, session):
         """
         Check if a personal room exists for the two users.
         If not, create the room and add both subscribers.
         """
-        with get_db_session() as session:
-            room_id = NotificationService.get_personal_room_id(
-                user1_id, user2_id)
-            room = session.query(Room).filter_by(id=room_id).first()
+
+        room_id = NotificationService.get_personal_room_id(
+            user1_id, user2_id)
+        room = session.query(Room).filter_by(id=room_id).first()
+        # print(f"[DEBUG EVENT PERSONAL] {room}")
+        if not room:
+
+            room = Room(
+                id=room_id,
+                type=RoomTypes.CIRCLE,  # Type circle used for personal notifications
+                name=f"Personal room for {user1_id} and {user2_id}"
+            )
+            session.add(room)
+            session.commit()
+            session.add(UserSubscription(
+                user_id=user1_id, room_id=room_id))
+            session.add(UserSubscription(
+                user_id=user2_id, room_id=room_id))
+            session.commit()
             # print(f"[DEBUG EVENT PERSONAL] {room}")
-            if not room:
 
-                room = Room(
-                    id=room_id,
-                    type=RoomTypes.CIRCLE,  # Type circle used for personal notifications
-                    name=f"Personal room for {user1_id} and {user2_id}"
-                )
-                session.add(room)
-                session.commit()
-                session.add(UserSubscription(
-                    user_id=user1_id, room_id=room_id))
-                session.add(UserSubscription(
-                    user_id=user2_id, room_id=room_id))
-                session.commit()
-                # print(f"[DEBUG EVENT PERSONAL] {room}")
-
-            return room
+        return room
 
     @staticmethod
     def notify_personal_circle(sender_id, receiver_id, message_content):
@@ -283,7 +283,7 @@ class NotificationService:
             with get_db_session() as session:
                 # Ensure the personal room exists (or create it if not)
                 room = NotificationService.ensure_personal_room(
-                    sender_id, receiver_id)
+                    sender_id, receiver_id, session)
                 if room:
                     NotificationService.notify_room(
                         room.id, sender_id, message_content)

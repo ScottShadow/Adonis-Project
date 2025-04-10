@@ -257,7 +257,7 @@ def send_friend_request(user_id):
         logging.info(f"Friendship created: {friendship}")
         session.add(friendship)
         session.commit()
-        from .event_views import NotificationService
+        from api.v2.views.event_views import NotificationService
 
         notification_content = f"You got a Friend Request from {user.username}"
         NotificationService.notify_personal_circle(
