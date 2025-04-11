@@ -216,7 +216,9 @@ class NotificationService:
             if not user or not user.push_subscription:
                 # print(f"No push subscription found for user {recipient_id}")
                 return
-
+            if "start_dm" in event.url:
+                room_name = session.query(User.username).filter(
+                    User.id == event.actor_id).first()[0]
             payload = {
                 "title": f"New {event.event_type.value} : {room_name}",
                 "message": message_content,
