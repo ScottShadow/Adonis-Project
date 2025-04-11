@@ -157,7 +157,9 @@ def create_log():
         difficulty = request.form.get('difficulty')
         visibility = request.form.get('visibility')
         # print(f"[Debug CREATE LOG] Habit visibility: {visibility}")
-        custom_xp = data.get('custom_xp', None)
+        custom_xp = data.get('custom_xp')
+        if len(custom_xp) == 0:
+            custom_xp = 5
         from models.models_helper import calculate_xp
         xp_value = calculate_xp(habit_type=habit_type, difficulty=difficulty, custom_xp=int(
             custom_xp) if habit_type == 'custom' else None)
