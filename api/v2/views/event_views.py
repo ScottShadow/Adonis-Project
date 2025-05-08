@@ -195,6 +195,7 @@ class NotificationService:
 
             # Send push notifications
             for user_id in user_ids:
+                print(f"DEBUUUG {user_id}")
                 NotificationService.send_push_notification_to_subs(
                     room_name, user_id, event)
 
@@ -415,19 +416,15 @@ def get_notifications():
                                 event.created_at for event in chat_events) if chat_events else None
                             # Extract the other user's name from the room name.
                             # Example: "DM between Alice and Bob" → if current_user is Alice, show Bob.
-                            try:
-                                parts = room.name.split("between")[
-                                    1].strip().split("and")
-                                if len(parts) == 2:
-                                    user_a, user_b = parts[0].strip(
-                                    ), parts[1].strip()
-                                    other_user = user_b if user_a == current_user.username else user_a
-                                    other_user_id = session.query(User).filter_by(
-                                        username=other_user).first().id
-                                else:
-                                    other_user = "Unknown DM"
-                            except Exception:
-                                other_user = "Unknown DM"
+
+                            parts = room.name.split("between")[
+                                1].strip().split("and")
+                            if len(parts) == 2:
+                                user_a, user_b = parts[0].strip(
+                                ), parts[1].strip()
+                                other_user_id = user_b if user_a == current_user.id else user_a
+                                other_user = session.query(User).filter_by(
+                                    id=other_user_id).first().username
 
                             notifications.append({
                                 "room": room.name,

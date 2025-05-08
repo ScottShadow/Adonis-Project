@@ -25,10 +25,12 @@ def login() -> str:
     if request.is_json:
         data = request.get_json()
         email = data.get('email')
+        username = data.get('email')
         password = data.get('password')
     else:
         # Handle form data for non-JSON requests (like from browsers)
         email = request.form.get('email')
+        username = request.form.get('email')
         password = request.form.get('password')
 
     if email is None or len(email) == 0:
@@ -36,7 +38,8 @@ def login() -> str:
     if password is None or len(password) == 0:
         return jsonify({'error': 'password missing'}), 400
 
-    user = User.search_db({'email': email})
+    user = User.search_db({'email': email}) or User.search_db(
+        {'username': username})
     if user is None or len(user) == 0:
         return jsonify({'error': 'no user found for this email'}), 404
     if not user[0].is_valid_password(password):

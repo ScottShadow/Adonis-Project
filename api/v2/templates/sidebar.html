@@ -1,13 +1,14 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js" defer></script>
 <!-- Sidebar -->
-<div x-data="sidebar()" x-init="$nextTick(() => { console.log('Alpine initialized!') })" class="relative">
+<div x-data="sidebar()" x-init="$nextTick(() => { console.log('Alpine initialized!') })"
+    class="hidden relative md:block">
 
-    <div :class="isOpen ? 'w-screen md:w-[20%]' : 'w-[30px]'"
+    <div :class="isOpen ? 'w-screen md:w-[20%] lg:w-[13%]' : 'w-[30px]'"
         class="fixed top-0 left-0 h-full bg-[var(--accent-color)] transition-all duration-300 ease-in-out shadow-lg z-50">
 
         <!-- Draggable/Clickable Area -->
-        <div @click="toggle()" @touchstart="startDrag($event)" @touchend="endDrag($event)"
+        <div x-init="toggle()" @click="" @touchstart="startDrag($event)" @touchend="endDrag($event)"
             class="h-full bg-[var(--accent-color-contrast)] cursor-pointer" :class="isOpen ? 'w-full' : 'w-[25px]'">
             <button id="menu"
                 class="block !w-[30px] h-screen p-2 !mt-0 !bg-[var(--accent-color-contrast)] items-center hover:bg- focus:bg-[var(--accent-color-contrast)]"
@@ -55,6 +56,85 @@
 
 
     </div>
+</div>
+<!-- DaisyUI Dock with Forms & Active State Toggling -->
+<div class="dock mb-0 dock-xs md:hidden bg-[var(--background-color-contrast)] text-[var(--text-color)]" id="app-dock">
+    <!-- Dashboard (Home) -->
+    <form method="GET" action="{{ url_for('app_views.dashboard_route') }}">
+        <button class="dock-active" aria-label="Dashboard">
+            <svg height="24px" width="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt">
+                    <polyline points="1 11 12 2 23 11" fill="none" stroke="currentColor" stroke-miterlimit="10"
+                        stroke-width="2"></polyline>
+                    <path d="m5,13v7c0,1.105.895,2,2,2h10c1.105,0,2-.895,2-2v-7" fill="none" stroke="currentColor"
+                        stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></path>
+                    <line x1="12" y1="22" x2="12" y2="18" fill="none" stroke="currentColor" stroke-linecap="square"
+                        stroke-miterlimit="10" stroke-width="2"></line>
+                </g>
+            </svg>
+            <span class="dock-label"></span>
+        </button>
+    </form>
+
+    <!-- Habit Board -->
+    <form method="GET" action="{{ url_for('habit_views.habit_board') }}">
+        <button aria-label="Habit Board">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                fill="currentColor">
+                <path
+                    d="M120-120v-720h720v720H120Zm600-160H240v60h480v-60Zm-480-60h480v-60H240v60Zm0-140h480v-240H240v240Zm0 200v60-60Zm0-60v-60 60Zm0-140v-240 240Zm0 80v-80 80Zm0 120v-60 60Z" />
+            </svg>
+            <span class="dock-label"></span>
+        </button>
+    </form>
+
+    <!-- People -->
+    <form method="GET" action="{{ url_for('chat_views.people') }}">
+        <button aria-label="People">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                fill="currentColor">
+                <path
+                    d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5q72 0 116 26.5t44 70.5v63H780Zm-455-80h311q-10-20-55.5-35T480-370q-55 0-100.5 15T325-320ZM160-440q-33 0-56.5-23.5T80-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T160-440Zm640 0q-33 0-56.5-23.5T720-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T800-440Zm-320-40q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm0-80q17 0 28.5-11.5T520-600q0-17-11.5-28.5T480-640q-17 0-28.5 11.5T440-600q0 17 11.5 28.5T480-560Zm1 240Zm-1-280Z" />
+            </svg>
+            <span class="dock-label"></span>
+        </button>
+    </form>
+
+    <!-- Friends -->
+    <form method="GET" action="{{ url_for('chat_views.friends_list') }}">
+        <button aria-label="Friends">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                fill="currentColor">
+                <path
+                    d="M192-72v-72h576v72H192Zm0-744v-72h576v72H192Zm288 384q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM168-192q-29.7 0-50.85-21.16Q96-234.32 96-264.04v-432.24Q96-726 117.15-747T168-768h624q29.7 0 50.85 21.16Q864-725.68 864-695.96v432.24Q864-234 842.85-213T792-192H168Zm55-72q48-57 115-88.5T480-384q75 0 142 31.5T737-264h55v-432H168v432h55Zm106 0h302q-34-24-72.08-36t-79-12Q439-312 401-300t-72 36Zm151-240q-20.4 0-34.2-13.8Q432-531.6 432-552q0-20.4 13.8-34.2Q459.6-600 480-600q20.4 0 34.2 13.8Q528-572.4 528-552q0 20.4-13.8 34.2Q500.4-504 480-504Zm0 24Z" />
+            </svg>
+            <span class="dock-label"></span>
+        </button>
+    </form>
+
+    <!-- Global Chat -->
+    <form method="GET" action="{{ url_for('chat_views.global_chat') }}">
+        <button aria-label="Global Chat">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                fill="currentColor">
+                <path
+                    d="M624-96v-80q-52-16-86-59.5T504-336h72q0 40 28 68t68 28h120q30 0 51 21t21 51v72H624Zm119.79-192Q714-288 693-309.21t-21-51Q672-390 693.21-411t51-21Q774-432 795-410.79t21 51Q816-330 794.79-309t-51 21ZM360-384q0-130 91-221t221-91v72q-100 0-170 69.86-70 69.85-70 170.14h-72Zm144 0q0-70 49.14-119T672-552v72q-40 0-68 28t-28 68h-72ZM96-528v-72q0-30 21-51t51-21h120q40 0 68-28t28-68h72q0 57-34 100.5T336-608v80H96Zm119.79-192Q186-720 165-741.21t-21-51Q144-822 165.21-843t51-21Q246-864 267-842.79t21 51Q288-762 266.79-741t-51 21Z" />
+            </svg>
+            <span class="dock-label"></span>
+        </button>
+    </form>
+
+    <!-- Events -->
+    <form method="GET" action="{{ url_for('event_views.home') }}">
+        <button aria-label="Events">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                fill="currentColor">
+                <path
+                    d="M576.23-240Q536-240 508-267.77q-28-27.78-28-68Q480-376 507.77-404q27.78-28 68-28Q616-432 644-404.23q28 27.78 28 68Q672-296 644.23-268q-27.78 28-68 28ZM216-96q-29.7 0-50.85-21.5Q144-139 144-168v-528q0-29 21.15-50.5T216-768h72v-96h72v96h240v-96h72v96h72q29.7 0 50.85 21.5Q816-725 816-696v528q0 29-21.15 50.5T744-96H216Zm0-72h528v-360H216v360Zm0-432h528v-96H216v96Zm0 0v-96 96Z" />
+            </svg>
+            <span class="dock-label"></span>
+        </button>
+    </form>
 </div>
 <script>
     function sidebar() {

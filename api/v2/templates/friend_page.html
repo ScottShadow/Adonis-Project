@@ -8,12 +8,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
 </head>
 
-<body class="bg-[var(--background-color)] text-[var(--text-color)] min-h-screen flex flex-col md:flex-row">
-    <div class="flex-1 p-6 space-y-6">
+<body
+    class="bg-[var(--background-color)] text-[var(--text-color)] md:ml-[20%] lg:ml-[13%] min-h-[100dvh] flex flex-col md:flex-row">
+    {% include 'sidebar.html' %}
+    <div class="flex-1 p-6 space-y-6 ">
         <script src="{{ url_for('static', filename='scripts/theme-saver.js') }}"></script>
 
         <!-- Navigation Bar -->
-        <div class="relative bg-[var(--background-color-contrast)] shadow-md">
+        <div class="relative hidden bg-[var(--background-color-contrast)] shadow-md">
             <nav class="container mx-auto flex items-center md:justify-center p-4">
                 <!-- Logo -->
                 <div class="hidden items-center">
@@ -75,11 +77,11 @@
                 </tbody>
             </table>
             {% else %}
-            <p>You have not received any friend requests yet.</p>
+            <p>No new friend requests.</p>
             {% endif %}
         </section>
         <!-- Friend Requests Sent Section -->
-        <section class="table-container" id="requests-sent" class="hidden">
+        <section class="table-container" id="requests-sent">
             <h2 class="text-lg font-semibold">Requests Sent</h2>
             {% if sent_requests %}
             <table class="table">
@@ -104,7 +106,7 @@
                 </tbody>
             </table>
             {% else %}
-            <p>You haven't sent any friend requests yet.</p>
+            <p>You haven't sent any friend requests.</p>
             {% endif %}
             <p></p>
             <form method="GET" action="{{ url_for('chat_views.people') }}">
@@ -114,7 +116,7 @@
         </section>
 
         <!-- Friend List Section -->
-        <section class="table-container" id="friend-list" class="hidden">
+        <section class="table-container" id="friend-list">
             <h2 class="text-lg font-semibold">Your Friends</h2>
             {% if friends %}
             <table class="table">
@@ -152,7 +154,7 @@
         </section>
 
         <!-- Friends' Logs Section -->
-        <section class="table-container" id="friend-logs" class="visible">
+        <section class="table-container hidden" id="friend-logs">
             <h2 class="text-lg font-semibold">Friends' Logs</h2>
             {% if friends %}
             <table class="table">

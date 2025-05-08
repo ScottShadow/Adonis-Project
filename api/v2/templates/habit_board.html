@@ -6,24 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Habit Board</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
     <!-- Optionally include your custom colors if not in output.css -->
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-colors.css') }}"> -->
 </head>
 
-<body class="bg-[var(--background-color)] text-[var(--text-color)] min-h-screen pl-8 p-4">
+<body class="!bg-[var(--background-color)] text-[var(--text-color)] md:ml-[20%] lg:ml-[13%] min-h-[100dvh] pl-8 p-4">
     {% include 'sidebar.html' %}
 
     <script src="{{ url_for('static', filename='scripts/theme-saver.js') }}"></script>
 
     <div class="max-w-xl mx-auto space-y-4">
         {% if not logs %}
-        <p class="text-[var(--text-color)]">No logs found. Add Friends.</p>
-        <form method="GET" action="{{ url_for('chat_views.people') }}">
-            <input type="hidden" name="action" value="People">
-            <button type="submit" class="accept-button">Find more people</button>
-        </form>
+        <div
+            class="wrapper-div bg-[var(--background-color-contrast)] rounded-xl shadow-md overflow-hidden p-4 border-2 !border-[var(--accent-color)] content-center">
+            <p class="text-[var(--text-color)]">Friends saved habits will appear here.</br>Add Friends
+                and encourage
+                the to
+                save a habit.</p>
+            <form method="GET" action="{{ url_for('chat_views.people') }}">
+                <input type="hidden" name="action" value="People">
+                <button type="submit" class="accept-button">Add Friends</button>
+            </form>
+        </div>
         {% endif %}
         {% for log in logs %}
         <div

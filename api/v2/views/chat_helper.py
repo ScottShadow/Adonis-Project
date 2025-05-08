@@ -100,5 +100,8 @@ def find_dm_room(session: Session, user1_id, user2_id):
         .filter(Room.is_dm == True, subquery.c.member_count == 2)
         .first()
     )
-
+    # bugfix
+    if room:
+        room.name = f"DM between {user1_id} and {user2_id}"
+    session.commit()
     return room

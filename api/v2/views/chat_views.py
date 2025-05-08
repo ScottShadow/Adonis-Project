@@ -53,7 +53,7 @@ def people():
 
     # Pagination parameters
     page = int(request.args.get('page', 1))
-    per_page = 10  # Number of users per page
+    per_page = 9  # Number of users per page
 
     with get_db_session() as session:
         # Get the total number of users excluding the current user
@@ -141,7 +141,7 @@ def start_dm(user_id):
 
         if room is None:
             # Create new DM room
-            room_name = f"DM between {user.username} and {other_user.username}"
+            room_name = f"DM between {user.id} and {other_user.id}"
             room = Room(name=room_name, is_dm=True, type=RoomTypes.CHAT)
             # print(f"[DEBUG START DM] new room of type chat made")
             session.add(room)
