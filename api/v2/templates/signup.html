@@ -17,15 +17,27 @@
         <h1 class="text-3xl font-orbitron">Sign Up</h1>
         <form method="POST" action="{{ url_for('auth_views.signup') }}">
             <input type="text" id="first-name" name="first_name" placeholder="First Name"
-                class="w-full p-3 mt-4 rounded border focus:ring-2" required>
+                class="w-full p-3 mt-4 rounded border focus:ring-2" required class="input validator"
+                pattern="[A-Za-z][A-Za-z0-9\-]*" minlength="3" maxlength="30" title="Only letters or numbers" />
             <input type="text" id="last-name" name="last_name" placeholder="Last Name"
-                class="w-full p-3 mt-4 rounded border focus:ring-2" required>
+                class="w-full p-3 mt-4 rounded border focus:ring-2" required class="input validator"
+                pattern="[A-Za-z][A-Za-z0-9\-]*" minlength="3" maxlength="30" title="Only letters or numbers" />
             <input type="text" id="username" name="username" placeholder="Username"
-                class="w-full p-3 mt-4 rounded border focus:ring-2" required>
+                class="w-full p-3 mt-4 rounded border focus:ring-2" required class="input validator"
+                pattern="[A-Za-z][A-Za-z0-9\-]*" minlength="3" maxlength="30" title="Only letters or numbers" />
             <input type="email" id="email" name="email" placeholder="Email"
-                class="w-full p-3 mt-4 rounded border focus:ring-2" required>
-            <input type="password" id="password" name="password" placeholder="Password"
-                class="w-full p-3 mt-4 rounded border focus:ring-2" required>
+                class="w-full p-3 mt-4 rounded border focus:ring-2" required class="input validator"
+                title="Please enter valid email." />
+
+            <div class="relative w-full mt-4">
+                <input type="password" name="password" id="password" placeholder="Password"
+                    class="w-full p-3 rounded border focus:ring-2 pr-10" required class="input validator" minlength="8"
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                    title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
+                <button type="button" id="togglePassword" class="absolute hidden inset-y-0 right-3  items-center">
+                    👁️
+                </button>
+            </div>
             <button type="submit" class="mt-4 p-3 w-full rounded-lg font-bold transition-transform duration-300">
                 Sign Up
             </button>
@@ -37,6 +49,10 @@
     <script>
         fetch('/wake_db', { method: "GET" })
             .catch(error => console.error(error));;
+        document.getElementById("togglePassword").addEventListener("click", function () {
+            const passwordField = document.getElementById("password");
+            passwordField.type = passwordField.type === "password" ? "text" : "password";
+        });
     </script>
 </body>
 

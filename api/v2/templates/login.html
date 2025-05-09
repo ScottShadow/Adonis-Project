@@ -18,10 +18,20 @@
     <div class="login-container relative p-6 rounded-lg shadow-lg text-center max-w-sm align-middle m-10">
         <h1 class="text-3xl font-orbitron">Login</h1>
         <form method="POST" action="{{ url_for('auth_views.login') }}">
-            <input type="text" name="email" placeholder="Email" class="w-full p-3 mt-4 rounded border focus:ring-2"
+            <input type="email" name="email" placeholder="Email" class="w-full p-3 mt-4 rounded border focus:ring-2"
                 required>
-            <input type="password" name="password" placeholder="Password"
-                class="w-full p-3 mt-4 rounded border focus:ring-2" required>
+            <div class="relative w-full mt-4">
+                <input type="password" name="password" id="password" placeholder="Password"
+                    class="w-full p-3 rounded border focus:ring-2 pr-10" required>
+                <button type="button" id="togglePassword"
+                    class="btn btn-ghost absolute inset-y-0 right-0 hidden items-center">
+                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 -960 960 960"
+                        width="2rem" fill="#e3e3e3">
+                        <path
+                            d="M480.24-332Q542-332 585-375.24q43-43.23 43-105Q628-542 584.76-585q-43.23-43-105-43Q418-628 375-584.76q-43 43.23-43 105Q332-418 375.24-375q43.23 43 105 43Zm-.36-50q-40.88 0-69.38-28.62-28.5-28.62-28.5-69.5 0-40.88 28.62-69.38 28.62-28.5 69.5-28.5 40.88 0 69.38 28.62 28.5 28.62 28.5 69.5 0 40.88-28.62 69.38-28.62 28.5-69.5 28.5Zm.12 168q-120 0-224-62T90-441q-6-9-8-18.74-2-9.75-2-20Q80-490 82-500q2-10 8-19 62-103 166-165t224-62q120 0 224 62t166 165q6 9 8 18.74 2 9.75 2 20 0 10.26-2 20.26-2 10-8 19-62 103-166 165t-224 62Z" />
+                    </svg>
+                </button>
+            </div>
             <button type="submit" class="mt-4 p-3 w-full rounded-lg font-bold transition-transform duration-300">
                 Login
             </button>
@@ -33,6 +43,14 @@
     <script>
         fetch('/wake_db', { method: "GET" })
             .catch(error => console.error(error));;
+        document.getElementById("togglePassword").addEventListener("click", function () {
+            const passwordField = document.getElementById("password");
+            const eyeIcon = document.getElementById('eyeIcon');
+            passwordField.type = passwordField.type === "password" ? "text" : "password";
+            eyeIcon.innerHTML = isPassword
+                ? `<path d="M480.24-332Q542-332 585-375.24q43-43.23 43-105Q628-542 584.76-585q-43.23-43-105-43Q418-628 375-584.76q-43 43.23-43 105Q332-418 375.24-375q43.23 43 105 43Zm-.36-50q-40.88 0-69.38-28.62-28.5-28.62-28.5-69.5 0-40.88 28.62-69.38 28.62-28.5 69.5-28.5 40.88 0 69.38 28.62 28.5 28.62 28.5 69.5 0 40.88-28.62 69.38-28.62 28.5-69.5 28.5Zm.12 168q-120 0-224-62T90-441q-6-9-8-18.74-2-9.75-2-20Q80-490 82-500q2-10 8-19 62-103 166-165t224-62q120 0 224 62t166 165q6 9 8 18.74 2 9.75 2 20 0 10.26-2 20.26-2 10-8 19-62 103-166 165t-224 62Z" />`
+                : `<path d="M756-139 646-250q-38 19-80.5 27.5T480-214q-121 0-224.5-61.5T90-441q-6-9-8-19t-2-20q0-10 3-20.5t8-18.5q27-44 60-82t75-69l-87-87q-8-8-8.5-16t7.5-16q9-9 16.5-9t16.5 9l618 618q8 8 8 16t-8 16q-9 9-16.5 9t-16.5-9ZM480-332q17 0 35-4t34-13L349-549q-7 16-12 34t-5 35q0 62 43 105t105 43Zm0-414q122 0 226.5 61T872-517q5 10 7 18.5t2 18.5q0 10-3.5 19t-6.5 19q-16 29-36.5 55.5T788-337q-11 12-29.5 11.5T728-338l-89-88q-6-6-9.5-15t-1.5-17v-22q0-62-43-105t-105-43h-20q-8 2-16.5-.5T429-637l-35-35q-18-18-12-43t32-29q17-4 33-3t33 1Zm69 188q11 7 17 18.5t9 24.5q3 7-4.5 10.5T557-507l-51-51q-6-6-3-13t10-5q10 3 19.5 7.5T549-558Z"/>`
+        });
     </script>
 </body>
 
