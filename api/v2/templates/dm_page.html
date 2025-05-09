@@ -5,55 +5,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Direct Message</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dm_page.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
-
 </head>
 
-<body>
+<body
+    class="!bg-[var(--background-color)] text-[var(--text-color)] md:ml-[20%] lg:ml-[13%] min-h-[100dvh] pl-8 p-4 flex flex-col content-center">
     <script src="{{ url_for('static', filename='scripts/theme-saver.js') }}"></script>
 
-    <div class="chat-container">
-        <h1>{{ friend }}</h1>
+    {% include 'sidebar.html' %}
 
-        <div id="chat-window" class="chat-wrapper">
+    <div
+        class="chat-container h-[82dvh] w-full flex flex-col items-center content-center mb-1 !bg-[var(--accent-color)] border-2 border-[var(--accent-color)] rounded-xl">
+        <h1 class="text-base lg:text-base">{{ friend }}</h1>
+
+        <div id="chat-window" class="chat-wrapper overflow-y-scroll w-full !bg-[var(--background-color)]">
             {% for message in messages %}
             {% if message.content == '__UNREAD_MARKER__' %}
-            <div
-                class="unread-divider mx-auto my-4 px-4 py-2 bg-[var(--accent-color)] text-white font-semibold rounded-lg shadow-md text-center w-3/4">
-                — Unread Messages —</div>
+            <div class="unread-divider mx-auto my-4 px-4 py-2 bg-[var(--accent-color)] text-white font-semibold rounded-lg shadow-md text-center w-3/4 text-xs md:text-sm lg:text-base"
+                style="transition: opacity 0.5s ease-in-out;">
+                — Unread Messages —
+            </div>
+            <script>
+                document.querySelectorAll('.unread-divider').forEach(divider => {
+                    setTimeout(() => {
+                        divider.style.opacity = '0';
+                        setTimeout(() => divider.remove(), 500); // Wait for transition to complete
+                    }, 5000);
+                });
+            </script>
             {% else %}
-            <div class="message {{ 'self' if message.username == user.username else 'other' }}">
-                <strong>{{ message.username }}: <em data-timestamp="{{ message.created_at }}"
-                        class="timestamp"></em></strong> {{ message.content }}
+            <div
+                class="chat {{ 'chat-end' if message.username == user.username else 'chat-start' }} !bg-[var(--background-color-contrast)]">
+                <div class="chat-header text-sm md:text-base lg:text-lg">
+                    <strong>{{ message.username }}: <time class="text-xs md:text-sm  opacity-50"><em
+                                data-timestamp="{{ message.created_at }}" class="timestamp"></em></time></strong>
+                </div>
+                <div class="chat-bubble bg-[var(--accent-color)] text-lg md:text-xl lg:text-2xl break-words">
+                    {{ message.content }}
+                </div>
             </div>
             {% endif %}
             {% endfor %}
         </div>
-
-        <form id="chat-form">
-            <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" />
-            <button type="submit">Send</button>
-        </form>
     </div>
+
+    <form id="chat-form" class="flex w-full flex-row items-baseline bg-transparent mb-12">
+        <input class="flex-initial w-[50dvh] text-lg md:text-xl" type="text" id="message-input"
+            placeholder="Type a message..." autocomplete="off" />
+        <button type="submit" class="btn flex-none">Send</button>
+    </form>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
     <script>{% include 'request_notifications.js' %}</script>
+
     <script>
+        // Keep all your existing socket logic here
         var socket = io(["https://adonis-project-production.up.railway.app", "http://localhost:5000"], {
             transports: ["websocket", "polling"],
             reconnection: true,
             reconnectionAttempts: 5
         });
-
+        let firstTime = true;
         var room_id = "{{ room.id }}";
 
-        window.onload = function () {
-            var divider = document.querySelector('.unread-divider');
+        // Modified scroll function
+        function scrollToBottom() {
+            const chatWindow = document.getElementById('chat-window');
+            const divider = document.querySelector('.unread-divider');
             if (divider) {
                 divider.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
-                var chatWindow = document.getElementById('chat-window');
                 chatWindow.scrollTop = chatWindow.scrollHeight;
             }
         };
@@ -95,16 +117,54 @@
             } else {
                 displayTime = localTime.calendar(); // fallback for older logs
             }
-            messageDiv.className = 'message ' + (data.username === "{{ user.username }}" ? 'self' : 'other');
-            messageDiv.innerHTML = `
-            <strong>
-                ${data.username}: <em class="timestamp">${displayTime}</em>
-            </strong> ${data.message}
-        `;
+            messageDiv.className = 'chat ' + (data.username === "{{ user.username }}" ? 'chat-end !bg-[var(--background-color-contrast)]' : 'chat-start !bg-[var(--background-color-contrast)]');
+            // Header (username + timestamp)
+            const header = document.createElement('div');
+            header.className = 'chat-header flex items-baseline text-xs md:text-sm';
+            const userSpan = document.createElement('strong');
+            userSpan.textContent = data.username + ':';
+            // Create time element structure
+            const timeElem = document.createElement('time');
+            timeElem.className = 'text-xs md:text-sm  opacity-50 ml-2';
+
+            // Create em element with timestamp data
+            const timeDisplay = document.createElement('em');
+            timeDisplay.className = 'timestamp';
+            timeDisplay.dataset.timestamp = data.created_at; // Set data-timestamp attribute
+            timeDisplay.textContent = displayTime;
+
+            // Assemble time elements
+            timeElem.appendChild(timeDisplay);
+
+            header.append(userSpan, timeElem);
+            messageDiv.appendChild(header);
+
+            // Bubble with message content
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble bg-[var(--accent-color)] text-[var(--text-color)] text-lg md:text-xl lg:text-2xl break-words';
+            bubble.textContent = data.message;
+            messageDiv.appendChild(bubble);
+
             chatWindow.appendChild(messageDiv);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            scrollToBottom();
             updateSeen();
         });
+
+
+        // Keep the rest of your existing socket event handlers
+        window.addEventListener('load', scrollToBottom);
+        socket.emit('join', { room_id: room_id });
+
+        document.getElementById('chat-form').onsubmit = function (e) {
+            e.preventDefault();
+            var message = document.getElementById('message-input').value;
+            if (message.trim() === '') return;
+            socket.emit('message', { room_id: room_id, message: message });
+            document.getElementById('message-input').value = '';
+            updateSeen();
+        };
+
+
 
         socket.on("notification", (data) => {
             /* console.log("New notification:", data); */
@@ -124,8 +184,6 @@
         document.getElementById('message-input').addEventListener('focus', updateSeen);
         window.addEventListener('focus', updateSeen);
     </script>
-
-
 </body>
 
 </html>

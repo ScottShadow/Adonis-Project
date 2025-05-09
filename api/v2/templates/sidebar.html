@@ -58,7 +58,8 @@
     </div>
 </div>
 <!-- DaisyUI Dock with Forms & Active State Toggling -->
-<div class="dock mb-0 dock-xs md:hidden bg-[var(--background-color-contrast)] text-[var(--text-color)]" id="app-dock">
+<div class="dock mb-0 dock-xs md:hidden bg-[var(--background-color-contrast)] text-[var(--text-color)] pb-2"
+    id="app-dock">
     <!-- New Log -->
     <form method="GET" action="{{ url_for('log_views.new_log_form') }}">
         <button class="new-log btn btn-ghost !bg-transparent"><svg xmlns="http://www.w3.org/2000/svg" width="24px"

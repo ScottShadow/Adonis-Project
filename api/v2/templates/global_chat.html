@@ -11,7 +11,7 @@
 </head>
 
 <body
-    class="!bg-[var(--background-color)] text-[var(--text-color)] md:ml-[20%] lg:ml-[13%] min-h-[100dvh] pl-8 p-4 flex flex-col items-center justify-between">
+    class="!bg-[var(--background-color)] text-[var(--text-color)] md:ml-[20%] lg:ml-[13%] min-h-[100dvh] pl-8 p-4 flex flex-col content-center">
     <script src="{{ url_for('static', filename='scripts/theme-saver.js') }}"></script>
 
     {% include 'sidebar.html' %}
@@ -25,11 +25,11 @@
             {% for message in messages %}
             <div
                 class="chat !bg-[var(--background-color-contrast)] {{ 'chat-end' if message.username == user.username else 'chat-start' }}">
-                <div class="chat-header">
-                    <strong>{{ message.username }}: <time class="text-xs opacity-50"><em
+                <div class="chat-header text-sm md:text-base lg:text-lg">
+                    <strong>{{ message.username }}: <time class="text-xs md:text-sm  opacity-50"><em
                                 data-timestamp="{{ message.created_at }}" class="timestamp"></em></time></strong>
                 </div>
-                <div class="chat-bubble bg-[var(--accent-color)]">
+                <div class="chat-bubble bg-[var(--accent-color)] text-lg md:text-xl lg:text-2xl break-words">
                     {{ message.content }}
                 </div>
             </div>
@@ -37,9 +37,9 @@
         </div>
     </div>
     <form id="chat-form" class="flex w-full flex-row items-baseline bg-transparent mb-12">
-        <input class="flex-initial w-[50dvh]" type="text" id="message-input" placeholder="Type a message..."
-            autocomplete="off" />
-        <button type="submit" class="btn flex-none">Send</button>
+        <input class="flex-initial w-[50dvh] text-lg md:text-xl" type="text" id="message-input"
+            placeholder="Type a message..." autocomplete="off" />
+        <button type="submit" class="btn flex-none text-lg md:text-xl">Send</button>
     </form>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
@@ -91,18 +91,28 @@
             messageDiv.className = 'chat ' + (data.username === "{{ user.username }}" ? 'chat-end !bg-[var(--background-color-contrast)]' : 'chat-start !bg-[var(--background-color-contrast)]');
             // Header (username + timestamp)
             const header = document.createElement('div');
-            header.className = 'chat-header';
+            header.className = 'chat-header flex items-baseline text-sm md:text-base';
             const userSpan = document.createElement('strong');
             userSpan.textContent = data.username + ':';
+            // Create time element structure
             const timeElem = document.createElement('time');
-            timeElem.className = 'text-xs opacity-50 ml-2';
-            timeElem.innerHTML = '<em>' + displayTime + '</em>';
+            timeElem.className = 'text-xs md:text-sm opacity-50 ml-2';
+
+            // Create em element with timestamp data
+            const timeDisplay = document.createElement('em');
+            timeDisplay.className = 'timestamp';
+            timeDisplay.dataset.timestamp = data.created_at; // Set data-timestamp attribute
+            timeDisplay.textContent = displayTime;
+
+            // Assemble time elements
+            timeElem.appendChild(timeDisplay);
+
             header.append(userSpan, timeElem);
             messageDiv.appendChild(header);
 
             // Bubble with message content
             const bubble = document.createElement('div');
-            bubble.className = 'chat-bubble bg-[var(--accent-color)] text-[var(--text-color)]';
+            bubble.className = 'chat-bubble bg-[var(--accent-color)] text-[var(--text-color)] text-lg md:text-xl lg:text-2xl break-words';
             bubble.textContent = data.message;
             messageDiv.appendChild(bubble);
 
