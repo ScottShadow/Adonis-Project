@@ -195,7 +195,6 @@ class NotificationService:
 
             # Send push notifications
             for user_id in user_ids:
-                print(f"DEBUUUG {user_id}")
                 NotificationService.send_push_notification_to_subs(
                     room_name, user_id, event)
 
