@@ -1,5 +1,5 @@
 
-window.onload = function () {
+window.addEventListener('load', function () {
   const savedTheme = localStorage.getItem('theme');
   const themeToApply = savedTheme || 'theme-neon-dream'; // Default to 'theme-neon-dream'
 
@@ -7,7 +7,7 @@ window.onload = function () {
   console.log('Applying theme:', themeToApply);
 
   setTheme(themeToApply);
-};
+});
 
 function setTheme(theme) {
   // Remove all existing theme classes from the body
