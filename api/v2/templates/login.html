@@ -18,8 +18,9 @@
     <div class="login-container relative p-6 rounded-lg shadow-lg text-center max-w-sm align-middle m-10">
         <h1 class="text-3xl font-orbitron">Login</h1>
         <form method="POST" action="{{ url_for('auth_views.login') }}">
-            <input type="email" name="email" placeholder="Email" class="w-full p-3 mt-4 rounded border focus:ring-2"
-                required>
+            <input type="text" name="identifier" placeholder="Email or Username"
+                class="w-full p-3 mt-4 rounded border focus:ring-2" required>
+
             <div class="relative w-full mt-4">
                 <input type="password" name="password" id="password" placeholder="Password"
                     class="w-full p-3 rounded border focus:ring-2 pr-10" required>
